@@ -20,7 +20,6 @@
       </div>
 
       <v-row>
-        
         <v-col cols="12" sm="6">
           <apexchart :options="judgementChartOptions" :series="judgementChartSeries" ></apexchart>
         </v-col>
@@ -44,12 +43,9 @@
             </tbody>
           </v-table>
         </v-col>
-
       </v-row>
-      
-    </v-container>
+      <p class="text-caption text-right">※ <b>{{ items?.date }}</b> までの「疾病・障害認定審査会」累計データを用いて算出しています。</p>
 
-    <v-container>
       <h4 class="text-h4">申請内容</h4>
       <p class="text-body-1">認定・否認された申請の総数 <b>{{ certified_and_denied_count.toLocaleString() }}</b> [件] に対して、申請内容の内訳はそれぞれ以下の通りです。</p>
 
@@ -59,7 +55,6 @@
       </div>
       
       <v-row>
-
         <v-col cols="12" sm="6">
           <apexchart :options="certifiedClaimChartOptions" :series="certifiedClaimChartSeries"></apexchart>
         </v-col>
@@ -67,21 +62,67 @@
         <v-col cols="12" sm="6">
           <apexchart :options="deniedClaimChartOptions" :series="deniedClaimChartSeries"></apexchart>
         </v-col>
-
       </v-row>
+      <p class="text-caption text-right">※ <b>{{ items?.date }}</b> までの「疾病・障害認定審査会」累計データを用いて算出しています。</p>
     </v-container>
+    
 
-    <p class="text-caption text-right">※ <b>{{ items?.date }}</b> までの「疾病・障害認定審査会」累計データを用いて算出しています。</p>
+    <v-container v-if="summaryWithOtherVaccines == undefined">
+      <v-progress-circular
+        color="primary"
+        indeterminate
+        :size="100"
+        :width="10"
+      ></v-progress-circular>
+    </v-container>    
+
+    <v-container v-else>
+      <h4 class="text-h4">過去の各種ワクチンの認定件数との比較</h4>
+     
+      <v-row>
+        <v-col cols="12">
+          <v-table density="comfortable">
+            <thead>
+              <tr>
+                <th class="text-left">ワクチン種類</th>
+                <th class="text-left">集計期間</th>
+                <th class="text-left">認定件数</th>
+                <th class="text-left">元資料</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>過去の各種ワクチン</td>
+                <td>{{ summaryWithOtherVaccines.meta_data.other_vaccines.period }}（{{summaryWithOtherVaccines.meta_data.other_vaccines.first_date}}～{{summaryWithOtherVaccines.meta_data.other_vaccines.last_date}}）</td>
+                <td class="text-right"><b>{{ summaryWithOtherVaccines.meta_data.other_vaccines.certified_count.toLocaleString() }} [件]</b></td>
+                <td><a :href="summaryWithOtherVaccines.meta_data.other_vaccines.source_url">元資料</a></td>
+              </tr>
+              <tr>
+                <td>新型コロナワクチン</td>
+                <td>{{ summaryWithOtherVaccines.meta_data.covid19_vaccine.period }}（{{summaryWithOtherVaccines.meta_data.covid19_vaccine.first_date}}～{{summaryWithOtherVaccines.meta_data.covid19_vaccine.last_date}}）</td>
+                <td class="text-right"><b>{{ summaryWithOtherVaccines.meta_data.covid19_vaccine.certified_count.toLocaleString() }} [件]</b></td>
+                <td><a :href="summaryWithOtherVaccines.meta_data.covid19_vaccine.source_url">元資料</a></td>
+              </tr>
+            </tbody>
+          </v-table>
+        </v-col>
+
+        <v-col cols="12">
+          <apexchart :options="otherVaccinesChartOptions" :series="otherVaccinesChartSeries"></apexchart>
+        </v-col>
+      </v-row>
+    </v-container>    
 
   </v-container>
+
 </template>
 
 <script setup lang="ts">
 import { onMounted, shallowRef } from 'vue'
 import axios from 'axios'
-import { AppBarTitle, AppBarColor, CertifiedSummaryURL } from '@/router/data'
+import { AppBarTitle, AppBarColor, CertifiedSummaryURL, CertifiedSummaryWithOtherVaccinesURL } from '@/router/data'
 import router from '@/router/index'
-import type { ICertifiedSummary } from '@/types/CertifiedSummary'
+import type { ICertifiedSummary, ICertifiedSummaryWithOtherVaccines } from '@/types/CertifiedSummary'
 
 AppBarTitle.value = String(router.currentRoute.value.name)
 AppBarColor.value = 'green'
@@ -89,6 +130,7 @@ AppBarColor.value = 'green'
 const isPersentView = shallowRef(true)
 
 const items = shallowRef<ICertifiedSummary>()
+const summaryWithOtherVaccines = shallowRef<ICertifiedSummaryWithOtherVaccines>() 
 const certified_and_denied_count = shallowRef<number>(0)
 onMounted(() => {
   axios.get<ICertifiedSummary>(CertifiedSummaryURL)
@@ -130,6 +172,42 @@ onMounted(() => {
       window.dispatchEvent(new Event('resize'))
     })
     .catch((error) => console.log('failed to get certified summary data: ' + error))
+
+  axios.get<ICertifiedSummaryWithOtherVaccines>(CertifiedSummaryWithOtherVaccinesURL)
+    .then((response) => {
+      summaryWithOtherVaccines.value = response.data
+
+      for (let index = 0; index < summaryWithOtherVaccines.value.chart_data.data.length; index++) {
+        const chartData = summaryWithOtherVaccines.value.chart_data.data[index]
+
+        otherVaccinesChartCategories.value.push(chartData.vaccine_name)
+        otherVaccinesChartSeriesMedical.value.push(chartData.medical)
+        otherVaccinesChartSeriesDisabilityOfChildren.value.push(chartData.disability_of_children)
+        otherVaccinesChartSeriesDisability.value.push(chartData.disability)
+        otherVaccinesChartSeriesDeath.value.push(chartData.death)
+      }
+
+      otherVaccinesChartSeries.value.push({
+        name: summaryWithOtherVaccines.value.chart_data.headers[1],
+        data: otherVaccinesChartSeriesMedical.value
+      })
+      otherVaccinesChartSeries.value.push({
+        name: summaryWithOtherVaccines.value.chart_data.headers[2],
+        data: otherVaccinesChartSeriesDisabilityOfChildren.value
+      })
+      otherVaccinesChartSeries.value.push({
+        name: summaryWithOtherVaccines.value.chart_data.headers[3],
+        data: otherVaccinesChartSeriesDisability.value
+      })
+      otherVaccinesChartSeries.value.push({
+        name: summaryWithOtherVaccines.value.chart_data.headers[4],
+        data: otherVaccinesChartSeriesDeath.value
+      })
+
+      // 2つ目以降のグラフが手動リフレッシュ無しにちゃんと表示されるようにするために必要な処理
+      window.dispatchEvent(new Event('resize'))
+    })
+    .catch((error) => console.log('failed to get certified summary with other vaccines data: ' + error))
 })
 
 const judgementTableSeries = shallowRef<any[]>([])
@@ -293,6 +371,67 @@ const deniedClaimChartOptions = {
   }
 }
 
+const otherVaccinesChartSeriesMedical = shallowRef<number[]>([])
+const otherVaccinesChartSeriesDisabilityOfChildren = shallowRef<number[]>([])
+const otherVaccinesChartSeriesDisability = shallowRef<number[]>([])
+const otherVaccinesChartSeriesDeath = shallowRef<number[]>([])
+const otherVaccinesChartSeries = shallowRef<{name: string, data: number[]}[]>([])
+const otherVaccinesChartCategories = shallowRef<string[]>([])
+const otherVaccinesChartCategoryName = 'ワクチン名'
+const downloadFileName = 'certified-summary-with-other-vaccines'
+const otherVaccinesChartOptions = {
+  title: {
+    text: '新型コロナワクチンとその他ワクチンの認定件数まとめ',
+    align: 'center',
+    offsetX: 10,
+    offsetY: 10,
+  },
+  chart: {
+    type: 'bar',
+    stacked: true,
+    toolbar:{
+    export: {
+      csv: {
+        headerCategory: otherVaccinesChartCategoryName,
+        filename: downloadFileName,
+      },
+      svg: {
+        filename: downloadFileName,
+      },
+      png: {
+        filename: downloadFileName,
+      }
+    }
+  }
+  },
+  legend: {
+    position: 'bottom',
+  },
+  tooltip: {
+    y: {
+        formatter: (val: any) => {
+          return (val as number).toLocaleString() + ' 件'
+        },
+    },
+  },
+  responsive: [{
+    breakpoint: 800,
+    options: {
+      chart: {
+        height: 600
+      }
+    }
+  }],
+  plotOptions: {
+    bar: {
+      horizontal: true,
+    },
+  },
+  xaxis: {
+    categories: otherVaccinesChartCategories.value,
+  },
+}
+
 const changeChartView = () => {
   isPersentView.value = !isPersentView.value
   window.dispatchEvent(new Event('resize'))
@@ -300,5 +439,4 @@ const changeChartView = () => {
 </script>
 
 <style scoped>
-
 </style>
