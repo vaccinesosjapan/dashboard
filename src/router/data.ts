@@ -18,3 +18,4 @@ export const DeathSummaryFromReportsURL = DatasetsURL + 'death-summary-from-repo
 export const CertifiedHealthHazardDataURL = DatasetsURL + 'certified-reports.json'
 export const CertifiedSymptomsDataURL = DatasetsURL + 'certified-symptoms.json'
 export const CertifiedSummaryURL = DatasetsURL + 'certified-summary.json'
+export const CertifiedSummaryWithOtherVaccinesURL = DatasetsURL + 'certified-summary-with-other-vaccines.json'
