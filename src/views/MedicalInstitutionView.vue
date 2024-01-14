@@ -145,7 +145,7 @@ import { onMounted, shallowRef } from 'vue'
 import router from '@/router/index'
 import axios from 'axios'
 import { AppBarTitle, AppBarColor, MedicalInstitutionReportsURL, MedicalInstitutionSummaryURL } from '@/router/data'
-import { CausalRelationshipFunc, DateFilterFunc, NumberFilterFunc, StringArrayStrictFilterFunc, StringFilterFunc } from '@/tools/FilterFunc'
+import { CausalRelationshipFunc, DateArrayFilterFunc, DateFilterFunc, NumberFilterFunc, StringArrayFilterFunc, StringArrayStrictFilterFunc, StringFilterFunc } from '@/tools/FilterFunc'
 import { SearchTrigger, SearchTriggerFunc } from '@/tools/SearchTriggerFunc'
 import StringArrayRow from '@/components/StringArrayRow.vue'
 import DatesRow from '@/components/DatesRow.vue'
@@ -241,8 +241,8 @@ const daysToOnsetFilterFunc = (value: string): boolean => {
 }
 
 const ptNameFilterVal = shallowRef('')
-const ptNameFilterFunc = (value: string): boolean => {
-  return StringFilterFunc(value, ptNameFilterVal)
+const ptNameFilterFunc = (value: any): boolean => {
+  return StringArrayFilterFunc(value, ptNameFilterVal)
 }
 
 const causualFilterVal = shallowRef('')
@@ -257,8 +257,8 @@ const severityFilterFunc = (value: string): boolean => {
 
 const resultDateFromFilterVal = shallowRef('')
 const resultDateToFilterVal = shallowRef('')
-const resultDateFilterFunc = (value: string): boolean => {
-  return DateFilterFunc(value, resultDateFromFilterVal, resultDateToFilterVal)
+const resultDateFilterFunc = (value: any): boolean => {
+  return DateArrayFilterFunc(value, resultDateFromFilterVal, resultDateToFilterVal)
 }
 
 const resultFilterVal = shallowRef('')
