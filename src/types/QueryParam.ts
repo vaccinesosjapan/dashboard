@@ -18,10 +18,10 @@ export const CreateUrlWithQueryParams = (queryParamMap: IQueryParam[] | IQueryPa
 	queryParamMap.forEach(item => {
 		if(isNotNullEmpty(item.val)) {
 			if(isFirstQuery){
-			retUrl = retUrl + item.name + '=' + item.val.value
-			isFirstQuery = false
+				retUrl = retUrl + item.name + '=' + encodeURI(item.val.value)
+				isFirstQuery = false
 			} else {
-			retUrl = retUrl + '&' + item.name + '=' + item.val.value
+				retUrl = retUrl + '&' + item.name + '=' + encodeURI(item.val.value)
 			}
 		}
 	})
