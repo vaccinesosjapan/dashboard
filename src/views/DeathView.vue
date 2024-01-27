@@ -103,6 +103,14 @@
       <StringRow :content="item.value"></StringRow>
     </template>
 
+    <template v-slot:[`item.tests_used_for_determination`]="item">
+      <StringRow :content="item.value"></StringRow>
+    </template>
+
+    <template v-slot:[`item.causal_relationship`]="item">
+      <StringRow :content="item.value"></StringRow>
+    </template>
+
     <template v-slot:[`item.comments_by_expert`]="item">
       <StringRow :content="item.value"></StringRow>
     </template>
@@ -122,6 +130,13 @@
 
           <v-col cols="12" md="6">
             <PreExistingDiseaseCard title="基礎疾患等" :pre_existing_disease_names="item.pre_existing_conditions.split('\n')"></PreExistingDiseaseCard>
+          </v-col>
+
+          <v-col cols="12">
+            <v-card variant="elevated" color="blue-grey-darken-1">
+              <v-card-title>報告医が死因等の判断に至った検査</v-card-title>
+              <v-card-text>{{ item.tests_used_for_determination }}</v-card-text>
+            </v-card>
           </v-col>
 
           <v-col cols="12">
@@ -200,6 +215,8 @@ let headers = [
   { title: '接種回数', align: 'start', key: 'vaccinated_times' },
   { title: '基礎疾患等', align: 'start', key: 'pre_existing_conditions' },
   { title: '死因(MedDRA PT)', align: 'start', key: 'PT_names' },
+  { title: '報告医が死因等の判断に至った検査', align: 'start', key: 'tests_used_for_determination' },
+  { title: '報告医の因果関係評価', align: 'start', key: 'causal_relationship' },
   { title: '専門家の因果関係評価', align: 'start', key: 'causal_relationship_by_expert', width: 100 },
   { title: '専門家のコメント', align: 'end', key: 'comments_by_expert' },
 ]
@@ -243,9 +260,19 @@ const ptFilterFunc = (value: any): boolean => {
   return StringArrayFilterFunc(value, ptFilterVal)
 }
 
+const testsForDeterminationVal = shallowRef('')
+const testsForDeterminationFunc = (value: any): boolean => {
+  return StringFilterFunc(value, testsForDeterminationVal)
+}
+
 const causalRelFilterVal = shallowRef('')
 const causalRelFilterFunc = (value: string): boolean => {
   return StringFilterFunc(value, causalRelFilterVal)
+}
+
+const causalRelExpertFilterVal = shallowRef('')
+const causalRelExpertFilterFunc = (value: string): boolean => {
+  return StringFilterFunc(value, causalRelExpertFilterVal)
 }
 
 const occurredDateFromFilterVal = shallowRef('')
@@ -276,7 +303,9 @@ const customKeyFilter = {
   vaccinated_times: vaccinatedTimesFilterFunc,
   pre_existing_conditions: preExistingConditionFilterFunc,
   PT_names: ptFilterFunc,
-  causal_relationship_by_expert: causalRelFilterFunc,
+  tests_used_for_determination: testsForDeterminationFunc,
+  causal_relationship: causalRelFilterFunc,
+  causal_relationship_by_expert: causalRelExpertFilterFunc,
 }
 
 const searchConditionChanged = shallowRef<boolean>(false)
@@ -316,7 +345,10 @@ const queryParamMap: IQueryParam[] = [
   {name: "vtt", val: vaccinatedTimesToFilterVal},
   {name: "pre", val: preExistingConditionFilterVal},
   {name: "pt", val: ptFilterVal},
-  {name: "cr", val: causalRelFilterVal},
+  {name: "td", val: testsForDeterminationVal},
+  {name: "crf", val: causalRelFilterVal},
+  // パラメータ名をcreに変更したいところだが、互換性のためcrのままにする
+  {name: "cr", val: causalRelExpertFilterVal},
 ]
 queryParamMap.forEach(item => {
   const param = pageQueryParams[item.name]
@@ -339,9 +371,9 @@ const vaccineSearchItems = [
   { sm: 4, label: "ロット番号", model: lotNoFilterVal, type: "text"}
 ]
 const individualSearchItems = [
-  { sm: 1, label: "年齢（from）", model: ageFromFilterVal, type: "number"},
-  { sm: 1, label: "年齢（to）", model: ageToFilterVal, type: "number"},
-  { sm: 2, label: "性別", model: genderFilterVal, type: "text"},
+  { sm: 2, label: "年齢（from）", model: ageFromFilterVal, type: "number"},
+  { sm: 2, label: "年齢（to）", model: ageToFilterVal, type: "number"},
+  { sm: 4, label: "性別", model: genderFilterVal, type: "select", selectList: ['', '女', '男', '不明']},
   { sm: 2, label: "接種日（from）", model: vaccinatedDateFromFilterVal, type: "date"},
   { sm: 2, label: "接種日（to）", model: vaccinatedDateToFilterVal, type: "date"},
   { sm: 2, label: "死亡日（from）", model: occurredDateFromFilterVal, type: "date"},
@@ -350,7 +382,9 @@ const individualSearchItems = [
   { sm: 2, label: "接種回数（to）", model: vaccinatedTimesToFilterVal, type: "number"},
   { sm: 4, label: "基礎疾患等", model: preExistingConditionFilterVal, type: "text"},
   { sm: 4, label: "死因(MedDRA PT)", model: ptFilterVal, type: "text"},
-  { sm: 2, label: "専門家の因果関係評価", model: causalRelFilterVal, type: "select", selectList: ['', 'α', 'β', 'γ']},
+  { sm: 4, label: "報告医が死因等の判断に至った検査", model: testsForDeterminationVal, type: "text"},
+  { sm: 4, label: "報告医の因果関係評価", model: causalRelFilterVal, type: "select", selectList: ['', '不明', '評価不能', '関連なし', '関連あり']},
+  { sm: 2, label: "専門家の因果関係評価", model: causalRelExpertFilterVal, type: "select", selectList: ['', 'α', 'β', 'γ']},
   { sm: 2, label: "専門家の因果関係評価のヘルプ", model: _blank, type: "help"},
 ]
 
@@ -366,7 +400,9 @@ const keyAndFilterMap: IKeyAndFilter[] = [
   { key: "vaccinated_times", filterType: FilterType.Number , valFilter: _blank, fromFilter: vaccinatedTimesFromFilterVal, toFilter: vaccinatedTimesToFilterVal},
   { key: "pre_existing_conditions", filterType: FilterType.String , valFilter: preExistingConditionFilterVal, fromFilter: _blank, toFilter: _blank},
   { key: "PT_names", filterType: FilterType.StringArray , valFilter: ptFilterVal, fromFilter: _blank, toFilter: _blank},
-  { key: "causal_relationship_by_expert", filterType: FilterType.String , valFilter: causalRelFilterVal, fromFilter: _blank, toFilter: _blank},
+  { key: "tests_used_for_determination", filterType: FilterType.String , valFilter: testsForDeterminationVal, fromFilter: _blank, toFilter: _blank},
+  { key: "causal_relationship", filterType: FilterType.String , valFilter: causalRelFilterVal, fromFilter: _blank, toFilter: _blank},
+  { key: "causal_relationship_by_expert", filterType: FilterType.String , valFilter: causalRelExpertFilterVal, fromFilter: _blank, toFilter: _blank},
 ]
 const downloadFilteredDataAsCsv = () => {
   const filteredData = CreateFilteredData<IReportedDeathIssue>(keyAndFilterMap, dataTableItems)
@@ -407,7 +443,8 @@ const clearFilter = () => {
   padding-left: 0.8rem;
 }
 
-.detail-tile {
-  height: 100%;
+.td-list {
+  padding-left: 20px;
+  padding-top: 5px;
 }
 </style>

@@ -14,6 +14,8 @@ export interface IReportedDeathIssue {
   vaccinated_times: string
   pre_existing_conditions: string
   PT_names: string[]
+  tests_used_for_determination: string
+  causal_relationship: string
   causal_relationship_by_expert: string
   comments_by_expert: string
   id: string
