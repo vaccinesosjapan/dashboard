@@ -31,13 +31,75 @@
         <v-col cols="12" sm="6">
           <apexchart :options="carditisSummaryOptions" :series="carditisSummarySeries"></apexchart>
         </v-col>
+        <v-col cols="12" sm="6">
+          <v-table density="comfortable">
+            <thead>
+              <tr>
+                <th class="text-left">ワクチン名</th>
+                <th class="text-left">心筋炎件数</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr v-for="label, index in ['心筋炎', '心膜炎']" :key="label">
+                <td>{{ label }}</td>
+                <td class="text-right">{{ carditisSummarySeries[index].toLocaleString() }}</td>
+              </tr>
+              <tr>
+                <td><b>合計</b></td>
+                <td class="text-right"><b>{{ carditisSummarySeries.reduce(function(a, x){return a + x;}).toLocaleString() }}</b></td>
+              </tr>
+            </tbody>
+          </v-table>
+        </v-col>
 
         <v-col cols="12" sm="6">
           <apexchart :options="myocarditisByVaccineOptions" :series="myocarditisByVaccineSeries"></apexchart>
         </v-col>
 
+        <v-col  cols="12" sm="6">
+          <v-table density="comfortable">
+            <thead>
+              <tr>
+                <th class="text-left">ワクチン名</th>
+                <th class="text-left">心筋炎件数</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr v-for="label, index in myocarditisByVaccineLabels" :key="label">
+                <td>{{ label }}</td>
+                <td class="text-right">{{ myocarditisByVaccineSeries[index].toLocaleString() }}</td>
+              </tr>
+              <tr>
+                <td><b>合計</b></td>
+                <td class="text-right"><b>{{ myocarditisByVaccineSeries.reduce(function(a, x){return a + x;}).toLocaleString() }}</b></td>
+              </tr>
+            </tbody>
+          </v-table>
+        </v-col>
+
         <v-col cols="12" sm="6">
           <apexchart :options="pericarditisByVaccineOptions" :series="pericarditisByVaccineSeries"></apexchart>
+        </v-col>
+
+        <v-col  cols="12" sm="6">
+          <v-table density="comfortable">
+            <thead>
+              <tr>
+                <th class="text-left">ワクチン名</th>
+                <th class="text-left">心筋炎件数</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr v-for="label, index in pericarditisByVaccineLabels" :key="label">
+                <td>{{ label }}</td>
+                <td class="text-right">{{ pericarditisByVaccineSeries[index].toLocaleString() }}</td>
+              </tr>
+              <tr>
+                <td><b>合計</b></td>
+                <td class="text-right"><b>{{ pericarditisByVaccineSeries.reduce(function(a, x){return a + x;}).toLocaleString() }}</b></td>
+              </tr>
+            </tbody>
+          </v-table>
         </v-col>
       </v-row>
 
