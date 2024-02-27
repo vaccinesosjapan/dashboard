@@ -1,7 +1,7 @@
 <template>
   <v-container fluid>
 
-    <v-container v-if="items == undefined">
+    <v-container v-if="!certifiedSummaryLoaded || items == undefined">
       <v-progress-circular
         color="primary"
         indeterminate
@@ -9,9 +9,8 @@
         :width="10"
       ></v-progress-circular>
     </v-container>
-
     <v-container v-else>
-      <h4 class="text-h4">判定結果</h4>
+      <h2 class="text-h4">判定結果</h2>
       <p class="text-body-1">進達受理件数の総数 <b>{{ items.total_entries.toLocaleString() }}</b> [件] に対して、判定結果の割合は以下の通りです。</p>
 
       <div class="d-flex justify-end">
@@ -45,8 +44,10 @@
         </v-col>
       </v-row>
       <p class="text-caption text-right">※ <b>{{ items?.date }}</b> までの「疾病・障害認定審査会」累計データを用いて算出しています。</p>
+      <br>
+      <br>
 
-      <h4 class="text-h4">申請内容</h4>
+      <h2 class="text-h4">申請内容</h2>
       <p class="text-body-1">認定・否認された申請の総数 <b>{{ certified_and_denied_count.toLocaleString() }}</b> [件] に対して、申請内容の内訳はそれぞれ以下の通りです。</p>
 
       <div class="d-flex justify-end">
@@ -66,18 +67,42 @@
       <p class="text-caption text-right">※ <b>{{ items?.date }}</b> までの「疾病・障害認定審査会」累計データを用いて算出しています。</p>
     </v-container>
     
-
-    <v-container v-if="summaryWithOtherVaccines == undefined">
+    <v-container v-if="!trendsLoaded">
       <v-progress-circular
         color="primary"
         indeterminate
         :size="100"
         :width="10"
       ></v-progress-circular>
-    </v-container>    
-
+    </v-container>
     <v-container v-else>
-      <h4 class="text-h4">過去の各種ワクチンの認定件数との比較</h4>
+      <h2 class="text-h4">性別ごとの症状傾向</h2>
+      <p>女性・男性・両方の3つの区分で、どのような症状が多く認定されているのかを以下に示します。</p>
+      <v-row>
+        <v-col cols="12">
+          <apexchart height="400" :options="trendsFemaleChartOptions" :series="[{data: trendsFemaleSeries}]"></apexchart>
+        </v-col>
+
+        <v-col cols="12">
+          <apexchart height="400" :options="trendsMaleChartOptions" :series="[{data: trendsMaleSeries}]"></apexchart>
+        </v-col>
+
+        <v-col cols="12">
+          <apexchart height="400" :options="trendsSumChartOptions" :series="[{data: trendsSumSeries}]"></apexchart>
+        </v-col>
+      </v-row>
+    </v-container>
+
+    <v-container v-if="!otherVaccinesLoaded || summaryWithOtherVaccines == undefined">
+      <v-progress-circular
+        color="primary"
+        indeterminate
+        :size="100"
+        :width="10"
+      ></v-progress-circular>
+    </v-container>
+    <v-container v-else>
+      <h2 class="text-h4">過去の各種ワクチンの認定件数との比較</h2>
      
       <v-row>
         <v-col cols="12">
@@ -120,9 +145,11 @@
 <script setup lang="ts">
 import { onMounted, shallowRef } from 'vue'
 import axios from 'axios'
-import { AppBarTitle, AppBarColor, CertifiedSummaryURL, CertifiedSummaryWithOtherVaccinesURL } from '@/router/data'
+import { AppBarTitle, AppBarColor, CertifiedSummaryURL, CertifiedSummaryWithOtherVaccinesURL, CertifiedTrendsURL } from '@/router/data'
 import router from '@/router/index'
 import type { ICertifiedSummary, ICertifiedSummaryWithOtherVaccines } from '@/types/CertifiedSummary'
+import type { ICertifiedTrends } from '@/types/CertifiedTrends'
+import { CreateBarChartOption } from '@/tools/ChartOptions'
 
 AppBarTitle.value = String(router.currentRoute.value.name)
 AppBarColor.value = 'green'
@@ -132,6 +159,9 @@ const isPersentView = shallowRef(true)
 const items = shallowRef<ICertifiedSummary>()
 const summaryWithOtherVaccines = shallowRef<ICertifiedSummaryWithOtherVaccines>() 
 const certified_and_denied_count = shallowRef<number>(0)
+const certifiedSummaryLoaded = shallowRef<boolean>(false)
+const trendsLoaded = shallowRef<boolean>(false)
+const otherVaccinesLoaded = shallowRef<boolean>(false)
 onMounted(() => {
   axios.get<ICertifiedSummary>(CertifiedSummaryURL)
     .then((response) => {
@@ -168,10 +198,30 @@ onMounted(() => {
       deniedClaimChartSeries.value.push(items.value.denied_count - items.value.denied_death_count)
       deniedClaimChartSeries.value.push(items.value.denied_death_count)
 
+      certifiedSummaryLoaded.value = true
+
       // 2つ目以降のグラフが手動リフレッシュ無しにちゃんと表示されるようにするために必要な処理
       window.dispatchEvent(new Event('resize'))
     })
     .catch((error) => console.log('failed to get certified summary data: ' + error))
+
+  axios.get<ICertifiedTrends>(CertifiedTrendsURL)
+    .then(response => {
+      trendsFemaleSeries.value = Array.from(response.data.female_counts, (v) => {
+        return {x: v.name, y: v.count}
+      })
+      trendsMaleSeries.value = Array.from(response.data.male_counts, (v) => {
+        return {x: v.name, y: v.count}
+      })
+      trendsSumSeries.value = Array.from(response.data.sum_counts, (v) => {
+        return {x: v.name, y: v.count}
+      })
+      
+      trendsLoaded.value = true
+
+      window.dispatchEvent(new Event('resize'))
+    })
+    .catch((error) => console.log('failed to get certified trends: ' + error))
 
   axios.get<ICertifiedSummaryWithOtherVaccines>(CertifiedSummaryWithOtherVaccinesURL)
     .then((response) => {
@@ -204,11 +254,22 @@ onMounted(() => {
         data: otherVaccinesChartSeriesDeath.value
       })
 
+      otherVaccinesLoaded.value =  true
+
       // 2つ目以降のグラフが手動リフレッシュ無しにちゃんと表示されるようにするために必要な処理
       window.dispatchEvent(new Event('resize'))
     })
     .catch((error) => console.log('failed to get certified summary with other vaccines data: ' + error))
 })
+
+const trendsFemaleSeries = shallowRef<{x: string, y: number}[]>()
+const trendsFemaleChartOptions = CreateBarChartOption('女性の認定症状 上位10種')
+
+const trendsMaleSeries = shallowRef<{x: string, y: number}[]>()
+const trendsMaleChartOptions = CreateBarChartOption('男性の認定症状 上位10種')
+
+const trendsSumSeries = shallowRef<{x: string, y: number}[]>()
+const trendsSumChartOptions = CreateBarChartOption('認定症状 上位10種')
 
 const judgementTableSeries = shallowRef<any[]>([])
 const itemColors = ['#5FAF51', '#F44336', '#F6AD21', '#808080']
@@ -439,4 +500,7 @@ const changeChartView = () => {
 </script>
 
 <style scoped>
+h2 {
+  margin-bottom: 0.8rem;
+}
 </style>
