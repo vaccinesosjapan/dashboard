@@ -200,7 +200,7 @@ onMounted(() => {
 
 const headers = [
   { key: 'data-table-expand', width: 20 },
-  { title: '認定日', align: 'start', key: 'certified_date', width: 120 },
+  { title: '判定日', align: 'start', key: 'certified_date', width: 120 },
   { title: '性別', align: 'start', key: 'gender', width: 25},
   { title: '年齢', align: 'start', key: 'age', width: 25 },
   { title: 'ワクチン名', align: 'start', key: 'vaccine_name', width: 110 },
@@ -348,8 +348,8 @@ const issueSearchItems = [
   { sm: 1, label: "判定", model: judgmentResultFilterVal, type: "text"},
   { sm: 3, label: "否認理由（いずれかに合致）", model: shallowRef() , type: "reasons"},
   { sm: 2, label: "", model: shallowRef() , type: "reasons-help"},
-  { sm: 3, label: "認定日（from）", model: certifiedDateFromFilterVal, type: "date"},
-  { sm: 3, label: "認定日（to）", model: certifiedDateToFilterVal, type: "date"},
+  { sm: 3, label: "判定日（from）", model: certifiedDateFromFilterVal, type: "date"},
+  { sm: 3, label: "判定日（to）", model: certifiedDateToFilterVal, type: "date"},
 ]
 const individualSearchItems = [
   { sm: 2, label: "年齢（from）", model: ageFromFilterVal, type: "number"},
