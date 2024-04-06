@@ -137,7 +137,7 @@ export const DateFilterFunc = (
   // フィルタリング処理が不要な場合はtrueを返すことで、項目を表示させる
   if (nullOrEmptyString(fromFilterVal.value) && nullOrEmptyString(toFilterVal.value)) return true
 
-  const vDate = new Date(value)
+  const vDate = new Date(value.replaceAll('/', '-'))
   // パースに失敗した場合は、日付としての比較ができないため非表示にする
   if (isNaN(vDate.getTime())) return false
 
