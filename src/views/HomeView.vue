@@ -118,10 +118,9 @@
   <v-container>
     <v-card color="green-darken-1" variant="elevated">
       <v-card-title class="card-title">予防接種健康被害 救済制度</v-card-title>
-      <v-card-text class="card-text"
-        >新型コロナワクチンなどの接種により副反応や副作用を被った可能性がある方々が、
-        市町村を通じて申請することで医療費などの給付を受けられる仕組みがあります。認定済みの案件をまとめて、閲覧や
-        検索をしやすくしています。
+      <v-card-text class="card-text">
+        新型コロナワクチンなどの接種により副反応や副作用を被った可能性がある方々が、
+        市町村を通じて申請することで医療費などの給付を受けられる仕組みがあります。判定済みの案件をまとめて、閲覧や検索をしやすくしています。
       </v-card-text>
 
       <v-item-group selected-class="bg-primary">

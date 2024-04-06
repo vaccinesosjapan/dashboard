@@ -65,8 +65,8 @@ export const HealthHazardsHomeRoute = {
 export const HealthHazardsSubRoutes = [
   {
     path: '/certified-issues',
-    name: '予防接種健康被害 救済制度 - 認定済み 報告一覧',
-    menu_name: '認定済み 報告一覧',
+    name: '予防接種健康被害 救済制度 - 判定済み 報告一覧',
+    menu_name: '判定済み 報告一覧',
     icon: 'mdi-account-search',
     component: () => import('../views/CertifiedHealthHazardsView.vue')
   },
