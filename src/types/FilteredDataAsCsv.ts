@@ -100,6 +100,26 @@ export const CreateCsvContent = <T>(filteredData: ShallowRef<T[] |undefined> ,he
 	return lineArray.join("\n");
 }
 
+export const CreateCsvContentRaw = <T>(filteredData: T[] ,headerTitles: string, headerKeys: string[]): string => {
+	const lineArray: string[] = [headerTitles]
+	filteredData.forEach( (row: any) => {
+		let csvRow = ""
+		let isFirstItem = true
+		headerKeys.forEach(key => {
+			const data = getValueFromCompexKey(row, key)
+			if(isFirstItem){
+				isFirstItem=false
+				csvRow = '"' + data + '"'
+			} else {
+				csvRow = csvRow + ',' + '"' + data + '"'
+			}
+		});
+		lineArray.push(csvRow);
+	});
+
+	return lineArray.join("\n");
+}
+
 export const DownloadCsvFile = (fileName: string, csvContent: string) => {
 	const bom = new Uint8Array([0xef, 0xbb, 0xbf])
 	const blob = new Blob([bom, csvContent], { type: "text/csv" })
