@@ -13,33 +13,14 @@
         <v-row>
           <v-col v-for="sItem, i in issueSearchItems" :key="i" cols="12" :md="sItem.md" class="group">
 
-            <v-select v-if="sItem.type == 'reasons'"
-             v-model="reasonsForRepudiationValues"
-             :items="reasonsForRepudiationItems"
-             :label="sItem.label" multiple
-             @update:model-value="searchTrigerFunc"
-             >
-              <template v-slot:prepend-item>
-                <v-list-item>
-                  <template v-slot:prepend>
-                    <v-btn @click="()=>{ reasonsForRepudiationValues = [] }">全て選択解除</v-btn>
-                  </template>
-                </v-list-item>
-                <v-divider class="mt-2"></v-divider>
-              </template>
-              <template v-slot:selection="{ item, index }">
-                <v-chip v-if="index < 2">
-                  <span>{{ item.title }}</span>
-                </v-chip>
-                <span v-if="index === 2" class="text-grey text-caption align-self-center">
-                  (+{{ reasonsForRepudiationValues.length - 2 }} その他)
-                </span>
-              </template>
-            </v-select>
+            <SelectItems v-if="sItem.type == 'reasons'"
+            v-model:values="reasonsForRepudiationValues" v-model:items="reasonsForRepudiationItems"
+            label="判定理由" :search-triger-func="searchTrigerFunc"
+            ></SelectItems>
 
             <v-dialog v-else-if="sItem.type == 'reasons-help'" transition="dialog-bottom-transition" width="auto">
               <template v-slot:activator="{ props }">
-                <v-btn prepend-icon="mdi-help-circle-outline" v-bind="props">否認理由について...</v-btn>
+                <v-btn outlined height="3rem" prepend-icon="mdi-help-circle-outline" v-bind="props">否認理由に<br>ついて...</v-btn>
               </template>
 
               <template v-slot:default="{ isActive }">
@@ -47,29 +28,10 @@
               </template>
             </v-dialog>
 
-            <v-select v-else-if="sItem.type == 'judged-date'"
-             v-model="judgedDatesFilterValues"
-             :items="metadata?.judged_dates"
-             :label="sItem.label" multiple
-             @update:model-value="searchTrigerFunc"
-             >
-              <template v-slot:prepend-item>
-                <v-list-item>
-                  <template v-slot:prepend>
-                    <v-btn @click="()=>{ judgedDatesFilterValues = [] }">全て選択解除</v-btn>
-                  </template>
-                </v-list-item>
-                <v-divider class="mt-2"></v-divider>
-              </template>
-              <template v-slot:selection="{ item, index }">
-                <v-chip v-if="index < 2">
-                  <span>{{ item.title }}</span>
-                </v-chip>
-                <span v-if="index === 2" class="text-grey text-caption align-self-center">
-                  (+{{ judgedDatesFilterValues.length - 2 }} その他)
-                </span>
-              </template>
-            </v-select>
+            <SelectItems v-else-if="sItem.type == 'judged-date'"
+            v-model:values="judgedDatesFilterValues" v-model:items="judgedDatesFilterItems"
+            label="判定日（選択した日付のみ）" :search-triger-func="searchTrigerFunc"
+            ></SelectItems>
 
             <v-text-field v-else
               :label="sItem.label"
@@ -192,6 +154,7 @@ import PreExistingDiseaseCard from '@/components/PreExistingDiseaseCard.vue'
 import ReasonsForRepudiationCard from '@/components/ReasonsForRepudiationCard.vue'
 import NumberFilter from '@/components/NumberFilter.vue'
 import SymptomsCard from '@/components/SymptomsCard.vue'
+import SelectItems from '@/components/SelectItems.vue'
 import BillingDetailsChip from '@/components/BillingDetailsChip.vue'
 import type { IQueryParamWithArray } from '@/types/QueryParam'
 import { CreateUrlWithQueryParams } from '@/types/QueryParam'
@@ -204,7 +167,6 @@ AppBarColor.value = 'green'
 
 const loading = shallowRef(true)
 const dataTableItems = shallowRef<ICertifiedHealthHazardIssue[]>()
-const metadata = shallowRef<ICertifiedMetadata>()
 onMounted(() => {
   axios
     .get<ICertifiedHealthHazardIssue[]>(CertifiedHealthHazardDataURL)
@@ -217,7 +179,7 @@ onMounted(() => {
   axios
     .get<ICertifiedMetadata>(CertifiedMetadataURL)
     .then((response) => {
-      metadata.value = response.data
+      judgedDatesFilterItems.value = response.data.judged_dates
       loading.value = false
     })
     .catch((error) => console.log('failed to get certified metadata: ' + error))
@@ -260,6 +222,7 @@ const judgmentResultFilterFunc = (value: string): boolean => {
 }
 
 const judgedDatesFilterValues = shallowRef<string[]>([])
+const judgedDatesFilterItems = shallowRef<string[]>([])
 const judgedDatesFilterFunc = (value: any): boolean => {
   if(judgedDatesFilterValues.value.length == 0) return true
   if(value.length == 0) return false // 検索しようとしているが対象列の内容が空っぽの場合なので非表示
@@ -327,8 +290,8 @@ const emptyShallow = shallowRef()
 const issueSearchItems = [
   { md: 6, label: "請求内容", model: descriptionOfClaimFilterVal, type: "text"},
   { md: 6, label: "症状", model: symptomsFilterVal, type: "text"},
-  { md: 1, label: "判定", model: judgmentResultFilterVal, type: "text"},
-  { md: 3, label: "否認理由（いずれかに合致）", model: emptyShallow , type: "reasons"},
+  { md: 2, label: "判定", model: judgmentResultFilterVal, type: "text"},
+  { md: 2, label: "否認理由", model: emptyShallow , type: "reasons"},
   { md: 2, label: "", model: emptyShallow , type: "reasons-help"},
   { md: 6, label: "判定日（選択した日付のみ）", model: emptyShallow, type: "judged-date"},
 ]
