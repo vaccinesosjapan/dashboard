@@ -57,6 +57,11 @@
             :clear-trigger-func="clearTriggerFunc"
             ></NumberFilter>
 
+            <SelectItems v-else-if="item.type == 'gender'"
+            v-model:values="genderFilterValues" v-model:items="genderFilterItems" :search-triger-func="searchTrigerFunc"
+            :label="item.label"
+            ></SelectItems>
+
             <v-text-field v-else
               :label="item.label"
               v-model="item.model.value"
@@ -180,6 +185,7 @@ onMounted(() => {
     .get<ICertifiedMetadata>(CertifiedMetadataURL)
     .then((response) => {
       judgedDatesFilterItems.value = response.data.judged_dates
+      genderFilterItems.value = response.data.gender_list
       loading.value = false
     })
     .catch((error) => console.log('failed to get certified metadata: ' + error))
@@ -239,9 +245,16 @@ const ageFilterFunc = (values: any): boolean => {
   return NumberArrayFilterFunc(values, ageFromFilterVal, ageToFilterVal)
 }
 
-const genderFilterVal = shallowRef('')
-const genderFilterFunc = (value: any): boolean => {
-  return StringFilterFunc(value, genderFilterVal)
+const genderFilterValues = shallowRef<any[]>([])
+const genderFilterItems = shallowRef<string[]>([])
+const genderFilterFunc = (value: string): boolean => {
+  if (genderFilterValues.value.length == 0) return true
+  // valueが空で検索したい場合もあるので、空文字か否かのチェックは不要
+  if (genderFilterValues.value.indexOf(value) > -1) {
+    return true
+  }
+
+  return false
 }
 
 const preExistingConditionFilterVal = shallowRef('')
@@ -297,7 +310,7 @@ const issueSearchItems = [
 ]
 const individualSearchItems = [
   { md: 4, label: "年齢（最小/最大でフィルタ）", model: emptyShallow, type: "age-range"},
-  { md: 4, label: "性別", model: genderFilterVal, type: "text"},
+  { md: 4, label: "性別", model: emptyShallow, type: "gender"},
   { md: 4, label: "基礎疾患", model: preExistingConditionFilterVal, type: "text"},
 ]
 
@@ -305,7 +318,7 @@ const individualSearchItems = [
 const pageQueryParams = router.currentRoute.value.query
 const queryParamMap: IQueryParamWithArray[] = [
   {name: "jdf", val: judgedDatesFilterValues, isArray: true},
-  {name: "gen", val: genderFilterVal, isArray: false},
+  {name: "gen", val: genderFilterValues, isArray: false},
   {name: "adf", val: ageFromFilterVal, isArray: false},
   {name: "adt", val: ageToFilterVal, isArray: false},
   {name: "vn", val: vaccineNameFilterVal, isArray: false},
@@ -354,8 +367,9 @@ const downloadFilteredDataAsCsv = () => {
 
   const filteredData : ICertifiedHealthHazardIssue[] = []
   for (let index = 0; index < dataTableItems.value.length; index++) {
-    const rowItem = dataTableItems.value[index];
+    const rowItem = dataTableItems.value[index]
     let showThisRow = true
+
     // customKeyFilterによるフィルタ処理と同等の処理を行う
     if(!judgedDatesFilterFunc(rowItem.certified_date)) showThisRow=false
     if(!genderFilterFunc(rowItem.gender)) showThisRow=false
