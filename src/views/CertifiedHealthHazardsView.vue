@@ -10,61 +10,36 @@
 
       <v-expansion-panel-text>
         <h6 class="text-h6">症状など申請に関する条件の設定</h6>
-        <v-row>
-          <v-col v-for="sItem, i in issueSearchItems" :key="i" cols="12" :sm="sItem.sm" class="group">
+        <v-row align="end">
+          <v-col v-for="sItem, i in issueSearchItems" :key="i" cols="12" :md="sItem.md" class="group">
 
-            <v-select v-if="sItem.type == 'reasons'"
-             v-model="reasonsForRepudiationValues"
-             :items="reasonsForRepudiationItems"
-             :label="sItem.label" multiple
-             @update:model-value="searchTrigerFunc"
-             >
-              <template v-slot:selection="{ item, index }">
-                <v-chip v-if="index < 2">
-                  <span>{{ item.title }}</span>
-                </v-chip>
-                <span v-if="index === 2" class="text-grey text-caption align-self-center">
-                  (+{{ reasonsForRepudiationValues.length - 2 }} others)
-                </span>
-              </template>
-            </v-select>
+            <SelectItems v-if="sItem.type == 'judged_result'"
+            v-model:values="judgedResultFilterValues" v-model:items="judgedResultFilterItems"
+            :search-triger-func="searchTrigerFunc" :clear-trigger-func="clearTriggerFunc"
+            label="判定"
+            ></SelectItems>
+
+            <SelectItems v-else-if="sItem.type == 'reasons'"
+            v-model:values="reasonsForRepudiationValues" v-model:items="reasonsForRepudiationItems"
+            :search-triger-func="searchTrigerFunc" :clear-trigger-func="clearTriggerFunc"
+            label="判定理由"
+            ></SelectItems>
 
             <v-dialog v-else-if="sItem.type == 'reasons-help'" transition="dialog-bottom-transition" width="auto">
               <template v-slot:activator="{ props }">
-                <v-btn prepend-icon="mdi-help-circle-outline" v-bind="props">否認理由について...</v-btn>
+                <v-btn outlined height="3rem" prepend-icon="mdi-help-circle-outline" v-bind="props">否認理由に<br>ついて...</v-btn>
               </template>
 
               <template v-slot:default="{ isActive }">
-                <v-card title="否認理由について">
-                  <v-card-text>
-                    2023年2月10日 以前の報告では、否認理由は下図のように5段階で分けられていました。
-                  </v-card-text>
-                  <v-img src="TypeA.png"></v-img>
-
-                  <v-card-text>
-                    しかし、2023年3月14日 以降の報告では、否認理由は下図の4段階で表現されるようになりました。
-                  </v-card-text>
-                  <v-img src="TypeB.png"></v-img>
-
-                  <v-card-text>
-                    それぞれの数字が表す内容が異なるため、本サイトではタイプを表す文字列をつけて区別するようにしました。
-                    <ul>
-                      <li>2023年2月10日 以前: TypeA-</li>
-                      <li>2023年3月14日 以降: TypeB-</li>
-                    </ul>
-                  </v-card-text>
-
-                  <v-card-actions>
-                    <v-spacer></v-spacer>
-
-                    <v-btn
-                      text="閉じる"
-                      @click="isActive.value = false"
-                    >閉じる</v-btn>
-                  </v-card-actions>
-                </v-card>
+                <ReasonsForRepudiationCard :close-func="()=>{isActive.value = false}"></ReasonsForRepudiationCard>
               </template>
             </v-dialog>
+
+            <SelectItems v-else-if="sItem.type == 'judged-date'"
+            v-model:values="judgedDatesFilterValues" v-model:items="judgedDatesFilterItems"
+            :search-triger-func="searchTrigerFunc" :clear-trigger-func="clearTriggerFunc"
+            label="判定日（選択した日付のみ）"
+            ></SelectItems>
 
             <v-text-field v-else
               :label="sItem.label"
@@ -80,9 +55,23 @@
 
         <br />
         <h6 class="text-h6">個人に関する条件の設定</h6>
-        <v-row>
-          <v-col v-for="item, i in individualSearchItems" :key="i" cols="12" :sm="item.sm" class="group">
-            <v-text-field 
+        <v-row align="end">
+          <v-col v-for="item, i in individualSearchItems" :key="i" cols="12" :md="item.md" class="group">
+            <NumberFilter v-if="item.type == 'age-range'"
+            :title="item.label"
+            v-model:min="ageFromFilterVal"
+            v-model:max="ageToFilterVal"
+            :search-triger-func="searchTrigerFunc"
+            :clear-trigger-func="clearTriggerFunc"
+            ></NumberFilter>
+
+            <SelectItems v-else-if="item.type == 'gender'"
+            v-model:values="genderFilterValues" v-model:items="genderFilterItems"
+            :search-triger-func="searchTrigerFunc" :clear-trigger-func="clearTriggerFunc"
+            :label="item.label"
+            ></SelectItems>
+
+            <v-text-field v-else
               :label="item.label"
               v-model="item.model.value"
               :type="item.type"
@@ -99,7 +88,7 @@
     </v-expansion-panel>
 
     <v-expansion-panel>
-      <SearchRelatedToolBar btn-color="green-darken-3" :copy-func="copyUrlWithQueryParams" :download-func="downloadFilterdDataAsCsv" :clear-func="clearFilter"></SearchRelatedToolBar>
+      <SearchRelatedToolBar btn-color="green-darken-3" :copy-func="copyUrlWithQueryParams" :download-func="downloadFilteredDataAsCsv" :clear-func="clearFilter"></SearchRelatedToolBar>
     </v-expansion-panel>
 
   </v-expansion-panels>
@@ -167,20 +156,23 @@
 
 <script setup lang="ts">
 import { onMounted, shallowRef } from 'vue'
-import router from '@/router/index'
 import axios from 'axios'
-import { AppBarTitle, AppBarColor, CertifiedHealthHazardDataURL } from '@/router/data'
+import router from '@/router/index'
+import { AppBarTitle, AppBarColor, CertifiedHealthHazardDataURL, CertifiedMetadataURL } from '@/router/data'
 import type { ICertifiedHealthHazardIssue } from '@/types/CertifiedHealthHazard'
-import { DateFilterFunc, StringFilterFunc, StringArrayFilterFunc, NumberArrayFilterFunc } from '@/tools/FilterFunc'
+import type { IQueryParam } from '@/types/QueryParam'
+import { ClearFilterValues, CreateUrlWithQueryParams, IsConditionChanged, ParseQueryParams } from '@/types/QueryParam'
+import { CreateCsvContentRaw, DownloadCsvFile } from '@/types/FilteredDataAsCsv'
+import type { ICertifiedMetadata } from '@/types/CertifiedMetadata'
+import { StringFilterFunc, StringArrayFilterFunc, NumberArrayFilterFunc } from '@/tools/FilterFunc'
 import { SearchTrigger, SearchTriggerFunc } from '@/tools/SearchTriggerFunc'
-import type { ShallowRef } from 'vue'
 import StringArrayRow from '@/components/StringArrayRow.vue'
 import PreExistingDiseaseCard from '@/components/PreExistingDiseaseCard.vue'
+import ReasonsForRepudiationCard from '@/components/ReasonsForRepudiationCard.vue'
+import NumberFilter from '@/components/NumberFilter.vue'
 import SymptomsCard from '@/components/SymptomsCard.vue'
+import SelectItems from '@/components/SelectItems.vue'
 import BillingDetailsChip from '@/components/BillingDetailsChip.vue'
-import type { IQueryParamWithArray } from '@/types/QueryParam'
-import { CreateUrlWithQueryParams } from '@/types/QueryParam'
-import { CreateCsvContent, CreateFilteredData, DownloadCsvFile, FilterType, type IKeyAndFilter } from '@/types/FilteredDataAsCsv'
 import SearchRelatedToolBar from '@/components/SearchRelatedToolBar.vue'
 
 AppBarTitle.value = String(router.currentRoute.value.name)
@@ -196,6 +188,16 @@ onMounted(() => {
       loading.value = false
     })
     .catch((error) => console.log('failed to get certified heallth hazard data: ' + error))
+
+  axios
+    .get<ICertifiedMetadata>(CertifiedMetadataURL)
+    .then((response) => {
+      judgedDatesFilterItems.value = response.data.judged_dates
+      judgedResultFilterItems.value = response.data.judged_result_list
+      genderFilterItems.value = response.data.gender_list
+      loading.value = false
+    })
+    .catch((error) => console.log('failed to get certified metadata: ' + error))
 })
 
 const headers = [
@@ -229,18 +231,24 @@ const descriptionOfClaimFilterFunc = (value: string): boolean => {
   return StringFilterFunc(value, descriptionOfClaimFilterVal)
 }
 
-const judgmentResultFilterVal = shallowRef('')
+const judgedResultFilterValues = shallowRef<string[]>([])
+const judgedResultFilterItems = shallowRef<string[]>([])
 const judgmentResultFilterFunc = (value: string): boolean => {
-  return StringFilterFunc(value, judgmentResultFilterVal)
+  if (judgedResultFilterValues.value.length == 0) return true
+  if (judgedResultFilterValues.value.indexOf(value) > -1) return true
+  return false
 }
 
-const certifiedDateFromFilterVal = shallowRef('')
-const certifiedDateToFilterVal = shallowRef('')
-const certifiedDateFilterFunc = (value: string): boolean => {
-  return DateFilterFunc(value, certifiedDateFromFilterVal, certifiedDateToFilterVal)
+const judgedDatesFilterValues = shallowRef<string[]>([])
+const judgedDatesFilterItems = shallowRef<string[]>([])
+const judgedDatesFilterFunc = (value: any): boolean => {
+  if(judgedDatesFilterValues.value.length == 0) return true
+  if(value.length == 0) return false // 検索しようとしているが対象列の内容が空っぽの場合なので非表示
+
+  return judgedDatesFilterValues.value.includes(value)
 }
 
-// todo: 本当はnumber型にしたいのだが、検索入力の関係で空文字やnullも入る
+// 本当はnumber型にしたいのだが、検索入力の関係で空文字やnullも入る
 // それらも考慮した型にすると今度は別の箇所でエラーが・・
 // という事情から、anyを使用
 const ageFromFilterVal = shallowRef<any>('')
@@ -249,9 +257,12 @@ const ageFilterFunc = (values: any): boolean => {
   return NumberArrayFilterFunc(values, ageFromFilterVal, ageToFilterVal)
 }
 
-const genderFilterVal = shallowRef('')
+const genderFilterValues = shallowRef<any[]>([])
+const genderFilterItems = shallowRef<string[]>([])
 const genderFilterFunc = (value: string): boolean => {
-  return StringFilterFunc(value, genderFilterVal)
+  if (genderFilterValues.value.length == 0) return true
+  if (genderFilterValues.value.indexOf(value) > -1) return true
+  return false
 }
 
 const preExistingConditionFilterVal = shallowRef('')
@@ -274,8 +285,57 @@ const reasonsForRepudiationFilterFunc = (value: any): boolean => {
   return false
 }
 
+const searchConditionChanged = shallowRef<boolean>(false)
+const searchTrigerFunc = () => {
+  SearchTriggerFunc()
+  searchConditionChanged.value = IsConditionChanged(queryParamMap)
+}
+const clearTriggerFunc = () => {
+  searchConditionChanged.value = IsConditionChanged(queryParamMap)
+}
+
+// 詳細検索の入力欄を作るための設定たち
+const _blank = shallowRef()
+const issueSearchItems = [
+  { md: 6, label: "請求内容", model: descriptionOfClaimFilterVal, type: "text"},
+  { md: 6, label: "症状", model: symptomsFilterVal, type: "text"},
+  { md: 2, label: "判定", model: _blank, type: "judged_result"},
+  { md: 2, label: "否認理由", model: _blank , type: "reasons"},
+  { md: 2, label: "", model: _blank , type: "reasons-help"},
+  { md: 6, label: "判定日（選択した日付のみ）", model: _blank, type: "judged-date"},
+]
+const individualSearchItems = [
+  { md: 4, label: "年齢（最小/最大でフィルタ）", model: _blank, type: "age-range"},
+  { md: 4, label: "性別", model: _blank, type: "gender"},
+  { md: 4, label: "基礎疾患", model: preExistingConditionFilterVal, type: "text"},
+]
+
+// URLのクエリパラメータを検索用のデータに
+const pageQueryParams = router.currentRoute.value.query
+const queryParamMap: IQueryParam[] = [
+  {name: "jdf", val: judgedDatesFilterValues},
+  {name: "gen", val: genderFilterValues},
+  {name: "adf", val: ageFromFilterVal},
+  {name: "adt", val: ageToFilterVal},
+  {name: "vn", val: vaccineNameFilterVal},
+  {name: "tp", val: descriptionOfClaimFilterVal},
+  {name: "sym", val: symptomsFilterVal},
+  {name: "re", val: judgedResultFilterValues},
+  {name: "pre", val: preExistingConditionFilterVal},
+  {name: "rea", val: reasonsForRepudiationValues}
+]
+searchConditionChanged.value = ParseQueryParams(queryParamMap, pageQueryParams)
+
+const copyUrlWithQueryParams = () => {
+  const retUrl = CreateUrlWithQueryParams(queryParamMap)
+  if(navigator.clipboard){
+    navigator.clipboard.writeText(retUrl);
+  }
+}
+
+// v-data-tableに対してフィルタ処理を行うための設定たち
 const customKeyFilter = {
-  certified_date: certifiedDateFilterFunc,
+  certified_date: judgedDatesFilterFunc,
   gender: genderFilterFunc,
   age: ageFilterFunc,
   vaccine_name: vaccineNameFilterFunc,
@@ -286,104 +346,36 @@ const customKeyFilter = {
   reasons_for_repudiation: reasonsForRepudiationFilterFunc
 }
 
-const searchConditionChanged = shallowRef<boolean>(false)
-const searchTrigerFunc = () => {
-  SearchTriggerFunc()
-  searchConditionChanged.value = isConditionChanged()
-}
-const clearTriggerFunc = () => {
-  searchConditionChanged.value = isConditionChanged()
-}
-const isConditionChanged = () => {
-  let ret = issueSearchItems.find( item => isNotNullEmpty(item.model) )
-  if(ret != undefined) return true
+const downloadFilteredDataAsCsv = () => {
+  if(dataTableItems.value === undefined) return
 
-  ret = individualSearchItems.find( item => isNotNullEmpty(item.model) )
-  if(ret != undefined) return true
+  const filteredData : ICertifiedHealthHazardIssue[] = []
+  for (let index = 0; index < dataTableItems.value.length; index++) {
+    const rowItem = dataTableItems.value[index]
+    let showThisRow = true
 
-  return false
-}
-const isNotNullEmpty = (val: ShallowRef<string>): boolean => {
-  return val.value != '' && val.value != null
-}
+    // customKeyFilterによるフィルタ処理と同等の処理を行う
+    if(!judgedDatesFilterFunc(rowItem.certified_date)) showThisRow=false
+    if(!genderFilterFunc(rowItem.gender)) showThisRow=false
+    if(!ageFilterFunc(rowItem.age)) showThisRow=false
+    if(!vaccineNameFilterFunc(rowItem.vaccine_name)) showThisRow=false
+    if(!descriptionOfClaimFilterFunc(rowItem.description_of_claim)) showThisRow=false
+    if(!symptomsFilterFunc(rowItem.symptoms)) showThisRow=false
+    if(!judgmentResultFilterFunc(rowItem.judgment_result)) showThisRow=false
+    if(!preExistingConditionFilterFunc(rowItem.pre_existing_conditions)) showThisRow=false
+    if(!reasonsForRepudiationFilterFunc(rowItem.reasons_for_repudiation)) showThisRow=false
 
-const pageQueryParams = router.currentRoute.value.query
-const queryParamMap: IQueryParamWithArray[] = [
-  {name: "vn", val: vaccineNameFilterVal, isArray: false},
-  {name: "sym", val: symptomsFilterVal, isArray: false},
-  {name: "tp", val: descriptionOfClaimFilterVal, isArray: false},
-  {name: "re", val: judgmentResultFilterVal, isArray: false},
-  {name: "cdf", val: certifiedDateFromFilterVal, isArray: false},
-  {name: "cdt", val: certifiedDateToFilterVal, isArray: false},
-  {name: "adf", val: ageFromFilterVal, isArray: false},
-  {name: "adt", val: ageToFilterVal, isArray: false},
-  {name: "gen", val: genderFilterVal, isArray: false},
-  {name: "pre", val: preExistingConditionFilterVal, isArray: false},
-  {name: "rea", val: reasonsForRepudiationValues, isArray: true}
-]
-queryParamMap.forEach(item => {
-  const param = pageQueryParams[item.name]
-  if(param != undefined) {
-    if(item.isArray){
-      const paramArray = param.toString().split(',')
-      for (let index = 0; index < paramArray.length; index++) {
-        item.val.value.push(paramArray[index])
-      }
-    } else {
-      item.val.value = param.toString()
-      searchConditionChanged.value = true
-    }
+    if(showThisRow) filteredData.push(rowItem)
   }
-});
-const copyUrlWithQueryParams = () => {
-  const retUrl = CreateUrlWithQueryParams(queryParamMap)
-  if(navigator.clipboard){
-    navigator.clipboard.writeText(retUrl);
-  }
-}
-
-const issueSearchItems = [
-  { sm: 6, label: "請求内容", model: descriptionOfClaimFilterVal, type: "text"},
-  { sm: 6, label: "症状", model: symptomsFilterVal, type: "text"},
-  { sm: 1, label: "判定", model: judgmentResultFilterVal, type: "text"},
-  { sm: 3, label: "否認理由（いずれかに合致）", model: shallowRef() , type: "reasons"},
-  { sm: 2, label: "", model: shallowRef() , type: "reasons-help"},
-  { sm: 3, label: "判定日（from）", model: certifiedDateFromFilterVal, type: "date"},
-  { sm: 3, label: "判定日（to）", model: certifiedDateToFilterVal, type: "date"},
-]
-const individualSearchItems = [
-  { sm: 2, label: "年齢（from）", model: ageFromFilterVal, type: "number"},
-  { sm: 2, label: "年齢（to）", model: ageToFilterVal, type: "number"},
-  { sm: 4, label: "性別", model: genderFilterVal, type: "text"},
-  { sm: 4, label: "基礎疾患", model: preExistingConditionFilterVal, type: "text"},
-]
-
-const keyAndFilterMap: IKeyAndFilter[] = [
-  { key: "certified_date", filterType: FilterType.Date , valFilter: shallowRef(''), fromFilter: certifiedDateFromFilterVal, toFilter: certifiedDateToFilterVal},
-  { key: "age", filterType: FilterType.NumberArray , valFilter: shallowRef(''), fromFilter: ageFromFilterVal, toFilter: ageToFilterVal},
-  { key: "gender", filterType: FilterType.String , valFilter: genderFilterVal, fromFilter: shallowRef(''), toFilter: shallowRef('')},
-  { key: "vaccine_name", filterType: FilterType.String , valFilter: vaccineNameFilterVal, fromFilter: shallowRef(''), toFilter: shallowRef('')},
-  { key: "description_of_claim", filterType: FilterType.String , valFilter: descriptionOfClaimFilterVal, fromFilter: shallowRef(''), toFilter: shallowRef('')},
-  { key: "symptoms", filterType: FilterType.StringArray , valFilter: symptomsFilterVal, fromFilter: shallowRef(''), toFilter: shallowRef('')},
-  { key: "pre_existing_conditions", filterType: FilterType.StringArray , valFilter: preExistingConditionFilterVal, fromFilter: shallowRef(''), toFilter: shallowRef('')},
-  { key: "judgment_result", filterType: FilterType.StringArray , valFilter: judgmentResultFilterVal, fromFilter: shallowRef(''), toFilter: shallowRef('')},
-]
-const downloadFilterdDataAsCsv = () => {
-  const filteredData = CreateFilteredData<ICertifiedHealthHazardIssue>(keyAndFilterMap, dataTableItems)
   const headerTitles = headers.filter(head => head.title != undefined).map( head => head.title).join(',')
   const headerKeys = headers.filter(head => head.title != undefined).map( head => head.key)
-  const csvContent = CreateCsvContent<ICertifiedHealthHazardIssue>(filteredData, headerTitles, headerKeys)
+  const csvContent = CreateCsvContentRaw<ICertifiedHealthHazardIssue>(filteredData, headerTitles, headerKeys)
 
   DownloadCsvFile(router.currentRoute.value.path.replace('/',''), csvContent)
 }
+
 const clearFilter = () => {
-  issueSearchItems.forEach(item => {
-    item.model.value = ''
-  });
-  individualSearchItems.forEach(item => {
-    item.model.value = ''
-  });
-  searchConditionChanged.value = false
+  ClearFilterValues(queryParamMap, searchConditionChanged)
 }
 </script>
 

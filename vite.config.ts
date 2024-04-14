@@ -16,5 +16,9 @@ export default defineConfig({
     alias: {
       '@': fileURLToPath(new URL('./src', import.meta.url))
     }
+  },
+  define: {
+    // 本番ビルドにおけるハイドレーションの不一致についての詳細を有効にする
+    __VUE_PROD_HYDRATION_MISMATCH_DETAILS__: 'true'
   }
 })
