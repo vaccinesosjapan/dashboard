@@ -2,18 +2,31 @@
 	<v-select
 		v-model="values"
 		:items="items"
-		:label="label" multiple
+		:label="label"
+		multiple
 		@update:model-value="searchTrigerFunc"
 		:item-props="itemProps"
 		hide-details="auto"
 		>
 		<template v-slot:prepend-item>
 			<v-list-item>
+				<v-list-item-title>
+					<v-text-field
+						v-model="searchText"
+						placeholder="表示項目の絞り込み"
+						@input="searchFunc"
+						@click:clear="clearSearchText"
+						clearable
+						hide-details
+					></v-text-field>
+				</v-list-item-title>
+			</v-list-item>
+			<v-list-item>
 				<template v-slot:prepend>
-					<v-btn @click="()=>{ 
+					<v-btn @click="()=>{
 						values = []
 						clearTriggerFunc()
-					}">全て選択解除</v-btn>
+						}">全て選択解除</v-btn>
 				</template>
 			</v-list-item>
 			<v-divider class="mt-2"></v-divider>
@@ -37,6 +50,8 @@
 </template>
 
 <script setup lang="ts">
+import { onMounted, shallowRef } from 'vue';
+
 defineProps<{
   label: string
   searchTrigerFunc: () => void
@@ -53,6 +68,23 @@ const itemProps = (item: any) => {
 			title: item,
 		}
 }
+
+const searchText = shallowRef<string>('')
+const itemsCopy = shallowRef<string[]>([])
+const searchFunc = () => {
+	items.value = itemsCopy.value.filter((item) => {
+		return item.toLowerCase().indexOf(searchText.value.toLowerCase()) > -1;
+	});
+}
+const clearSearchText = () => {
+	items.value = itemsCopy.value
+}
+
+onMounted(() => {
+	if(items.value != undefined){
+		itemsCopy.value = [...items.value]
+	}
+})
 </script>
 
 <style scoped></style>

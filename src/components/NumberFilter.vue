@@ -40,8 +40,8 @@ defineProps<{
   clearTriggerFunc: () => void
 }>()
 
-const minVal = defineModel('min')
-const maxVal = defineModel('max')
+const minVal = defineModel<string>('min')
+const maxVal = defineModel<string>('max')
 </script>
 
 <style scoped></style>

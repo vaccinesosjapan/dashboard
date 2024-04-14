@@ -7,7 +7,7 @@
 			<v-col cols="5">
 				<v-text-field
 				label="開始日"
-				:v-model="startVal"
+				v-model="startVal"
 				type="date"
 				@input="searchTrigerFunc"
 				@click:clear="clearTriggerFunc"
@@ -21,7 +21,7 @@
 			<v-col cols="5">
 				<v-text-field
 				label="終了日"
-				:v-model="endVal"
+				v-model="endVal"
 				type="date"
 				@input="searchTrigerFunc"
 				@click:clear="clearTriggerFunc"

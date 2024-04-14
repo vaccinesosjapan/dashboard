@@ -10,7 +10,7 @@
 
       <v-expansion-panel-text>
         <h6 class="text-h6">ワクチンに関する条件の設定</h6>
-        <v-row>
+        <v-row align="end">
           <v-col v-for="item, i in vaccineSearchItems" :key="i" cols="12" :md="item.md">
             <v-text-field
               :label="item.label"
@@ -30,32 +30,33 @@
           <v-col v-for="item, i in individualSearchItems" :key="i" cols="12" :md="item.md" class="group">
 
             <NumberFilter v-if="item.type == 'age'"
-            v-model:start="ageFromFilterVal" v-bind:end="ageToFilterVal"
+            v-model:min="ageFromFilterVal" v-model:max="ageToFilterVal"
             :title="item.label" :search-triger-func="searchTrigerFunc" :clear-trigger-func="clearTriggerFunc"
             ></NumberFilter>
 
             <SelectItems v-else-if="item.type == 'gender'"
-            v-model:values="genderFilterValues" v-model:items="genderFilterItems" :search-triger-func="searchTrigerFunc"
+            v-model:values="genderFilterValues" v-model:items="genderFilterItems"
+            :search-triger-func="searchTrigerFunc" :clear-trigger-func="clearTriggerFunc"
             :label="item.label"
             ></SelectItems>
 
             <DateFilter v-else-if="item.type == 'vaccinated_date'"
-              v-model:start="vaccinatedDateFromFilterVal" v-bind:end="vaccinatedDateToFilterVal"
+              v-model:start="vaccinatedDateFromFilterVal" v-model:end="vaccinatedDateToFilterVal"
               :title="item.label" :search-triger-func="searchTrigerFunc" :clear-trigger-func="clearTriggerFunc"
             ></DateFilter>
 
             <NumberFilter v-else-if="item.type == 'days_to_onset'"
-            v-model:start="daysToOnsetFromFilterVal" v-bind:end="daysToOnsetToFilterVal"
+            v-model:min="daysToOnsetFromFilterVal" v-model:max="daysToOnsetToFilterVal"
             :title="item.label" :search-triger-func="searchTrigerFunc" :clear-trigger-func="clearTriggerFunc"
             ></NumberFilter>
 
             <NumberFilter v-else-if="item.type == 'vaccinated_times'"
-            v-model:start="vaccinatedTimesFromFilterVal" v-bind:end="vaccinatedTimesToFilterVal"
+            v-model:min="vaccinatedTimesFromFilterVal" v-model:max="vaccinatedTimesToFilterVal"
             :title="item.label" :search-triger-func="searchTrigerFunc" :clear-trigger-func="clearTriggerFunc"
             ></NumberFilter>
 
             <DateFilter v-else-if="item.type == 'gross_result_date'"
-              v-model:start="grossResultDateFromFilterVal" v-bind:end="grossResultDateToFilterVal"
+              v-model:start="grossResultDateFromFilterVal" v-model:end="grossResultDateToFilterVal"
               :title="item.label" :search-triger-func="searchTrigerFunc" :clear-trigger-func="clearTriggerFunc"
             ></DateFilter>
 
@@ -71,14 +72,13 @@
           </v-col>
         </v-row>
 
-        <v-row>
+        <v-row align="end">
           <v-col cols="12" md="2" class="group">
-            <v-select
-              v-model="causalRelFilterVal"
-              label="専門家の因果関係評価"
-              @update:model-value="searchTrigerFunc"
-              :items="['', 'α', 'β', 'γ']"
-            ></v-select>
+            <SelectItems
+            v-model:values="causalRelFilterValues" v-model:items="causalRelFilterItems"
+            :search-triger-func="searchTrigerFunc" :clear-trigger-func="clearTriggerFunc"
+            label="専門家の因果関係評価"
+            ></SelectItems>
           </v-col>
 
           <v-col cols="12" md="2" class="group">
@@ -101,7 +101,7 @@
     :items="dataTableItems as any"
     :headers="headers as any"
     :search="SearchTrigger"
-    :custom-filter=" () => { return true}"
+    :custom-filter="() => { return true }"
     density="compact"
     class="data-table-suspect-issues"
     show-expand
@@ -174,9 +174,15 @@
 import { onMounted, shallowRef } from 'vue'
 import axios from 'axios'
 import type { IReportedMyocarditisIssue } from '@/types/ReportedMyocarditis'
+import type { IQueryParam } from '@/types/QueryParam'
+import { ClearFilterValues, CreateUrlWithQueryParams, IsConditionChanged, ParseQueryParams } from '@/types/QueryParam'
+import { CreateCsvContentRaw, DownloadCsvFile } from '@/types/FilteredDataAsCsv'
+import type { ICarditisMetadata } from '@/types/CarditisMetadata'
+import type { ICarditisSummaryRoot } from '@/types/CarditisSummary'
 import { AppBarTitle, AppBarColor, CarditisReportsURL, CarditisSummaryURL, CarditisMetadataURL } from '@/router/data'
 import router from '@/router/index'
 import { DateArrayFilterFunc, DateFilterFunc, NumberFilterFunc, StringArrayFilterFunc, StringFilterFunc } from '@/tools/FilterFunc'
+import { SearchTrigger, SearchTriggerFunc } from '@/tools/SearchTriggerFunc'
 import StringArrayRow from '@/components/StringArrayRow.vue'
 import DatesRow from '@/components/DatesRow.vue'
 import PreExistingDiseaseCard from '@/components/PreExistingDiseaseCard.vue'
@@ -184,15 +190,8 @@ import DateAndPTnames from '@/components/DateAndPTnames.vue'
 import NumberFilter from '@/components/NumberFilter.vue'
 import DateFilter from '@/components/DateFilter.vue'
 import SelectItems from '@/components/SelectItems.vue'
-import { SearchTrigger, SearchTriggerFunc } from '@/tools/SearchTriggerFunc'
-import type { ShallowRef } from 'vue'
-import type { IQueryParam } from '@/types/QueryParam'
-import { CreateUrlWithQueryParams } from '@/types/QueryParam'
-import { CreateCsvContentRaw, DownloadCsvFile } from '@/types/FilteredDataAsCsv'
 import SearchRelatedToolBar from '@/components/SearchRelatedToolBar.vue'
-import type { ICarditisSummaryRoot } from '@/types/CarditisSummary'
 import EvaluationResultHelpDialog from '@/components/EvaluationResultHelpDialog.vue'
-import type { ICarditisMetadata } from '@/types/CarditisMetadata'
 
 AppBarTitle.value = String(router.currentRoute.value.name)
 AppBarColor.value = '#2962ff'
@@ -213,6 +212,8 @@ onMounted(() => {
     .get<ICarditisMetadata>(CarditisMetadataURL)
     .then((response) => {
       genderFilterItems.value = response.data.gender_list
+      // todo 本当は生成したメタデータから一覧を作りたい
+      causalRelFilterItems.value = ['', 'α', 'β', 'γ']
     })
     .catch((error) => console.log('failed to get carditis metadata: ' + error))
 
@@ -269,13 +270,10 @@ const ageFilterFunc = (value: string): boolean => {
 
 const genderFilterValues = shallowRef<any[]>([])
 const genderFilterItems = shallowRef<string[]>([])
-const genderFilterFunc = (value: string): boolean => {
+const genderFilterFunc = (value: any): boolean => {
   if (genderFilterValues.value.length == 0) return true
   // valueが空で検索したい場合もあるので、空文字か否かのチェックは不要
-  if (genderFilterValues.value.indexOf(value) > -1) {
-    return true
-  }
-
+  if (genderFilterValues.value.indexOf(value) > -1) return true
   return false
 }
 
@@ -302,9 +300,13 @@ const preExistingDiseaseFilterFunc = (value: any): boolean => {
   return StringArrayFilterFunc(value, preExistingDiseaseFilterVal)
 }
 
-const causalRelFilterVal = shallowRef('')
+const causalRelFilterValues = shallowRef<string[]>([])
+const causalRelFilterItems = shallowRef<string[]>([])
 const causalRelFilterFunc = (value: string): boolean => {
-  return StringFilterFunc(value, causalRelFilterVal)
+  if (causalRelFilterValues.value.length == 0) return true
+  // valueが空で検索したい場合もあるので、空文字か否かのチェックは不要
+  if (causalRelFilterValues.value.indexOf(value) > -1) return true
+  return false
 }
 
 const PTnamesFilterVal = shallowRef('')
@@ -342,19 +344,10 @@ const customKeyFilter = {
 const searchConditionChanged = shallowRef<boolean>(false)
 const searchTrigerFunc = () => {
   SearchTriggerFunc()
-  searchConditionChanged.value = isConditionChanged()
+  searchConditionChanged.value = IsConditionChanged(queryParamMap)
 }
 const clearTriggerFunc = () => {
-  searchConditionChanged.value = isConditionChanged()
-}
-const isConditionChanged = () => {
-  let ret = vaccineSearchItems.find( item => isNotNullEmpty(item.model) )
-  if(ret != undefined) return true
-
-  return false
-}
-const isNotNullEmpty = (val: ShallowRef<string>): boolean => {
-  return val.value != '' && val.value != null
+  searchConditionChanged.value = IsConditionChanged(queryParamMap)
 }
 
 const pageQueryParams = router.currentRoute.value.query
@@ -376,15 +369,10 @@ const queryParamMap: IQueryParam[] = [
   {name: "grdf", val: grossResultDateFromFilterVal},
   {name: "grdt", val: grossResultDateToFilterVal},
   {name: "gr", val: grossResultFilterVal},
-  {name: "cr", val: causalRelFilterVal},
+  {name: "cr", val: causalRelFilterValues},
 ]
-queryParamMap.forEach(item => {
-  const param = pageQueryParams[item.name]
-  if(param != undefined) {
-    item.val.value = param.toString()
-    searchConditionChanged.value = true
-  }
-});
+searchConditionChanged.value = ParseQueryParams(queryParamMap, pageQueryParams)
+
 const copyUrlWithQueryParams = () => {
   const retUrl = CreateUrlWithQueryParams(queryParamMap)
   if(navigator.clipboard){
@@ -400,8 +388,8 @@ const vaccineSearchItems = [
 ]
 const individualSearchItems = [
   { md: 4, label: "年齢", model: _blank, type: "age"},
-  { md: 2, label: "性別", model: genderFilterValues, type: "gender"},
-  { md: 6, label: "接種日", model: _blank, type: "vaccinated_date"},
+  { md: 4, label: "性別", model: _blank, type: "gender"},
+  { md: 4, label: "接種日", model: _blank, type: "vaccinated_date"},
   { md: 4, label: "発症までの日数", model: _blank, type: "days_to_onset"},
   { md: 4, label: "接種回数", model: _blank, type: "vaccinated_times"},
   { md: 4, label: "基礎疾患", model: preExistingDiseaseFilterVal, type: "text"},
@@ -444,13 +432,7 @@ const downloadFilteredDataAsCsv = () => {
 }
 
 const clearFilter = () => {
-  vaccineSearchItems.forEach(item => {
-    item.model.value = ''
-  });
-  individualSearchItems.forEach(item => {
-    item.model.value = ''
-  });
-  searchConditionChanged.value = false
+  ClearFilterValues(queryParamMap, searchConditionChanged)
 }
 </script>
 

@@ -10,12 +10,19 @@
 
       <v-expansion-panel-text>
         <h6 class="text-h6">症状など申請に関する条件の設定</h6>
-        <v-row>
+        <v-row align="end">
           <v-col v-for="sItem, i in issueSearchItems" :key="i" cols="12" :md="sItem.md" class="group">
 
-            <SelectItems v-if="sItem.type == 'reasons'"
+            <SelectItems v-if="sItem.type == 'judged_result'"
+            v-model:values="judgedResultFilterValues" v-model:items="judgedResultFilterItems"
+            :search-triger-func="searchTrigerFunc" :clear-trigger-func="clearTriggerFunc"
+            label="判定"
+            ></SelectItems>
+
+            <SelectItems v-else-if="sItem.type == 'reasons'"
             v-model:values="reasonsForRepudiationValues" v-model:items="reasonsForRepudiationItems"
-            label="判定理由" :search-triger-func="searchTrigerFunc"
+            :search-triger-func="searchTrigerFunc" :clear-trigger-func="clearTriggerFunc"
+            label="判定理由"
             ></SelectItems>
 
             <v-dialog v-else-if="sItem.type == 'reasons-help'" transition="dialog-bottom-transition" width="auto">
@@ -30,7 +37,8 @@
 
             <SelectItems v-else-if="sItem.type == 'judged-date'"
             v-model:values="judgedDatesFilterValues" v-model:items="judgedDatesFilterItems"
-            label="判定日（選択した日付のみ）" :search-triger-func="searchTrigerFunc"
+            :search-triger-func="searchTrigerFunc" :clear-trigger-func="clearTriggerFunc"
+            label="判定日（選択した日付のみ）"
             ></SelectItems>
 
             <v-text-field v-else
@@ -58,7 +66,8 @@
             ></NumberFilter>
 
             <SelectItems v-else-if="item.type == 'gender'"
-            v-model:values="genderFilterValues" v-model:items="genderFilterItems" :search-triger-func="searchTrigerFunc"
+            v-model:values="genderFilterValues" v-model:items="genderFilterItems"
+            :search-triger-func="searchTrigerFunc" :clear-trigger-func="clearTriggerFunc"
             :label="item.label"
             ></SelectItems>
 
@@ -147,13 +156,16 @@
 
 <script setup lang="ts">
 import { onMounted, shallowRef } from 'vue'
-import router from '@/router/index'
 import axios from 'axios'
+import router from '@/router/index'
 import { AppBarTitle, AppBarColor, CertifiedHealthHazardDataURL, CertifiedMetadataURL } from '@/router/data'
 import type { ICertifiedHealthHazardIssue } from '@/types/CertifiedHealthHazard'
+import type { IQueryParam } from '@/types/QueryParam'
+import { ClearFilterValues, CreateUrlWithQueryParams, IsConditionChanged, ParseQueryParams } from '@/types/QueryParam'
+import { CreateCsvContentRaw, DownloadCsvFile } from '@/types/FilteredDataAsCsv'
+import type { ICertifiedMetadata } from '@/types/CertifiedMetadata'
 import { StringFilterFunc, StringArrayFilterFunc, NumberArrayFilterFunc } from '@/tools/FilterFunc'
 import { SearchTrigger, SearchTriggerFunc } from '@/tools/SearchTriggerFunc'
-import type { ShallowRef } from 'vue'
 import StringArrayRow from '@/components/StringArrayRow.vue'
 import PreExistingDiseaseCard from '@/components/PreExistingDiseaseCard.vue'
 import ReasonsForRepudiationCard from '@/components/ReasonsForRepudiationCard.vue'
@@ -161,11 +173,7 @@ import NumberFilter from '@/components/NumberFilter.vue'
 import SymptomsCard from '@/components/SymptomsCard.vue'
 import SelectItems from '@/components/SelectItems.vue'
 import BillingDetailsChip from '@/components/BillingDetailsChip.vue'
-import type { IQueryParamWithArray } from '@/types/QueryParam'
-import { CreateUrlWithQueryParams } from '@/types/QueryParam'
-import { CreateCsvContentRaw, DownloadCsvFile } from '@/types/FilteredDataAsCsv'
 import SearchRelatedToolBar from '@/components/SearchRelatedToolBar.vue'
-import type { ICertifiedMetadata } from '@/types/CertifiedMetadata'
 
 AppBarTitle.value = String(router.currentRoute.value.name)
 AppBarColor.value = 'green'
@@ -185,6 +193,7 @@ onMounted(() => {
     .get<ICertifiedMetadata>(CertifiedMetadataURL)
     .then((response) => {
       judgedDatesFilterItems.value = response.data.judged_dates
+      judgedResultFilterItems.value = response.data.judged_result_list
       genderFilterItems.value = response.data.gender_list
       loading.value = false
     })
@@ -222,9 +231,12 @@ const descriptionOfClaimFilterFunc = (value: string): boolean => {
   return StringFilterFunc(value, descriptionOfClaimFilterVal)
 }
 
-const judgmentResultFilterVal = shallowRef('')
+const judgedResultFilterValues = shallowRef<string[]>([])
+const judgedResultFilterItems = shallowRef<string[]>([])
 const judgmentResultFilterFunc = (value: string): boolean => {
-  return StringFilterFunc(value, judgmentResultFilterVal)
+  if (judgedResultFilterValues.value.length == 0) return true
+  if (judgedResultFilterValues.value.indexOf(value) > -1) return true
+  return false
 }
 
 const judgedDatesFilterValues = shallowRef<string[]>([])
@@ -249,11 +261,7 @@ const genderFilterValues = shallowRef<any[]>([])
 const genderFilterItems = shallowRef<string[]>([])
 const genderFilterFunc = (value: string): boolean => {
   if (genderFilterValues.value.length == 0) return true
-  // valueが空で検索したい場合もあるので、空文字か否かのチェックは不要
-  if (genderFilterValues.value.indexOf(value) > -1) {
-    return true
-  }
-
+  if (genderFilterValues.value.indexOf(value) > -1) return true
   return false
 }
 
@@ -280,68 +288,44 @@ const reasonsForRepudiationFilterFunc = (value: any): boolean => {
 const searchConditionChanged = shallowRef<boolean>(false)
 const searchTrigerFunc = () => {
   SearchTriggerFunc()
-  searchConditionChanged.value = isConditionChanged()
+  searchConditionChanged.value = IsConditionChanged(queryParamMap)
 }
 const clearTriggerFunc = () => {
-  searchConditionChanged.value = isConditionChanged()
-}
-const isConditionChanged = () => {
-  let ret = issueSearchItems.find( item => isNotNullEmpty(item.model) )
-  if(ret != undefined) return true
-
-  ret = individualSearchItems.find( item => isNotNullEmpty(item.model) )
-  if(ret != undefined) return true
-
-  return false
-}
-const isNotNullEmpty = (val: ShallowRef<string>): boolean => {
-  return val.value != '' && val.value != null
+  searchConditionChanged.value = IsConditionChanged(queryParamMap)
 }
 
 // 詳細検索の入力欄を作るための設定たち
-const emptyShallow = shallowRef()
+const _blank = shallowRef()
 const issueSearchItems = [
   { md: 6, label: "請求内容", model: descriptionOfClaimFilterVal, type: "text"},
   { md: 6, label: "症状", model: symptomsFilterVal, type: "text"},
-  { md: 2, label: "判定", model: judgmentResultFilterVal, type: "text"},
-  { md: 2, label: "否認理由", model: emptyShallow , type: "reasons"},
-  { md: 2, label: "", model: emptyShallow , type: "reasons-help"},
-  { md: 6, label: "判定日（選択した日付のみ）", model: emptyShallow, type: "judged-date"},
+  { md: 2, label: "判定", model: _blank, type: "judged_result"},
+  { md: 2, label: "否認理由", model: _blank , type: "reasons"},
+  { md: 2, label: "", model: _blank , type: "reasons-help"},
+  { md: 6, label: "判定日（選択した日付のみ）", model: _blank, type: "judged-date"},
 ]
 const individualSearchItems = [
-  { md: 4, label: "年齢（最小/最大でフィルタ）", model: emptyShallow, type: "age-range"},
-  { md: 4, label: "性別", model: emptyShallow, type: "gender"},
+  { md: 4, label: "年齢（最小/最大でフィルタ）", model: _blank, type: "age-range"},
+  { md: 4, label: "性別", model: _blank, type: "gender"},
   { md: 4, label: "基礎疾患", model: preExistingConditionFilterVal, type: "text"},
 ]
 
 // URLのクエリパラメータを検索用のデータに
 const pageQueryParams = router.currentRoute.value.query
-const queryParamMap: IQueryParamWithArray[] = [
-  {name: "jdf", val: judgedDatesFilterValues, isArray: true},
-  {name: "gen", val: genderFilterValues, isArray: false},
-  {name: "adf", val: ageFromFilterVal, isArray: false},
-  {name: "adt", val: ageToFilterVal, isArray: false},
-  {name: "vn", val: vaccineNameFilterVal, isArray: false},
-  {name: "tp", val: descriptionOfClaimFilterVal, isArray: false},
-  {name: "sym", val: symptomsFilterVal, isArray: false},
-  {name: "re", val: judgmentResultFilterVal, isArray: false},
-  {name: "pre", val: preExistingConditionFilterVal, isArray: false},
-  {name: "rea", val: reasonsForRepudiationValues, isArray: true}
+const queryParamMap: IQueryParam[] = [
+  {name: "jdf", val: judgedDatesFilterValues},
+  {name: "gen", val: genderFilterValues},
+  {name: "adf", val: ageFromFilterVal},
+  {name: "adt", val: ageToFilterVal},
+  {name: "vn", val: vaccineNameFilterVal},
+  {name: "tp", val: descriptionOfClaimFilterVal},
+  {name: "sym", val: symptomsFilterVal},
+  {name: "re", val: judgedResultFilterValues},
+  {name: "pre", val: preExistingConditionFilterVal},
+  {name: "rea", val: reasonsForRepudiationValues}
 ]
-queryParamMap.forEach(item => {
-  const param = pageQueryParams[item.name]
-  if(param != undefined) {
-    if(item.isArray){
-      const paramArray = param.toString().split(',')
-      for (let index = 0; index < paramArray.length; index++) {
-        item.val.value.push(paramArray[index])
-      }
-    } else {
-      item.val.value = param.toString()
-      searchConditionChanged.value = true
-    }
-  }
-});
+searchConditionChanged.value = ParseQueryParams(queryParamMap, pageQueryParams)
+
 const copyUrlWithQueryParams = () => {
   const retUrl = CreateUrlWithQueryParams(queryParamMap)
   if(navigator.clipboard){
@@ -391,13 +375,7 @@ const downloadFilteredDataAsCsv = () => {
 }
 
 const clearFilter = () => {
-  issueSearchItems.forEach(item => {
-    item.model.value = ''
-  });
-  individualSearchItems.forEach(item => {
-    item.model.value = ''
-  });
-  searchConditionChanged.value = false
+  ClearFilterValues(queryParamMap, searchConditionChanged)
 }
 </script>
 

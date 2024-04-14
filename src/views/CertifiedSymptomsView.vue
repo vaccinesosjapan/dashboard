@@ -9,17 +9,20 @@
       </v-expansion-panel-title>
 
       <v-expansion-panel-text>
-        <v-row>
-          <v-col v-for="item, i in searchItems" :key="i" cols="12" :sm="item.sm" class="group">
-            <v-text-field
-              :label="item.label"
-              v-model="item.model.value"
-              :type="item.type"
-              @input="searchTrigerFunc"
-              @click:clear="clearTriggerFunc"
-              clearable
-              hide-details
-            ></v-text-field>
+        <v-row align="end">
+          <v-col cols="12" md="6" class="group">
+            <SearchableSelectItems
+              v-model:values="symptomsFilterValues" v-model:items="symptomsFilterItems"
+              :search-triger-func="searchTrigerFunc" :clear-trigger-func="clearTriggerFunc"
+              label="症状"
+            ></SearchableSelectItems>
+          </v-col>
+
+          <v-col cols="12" md="6" class="group">
+            <NumberFilter
+            v-model:min="sumFromFilterVal" v-model:max="sumToFilterVal" :search-triger-func="searchTrigerFunc" :clear-trigger-func="clearTriggerFunc"
+            title="合計件数"
+            ></NumberFilter>
           </v-col>
         </v-row>
       </v-expansion-panel-text>
@@ -61,17 +64,19 @@
 
 <script setup lang="ts">
 import { onMounted, shallowRef } from 'vue'
-import router from '@/router/index'
 import axios from 'axios'
-import { AppBarTitle, AppBarColor, CertifiedSymptomsDataURL } from '@/router/data'
-import { NumberFilterFunc, StringFilterFunc } from '@/tools/FilterFunc'
+import router from '@/router/index'
+import { AppBarTitle, AppBarColor, CertifiedSymptomsDataURL, CertifiedSymptomsMetadataURL } from '@/router/data'
 import type { ICertifiedSymptom } from '@/types/CertifiedSymptom'
-import { SearchTrigger, SearchTriggerFunc } from '@/tools/SearchTriggerFunc'
-import type { ShallowRef } from 'vue'
 import type { IQueryParam } from '@/types/QueryParam'
-import { CreateUrlWithQueryParams } from '@/types/QueryParam'
-import { CreateCsvContent, CreateFilteredData, DownloadCsvFile, FilterType, type IKeyAndFilter } from '@/types/FilteredDataAsCsv'
+import { ClearFilterValues, CreateUrlWithQueryParams, IsConditionChanged, ParseQueryParams } from '@/types/QueryParam'
+import { CreateCsvContentRaw, DownloadCsvFile } from '@/types/FilteredDataAsCsv'
+import type { ICertifiedSymptomsMetadata } from '@/types/CertifiedSymptomMetadata'
+import { NumberFilterFunc } from '@/tools/FilterFunc'
+import { SearchTrigger, SearchTriggerFunc } from '@/tools/SearchTriggerFunc'
 import SearchRelatedToolBar from '@/components/SearchRelatedToolBar.vue'
+import SearchableSelectItems from '@/components/SearchableSelectItems.vue'
+import NumberFilter from '@/components/NumberFilter.vue'
 
 AppBarTitle.value = String(router.currentRoute.value.name)
 AppBarColor.value = 'green'
@@ -86,6 +91,14 @@ onMounted(() => {
       loading.value = false
     })
     .catch((error) => console.log('failed to get certified symptoms data: ' + error))
+  
+  axios
+    .get<ICertifiedSymptomsMetadata>(CertifiedSymptomsMetadataURL)
+    .then((response) => {
+      symptomsFilterItems.value = response.data.symptom_name_list
+      loading.value = false
+    })
+    .catch((error) => console.log('failed to get certified symptom data: ' + error))
 })
 
 const headers = [
@@ -100,9 +113,12 @@ const navigateWithQuery = (value: string) => {
   router.push({ path: 'certified-issues', query: { sym: value } })
 }
 
-const symptomsFilterVal = shallowRef('')
+const symptomsFilterValues = shallowRef<any[]>([])
+const symptomsFilterItems = shallowRef<string[]>([])
 const symptomsFilterFunc = (value: string): boolean => {
-  return StringFilterFunc(value, symptomsFilterVal)
+  if (symptomsFilterValues.value.length == 0) return true
+  if (symptomsFilterValues.value.indexOf(value) > -1) return true
+  return false
 }
 
 const sumFromFilterVal = shallowRef<any>('')
@@ -114,34 +130,20 @@ const sumFilterFunc = (value: any): boolean => {
 const searchConditionChanged = shallowRef<boolean>(false)
 const searchTrigerFunc = () => {
   SearchTriggerFunc()
-  searchConditionChanged.value = isConditionChanged()
+  searchConditionChanged.value = IsConditionChanged(queryParamMap)
 }
 const clearTriggerFunc = () => {
-  searchConditionChanged.value = isConditionChanged()
-}
-const isConditionChanged = () => {
-  let ret = searchItems.find( item => isNotNullEmpty(item.model) )
-  if(ret != undefined) return true
-
-  return false
-}
-const isNotNullEmpty = (val: ShallowRef<string>): boolean => {
-  return val.value != '' && val.value != null
+  searchConditionChanged.value = IsConditionChanged(queryParamMap)
 }
 
 const pageQueryParams = router.currentRoute.value.query
 const queryParamMap: IQueryParam[] = [
-  {name: "sym", val: symptomsFilterVal},
+  {name: "sym", val: symptomsFilterValues},
   {name: "sf", val: sumFromFilterVal},
   {name: "st", val: sumToFilterVal},
 ]
-queryParamMap.forEach(item => {
-  const param = pageQueryParams[item.name]
-  if(param != undefined) {
-    item.val.value = param.toString()
-    searchConditionChanged.value = true
-  }
-});
+searchConditionChanged.value = ParseQueryParams(queryParamMap, pageQueryParams)
+
 const copyUrlWithQueryParams = () => {
   const retUrl = CreateUrlWithQueryParams(queryParamMap)
   if(navigator.clipboard){
@@ -149,30 +151,30 @@ const copyUrlWithQueryParams = () => {
   }
 }
 
-const searchItems = [
-  { sm: 6, label: "症状", model: symptomsFilterVal, type: "text"},
-  { sm: 3, label: "合計件数（最小値）", model: sumFromFilterVal, type: "number"},
-  { sm: 3, label: "合計件数（最大値）", model: sumToFilterVal, type: "number"},
-]
-
-const _blank = shallowRef('')
-const keyAndFilterMap: IKeyAndFilter[] = [
-  { key: "name", filterType: FilterType.String , valFilter: symptomsFilterVal, fromFilter: _blank, toFilter: _blank},
-  { key: "counts.sum", filterType: FilterType.Number , valFilter: _blank, fromFilter: sumFromFilterVal, toFilter: sumToFilterVal},
-]
 const downloadFilterdDataAsCsv = () => {
-  const filteredData = CreateFilteredData<ICertifiedSymptom>(keyAndFilterMap, dataTableItems)
+  if(dataTableItems.value === undefined) return
+
+  const filteredData : ICertifiedSymptom[] = []
+  for (let index = 0; index < dataTableItems.value.length; index++) {
+    const rowItem = dataTableItems.value[index]
+    let showThisRow = true
+
+    // customKeyFilterによるフィルタ処理と同等の処理を行う
+    if(!symptomsFilterFunc(rowItem.name)) showThisRow=false
+    if(!sumFilterFunc(rowItem.counts.sum)) showThisRow=false
+
+    if(showThisRow) filteredData.push(rowItem)
+  }
+
   const headerTitles = headers.filter(head => head.title != undefined).map( head => head.title).join(',')
   const headerKeys = headers.filter(head => head.title != undefined).map( head => head.key)
-  const csvContent = CreateCsvContent<ICertifiedSymptom>(filteredData, headerTitles, headerKeys)
+  const csvContent = CreateCsvContentRaw<ICertifiedSymptom>(filteredData, headerTitles, headerKeys)
 
   DownloadCsvFile(router.currentRoute.value.path.replace('/',''), csvContent)
 }
+
 const clearFilter = () => {
-  searchItems.forEach(item => {
-    item.model.value = ''
-  });
-  searchConditionChanged.value = false
+  ClearFilterValues(queryParamMap, searchConditionChanged)
 }
 </script>
 
