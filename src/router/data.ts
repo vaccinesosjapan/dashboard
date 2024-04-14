@@ -3,7 +3,10 @@ import { shallowRef } from 'vue'
 export const AppBarTitle = shallowRef('副反応ダッシュボード')
 export const AppBarColor = shallowRef('white')
 
+// production
 const DatasetsURL = import.meta.env.VITE_DATASETS_URL
+// for debug
+//const DatasetsURL = '/_datasets/'
 
 export const MedicalInstitutionReportsURL = DatasetsURL + 'medical-institution-reports.json'
 export const MedicalInstitutionSummaryURL = DatasetsURL + 'medical-institution-summary-from-reports.json'
