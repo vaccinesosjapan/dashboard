@@ -14,7 +14,7 @@ export interface IMedicalInstitutionReport {
 	causal_relationship: string
 	severity: string
 	gross_result_dates: string
-	gross_results: string
+	gross_results: string[]
 	source: ISourceInfo
 }
 

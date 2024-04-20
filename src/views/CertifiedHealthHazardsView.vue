@@ -248,9 +248,6 @@ const judgedDatesFilterFunc = (value: any): boolean => {
   return judgedDatesFilterValues.value.includes(value)
 }
 
-// 本当はnumber型にしたいのだが、検索入力の関係で空文字やnullも入る
-// それらも考慮した型にすると今度は別の箇所でエラーが・・
-// という事情から、anyを使用
 const ageFromFilterVal = shallowRef<any>('')
 const ageToFilterVal = shallowRef<any>('')
 const ageFilterFunc = (values: any): boolean => {
