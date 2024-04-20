@@ -9,6 +9,7 @@ const DatasetsURL = import.meta.env.VITE_DATASETS_URL
 //const DatasetsURL = '/_datasets/'
 
 export const MedicalInstitutionReportsURL = DatasetsURL + 'medical-institution-reports.json'
+export const MedicalInstitutionMetadataURL = DatasetsURL + 'medical-institution-metadata.json'
 export const MedicalInstitutionSummaryURL = DatasetsURL + 'medical-institution-summary-from-reports.json'
 
 export const CarditisReportsURL = DatasetsURL + 'carditis-reports.json'
