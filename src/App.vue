@@ -257,4 +257,8 @@ export default {
 .small-app-title {
   font-size: 0.85rem;
 }
+
+.v-list-group {
+  --prepend-width: 0.8rem;
+}
 </style>

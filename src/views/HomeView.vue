@@ -1,80 +1,33 @@
 <template>
   <v-container>
-    <h2>本サイトについて</h2>
-    <p>
-      厚生労働省のサイトには、新型コロナワクチンの「副反応疑い報告」や「予防接種健康被害」に関する情報が
-      PDF形式で多数掲載されています。それらのデータを見やすく整理して検索可能にし、より多くの人にとって
-      見やすく、知見を得やすい情報源にするためのサイトです。
-    </p>
-    <br />
-
-    <h2>コンテンツ</h2>
-
     <v-card color="light-blue-darken-1" variant="elevated">
-      <v-card-title>副反応疑い報告・副作用報告</v-card-title>
-      <v-card-text
-        >新型コロナワクチンの接種により副反応や副作用を被った可能性がある方々に関して、
-        医療機関や製造販売業者（製薬会社）からの報告をまとめて、閲覧や検索をしやすくしています。
+      <v-card-title>副反応疑い報告</v-card-title>
+      <v-card-text class="card-text">
+        医療機関や製造販売業者（製薬会社）から「新型コロナワクチンによる副反応疑い」として報告された案件を検索できます。
       </v-card-text>
 
       <v-item-group selected-class="bg-primary">
 
         <v-container>
-          <h4>医療機関からの報告を検索するページ</h4>
+          <h4>医療機関からの報告</h4>
           <v-row>
-            <v-col cols="12" sm="6">
-              <v-hover v-slot:default="{ isHovering, props }">
-                <v-card
-                  v-bind="props"
-                  :prepend-icon="MedialInstitutionHomeRoute.icon"
-                  :title="MedialInstitutionHomeRoute.menu_name"
-                  :href="`${baseURL}#${MedialInstitutionHomeRoute.path}`"
-                  :elevation="isHovering ? 10 : 3"
-                >
-                </v-card>
-              </v-hover>
+            <v-col cols="12" lg="3" md="4" sm="6">
+              <v-btn :prepend-icon="MedialInstitutionHomeRoute.icon" size="x-large" :href="`${baseURL}#${MedialInstitutionHomeRoute.path}`" min-width="17rem">{{ MedialInstitutionHomeRoute.menu_name }}</v-btn>
             </v-col>
-            <v-col cols="12" sm="6" v-for="(r, i) in MedialInstitutionRoutes" :key="i">
-              <v-hover v-slot:default="{ isHovering, props }">
-                <v-card
-                  v-bind="props"
-                  :prepend-icon="r.icon"
-                  :title="r.menu_name"
-                  :href="`${baseURL}#${r.path}`"
-                  :elevation="isHovering ? 10 : 3"
-                >
-                </v-card>
-              </v-hover>
+            <v-col cols="12" lg="3" md="4" sm="6" v-for="(r, i) in MedialInstitutionRoutes" :key="i">
+              <v-btn :prepend-icon="r.icon" size="x-large" :href="`${baseURL}#${r.path}`" min-width="17rem">{{ r.menu_name }}</v-btn>
             </v-col>
           </v-row>
         </v-container>
 
         <v-container>
-          <h4>製造販売業者からの報告を検索するページ</h4>
+          <h4>製造販売業者からの報告</h4>
           <v-row>
-            <v-col cols="12" sm="6">
-              <v-hover v-slot:default="{ isHovering, props }">
-                <v-card
-                  v-bind="props"
-                  :prepend-icon="SuspectedIssuesHomeRoute.icon"
-                  :title="SuspectedIssuesHomeRoute.menu_name"
-                  :href="`${baseURL}#${SuspectedIssuesHomeRoute.path}`"
-                  :elevation="isHovering ? 10 : 3"
-                >
-                </v-card>
-              </v-hover>
+            <v-col cols="12" lg="3" md="4" sm="6">
+              <v-btn :prepend-icon="SuspectedIssuesHomeRoute.icon" size="x-large" :href="`${baseURL}#${SuspectedIssuesHomeRoute.path}`" min-width="17rem">{{ SuspectedIssuesHomeRoute.menu_name }}</v-btn>
             </v-col>
-            <v-col cols="12" sm="6" v-for="(r, i) in SuspectedIssuesSubRoutes" :key="i">
-              <v-hover v-slot:default="{ isHovering, props }">
-                <v-card
-                  v-bind="props"
-                  :prepend-icon="r.icon"
-                  :title="r.menu_name"
-                  :href="`${baseURL}#${r.path}`"
-                  :elevation="isHovering ? 10 : 3"
-                >
-                </v-card>
-              </v-hover>
+            <v-col cols="12" lg="3" md="4" sm="6" v-for="(r, i) in SuspectedIssuesSubRoutes" :key="i">
+              <v-btn :prepend-icon="r.icon" size="x-large" :href="`${baseURL}#${r.path}`" min-width="17rem">{{ r.menu_name }}</v-btn>
             </v-col>
           </v-row>
         </v-container>
@@ -117,44 +70,25 @@
 
   <v-container>
     <v-card color="green-darken-1" variant="elevated">
-      <v-card-title class="card-title">予防接種健康被害 救済制度</v-card-title>
+      <v-card-title>予防接種健康被害 救済制度</v-card-title>
       <v-card-text class="card-text">
-        新型コロナワクチンなどの接種により副反応や副作用を被った可能性がある方々が、
-        市町村を通じて申請することで医療費などの給付を受けられる仕組みがあります。判定済みの案件をまとめて、閲覧や検索をしやすくしています。
+        新型コロナワクチンの接種による健康被害として認定された症状などを検索できます。
       </v-card-text>
 
       <v-item-group selected-class="bg-primary">
         <v-container>
           <v-row>
-            <v-col cols="12" sm="6">
-              <v-hover v-slot:default="{ isHovering, props }">
-                <v-card
-                  v-bind="props"
-                  :prepend-icon="HealthHazardsHomeRoute.icon"
-                  :title="HealthHazardsHomeRoute.menu_name"
-                  :href="`${baseURL}#${HealthHazardsHomeRoute.path}`"
-                  :elevation="isHovering ? 10 : 3"
-                >
-                </v-card>
-              </v-hover>
+            <v-col cols="12" lg="3" md="4" sm="6">
+              <v-btn :prepend-icon="HealthHazardsHomeRoute.icon" size="x-large" :href="`${baseURL}#${HealthHazardsHomeRoute.path}`" min-width="17rem">{{ HealthHazardsHomeRoute.menu_name }}</v-btn>
             </v-col>
           </v-row>
         </v-container>
 
         <v-container>
-          <h4>認定済みの案件を検索するページ</h4>
+          <h4>判定済みの案件</h4>
           <v-row>
-            <v-col cols="12" sm="6" v-for="(r, i) in HealthHazardsSubRoutes" :key="i">
-              <v-hover v-slot:default="{ isHovering, props }">
-                <v-card
-                  v-bind="props"
-                  :prepend-icon="r.icon"
-                  :title="r.menu_name"
-                  :href="`${baseURL}#${r.path}`"
-                  :elevation="isHovering ? 10 : 3"
-                >
-                </v-card>
-              </v-hover>
+            <v-col cols="12" lg="3" md="4" sm="6" v-for="(r, i) in HealthHazardsSubRoutes" :key="i">
+              <v-btn :prepend-icon="r.icon" size="x-large" :href="`${baseURL}#${r.path}`" min-width="17rem">{{ r.menu_name }}</v-btn>
             </v-col>
           </v-row>
         </v-container>
@@ -220,4 +154,13 @@ const expandSuspectedIssues = shallowRef(false)
 const expandCertifiedIssues = shallowRef(false)
 </script>
 
-<style scoped></style>
+<style scoped>
+h4 {
+  font-weight: normal;
+}
+h4:before {
+  content: '●';
+  color: white;
+  margin-right: 3px;
+}
+</style>
