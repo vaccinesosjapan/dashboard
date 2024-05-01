@@ -23,10 +23,13 @@
 			</v-list-item>
 			<v-list-item>
 				<template v-slot:prepend>
-					<v-btn @click="()=>{
+					<v-btn class="mr-2"
+					 @click="()=>{
 						values = []
 						clearTriggerFunc()
-						}">全て選択解除</v-btn>
+					}">全て選択解除</v-btn>
+					
+					<slot name="help"></slot>
 				</template>
 			</v-list-item>
 			<v-divider class="mt-2"></v-divider>

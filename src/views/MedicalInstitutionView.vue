@@ -16,7 +16,11 @@
               v-model:values="manufacturerFilterValues" v-model:items="manufacturerFilterItems"
               :search-triger-func="searchTrigerFunc" :clear-trigger-func="clearTriggerFunc"
               label="製造販売業者"
-            ></SearchableSelectItems>
+            >
+              <template v-slot:help>
+                <ManufacturerHelpDialog></ManufacturerHelpDialog>
+              </template>
+            </SearchableSelectItems>
 
             <SearchableSelectItems v-else-if="item.type == 'vaccine_name'"
               v-model:values="vaccineNameFilterValues" v-model:items="vaccineNameFilterItems"
@@ -212,6 +216,7 @@ import SearchableSelectItems from '@/components/SearchableSelectItems.vue'
 import SelectItems from '@/components/SelectItems.vue'
 import NumberFilter from '@/components/NumberFilter.vue'
 import DateFilter from '@/components/DateFilter.vue'
+import ManufacturerHelpDialog from '@/components/ManufacturerHelpDialog.vue'
 
 AppBarTitle.value = String(router.currentRoute.value.name)
 AppBarColor.value = '#2962ff'
