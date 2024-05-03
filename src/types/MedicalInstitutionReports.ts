@@ -27,4 +27,10 @@ export interface IMedicalInstitutionSummaryFromReports {
 	total_count: string
 	sum_causal_relationship: [string, number][]
 	sum_severities_of_related: [string, number][]
+	lot_no_info: ILotNumberInformation
+}
+
+export interface ILotNumberInformation {
+	top_ten_list: [string, number][]
+	unknown_count: number
 }
