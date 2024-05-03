@@ -34,7 +34,7 @@
       <v-row>
         <v-col cols="12" sm="6">
           <apexchart height="400" :options="lotNumberOptions" :series="[{data: lotNumberSeries}]"></apexchart>
-          <p class="text-caption text-right">※ ロットNoが不明な報告は <b>{{ medicalInstitutionSummary?.medical_institution_summary_from_reports.lot_no_info.unknown_count }}</b> 件で、上記はそれらを除いた集計結果です。</p>
+          <p class="text-caption text-right">※ ロットNoが不明または空白の報告は <b>{{ medicalInstitutionSummary?.medical_institution_summary_from_reports.lot_no_info.invalid_count.toLocaleString() }}</b> 件で、上記はそれらを除いた集計結果です。</p>
         </v-col>
 
         <v-col cols="12" sm="6">

@@ -32,5 +32,5 @@ export interface IMedicalInstitutionSummaryFromReports {
 
 export interface ILotNumberInformation {
 	top_ten_list: [string, number][]
-	unknown_count: number
+	invalid_count: number
 }
