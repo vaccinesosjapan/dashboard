@@ -39,13 +39,14 @@
 
         <v-col cols="12" sm="6">
           <p class="text-body-1 mb-5">
-            以下の一覧でロットNoを選択すると、そのロットNoでフィルタリングした報告一覧を表示できます。
+            以下の一覧でロットNoを選択すると、報告一覧に対してそのロットNoを含む報告のみを表示できます。
           </p>
           <ol class="pl-10">
-            <li v-for="(lotno_data, i) in lotNumberSeries" :key="i" class="mb-3">
-              <a :href="createUrl(lotno_data.x)" target="_blank"><b>{{ lotno_data.x }}</b></a> ( {{ lotno_data.y }} 件 )
+            <li v-for="(lotno_data, i) in lotNumberTopTenList" :key="i" class="mb-2">
+              <a :href="createUrl(lotno_data.lot_no)" target="_blank"><b>{{ lotno_data.lot_no }}</b></a> ( 製造販売業者: {{ lotno_data.manufacturer }} )
             </li>
           </ol>
+          <p class="text-caption text-left mt-4">※ 左上の集計数は対象のロットNoのみ接種した報告の数です。報告一覧では同時接種したワクチンなどを含む報告も表示されるため、件数が異なる場合があります。</p>
         </v-col>
       </v-row>
 
@@ -61,7 +62,7 @@ import { onMounted, shallowRef } from 'vue'
 import axios from 'axios'
 import { AppBarTitle, AppBarColor, MedicalInstitutionSummaryURL } from '@/router/data'
 import router from '@/router/index'
-import { type IMedicalInstitutionSummary } from '@/types/MedicalInstitutionReports'
+import { type ILotNumberItem, type IMedicalInstitutionSummary } from '@/types/MedicalInstitutionReports'
 import { CreateBarChartOption, CreatePieChartOption } from '@/tools/ChartOptions'
 
 AppBarTitle.value = String(router.currentRoute.value.name)
@@ -86,12 +87,13 @@ onMounted(() => {
       }
       severitySeries.value = Object.values(ss)
 
-      const ln = medicalInstitutionSummary.value.medical_institution_summary_from_reports.lot_no_info.top_ten_list
+      const top_ten_list = medicalInstitutionSummary.value.medical_institution_summary_from_reports.lot_no_info.top_ten_list
       const lot_no_data = []
-      for (let index = 0; index < Object.keys(ln).length; index++) {
-        lot_no_data.push({x: Object.keys(ln)[index], y: Object.values(ln)[index]})
+      for (let index = 0; index < top_ten_list.length; index++) {
+        lot_no_data.push({x: top_ten_list[index].lot_no, y: top_ten_list[index].count})
       }
       lotNumberSeries.value = lot_no_data
+      lotNumberTopTenList.value = top_ten_list
    
       // 2つ目以降のグラフが手動リフレッシュ無しにちゃんと表示されるようにするために必要な処理
       window.dispatchEvent(new Event('resize'))
@@ -111,15 +113,13 @@ const severityOptions = CreatePieChartOption('「関連あり」案件の重篤�
 
 const lotNumberSeries = shallowRef<any[]>([])
 const lotNumberOptions = CreateBarChartOption('報告が多いロットNoの上位10種')
+const lotNumberTopTenList = shallowRef<ILotNumberItem[]>([])
 
 const changeChartView = () => {
   isPersentView.value = !isPersentView.value
   window.dispatchEvent(new Event('resize'))
 }
 
-const navigateWithQuery = (value: string) => {
-  router.push({ path: 'reports-from-medical-institution', query: { ln: value } })
-}
 const createUrl = (value: string) => {
   return '#/reports-from-medical-institution?ln=' + value
 }
