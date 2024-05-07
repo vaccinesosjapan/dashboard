@@ -11,9 +11,14 @@
     </v-container>
 
     <v-container v-else>
-      <h4 class="text-h4">副反応疑い報告</h4>
-      <p>
-        予防接種法により医療機関から報告された事例 <b>{{ medicalInstitutionSummary?.medical_institution_summary_from_reports.total_count.toLocaleString() }} [件]</b> の集計結果を示します。
+      <h4 class="text-h4 mb-2">副反応疑い報告</h4>
+      <p class="text-body-1 mb-5">
+        予防接種法に基づいて医療機関から報告された副反応疑い報告 <span class="big-bold">{{ medicalInstitutionSummary?.medical_institution_summary_from_reports.total_count.toLocaleString() }}</span> [件] の集計結果を示します。
+      </p>
+
+      <h5 class="text-h5 mb-2">報告医の評価</h5>
+      <p class="text-body-1 mb-1">
+        報告医による因果関係評価の内訳や、報告医が関連の有無を評価した結果の内訳です。
       </p>
 
       <div class="d-flex justify-end">
@@ -21,7 +26,7 @@
         <v-btn size="small" @click="changeChartView" color="blue" v-else>割合を表示</v-btn>
       </div>
 
-      <v-row>
+      <v-row class="mb-5">
         <v-col cols="12" sm="6">
           <apexchart :options="causalRelationshipOptions" :series="causalRelationshipSeries"></apexchart>
         </v-col>
@@ -31,26 +36,26 @@
         </v-col>
       </v-row>
 
+      <h5 class="text-h5 mb-2">ロットNoによる集計</h5>
+      <p class="text-body-1 mb-2">
+        ロットNoが不明・空白の報告は <span class="big-bold">{{ medicalInstitutionSummary?.medical_institution_summary_from_reports.lot_no_info.invalid_count.toLocaleString() }}</span> [件] です。以下の集計は、それらを除いた結果に基づいた上位10種を示しています。
+      </p>
       <v-row>
         <v-col cols="12" sm="6">
           <apexchart height="400" :options="lotNumberOptions" :series="[{data: lotNumberSeries}]"></apexchart>
-          <p class="text-caption text-right">※ ロットNoが不明または空白の報告は <b>{{ medicalInstitutionSummary?.medical_institution_summary_from_reports.lot_no_info.invalid_count.toLocaleString() }}</b> 件で、上記はそれらを除いた集計結果です。</p>
         </v-col>
 
-        <v-col cols="12" sm="6">
-          <p class="text-body-1 mb-5">
-            以下の一覧でロットNoを選択すると、報告一覧に対してそのロットNoを含む報告のみを表示できます。
-          </p>
-          <ol class="pl-10">
+        <v-col cols="12" sm="6" class="mt-2">
+          <b>ロットNoのリンク一覧</b>
+          <ol class="pl-10 mt-2">
             <li v-for="(lotno_data, i) in lotNumberTopTenList" :key="i" class="mb-2">
-              <a :href="createUrl(lotno_data.lot_no)" target="_blank"><b>{{ lotno_data.lot_no }}</b></a> ( 製造販売業者: {{ lotno_data.manufacturer }} )
+              <a :href="createUrl(lotno_data.lot_no)" target="_blank"><b>{{ lotno_data.lot_no }}</b></a> ({{ lotno_data.manufacturer }})
             </li>
           </ol>
-          <p class="text-caption text-left mt-4">※ 左上の集計数は対象のロットNoのみ接種した報告の数です。報告一覧では同時接種したワクチンなどを含む報告も表示されるため、件数が異なる場合があります。</p>
+          <p class="text-caption text-left mt-4">※ 報告一覧では同時接種したワクチンを含む報告も表示されるため、件数が異なる場合があります。</p>
         </v-col>
       </v-row>
 
-      <br>
       <p class="text-caption text-right">※ このページは <b>{{ medicalInstitutionSummary?.medical_institution_summary_from_reports.date }}</b> 時点までの報告内容に基づいた集計結果を表示しています。</p>
     </v-container>
 
@@ -125,4 +130,9 @@ const createUrl = (value: string) => {
 }
 </script>
 
-<style lang="scss"></style>
+<style lang="css">
+.big-bold {
+  font-size: 1.4rem;
+  font-weight: bolder;
+}
+</style>
