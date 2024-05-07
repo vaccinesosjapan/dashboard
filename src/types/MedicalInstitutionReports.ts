@@ -1,4 +1,5 @@
 import type { ISourceInfo } from "./General"
+import type { ILotNumberInformation } from "./LotNumberInfomation"
 
 export interface IMedicalInstitutionReport {
 	no: number
@@ -28,15 +29,4 @@ export interface IMedicalInstitutionSummaryFromReports {
 	sum_causal_relationship: [string, number][]
 	sum_severities_of_related: [string, number][]
 	lot_no_info: ILotNumberInformation
-}
-
-export interface ILotNumberInformation {
-	top_ten_list: ILotNumberItem[]
-	invalid_count: number
-}
-
-export interface ILotNumberItem {
-	lot_no: string
-	count: number
-	manufacturer: string
 }

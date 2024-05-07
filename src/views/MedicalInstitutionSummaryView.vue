@@ -67,7 +67,8 @@ import { onMounted, shallowRef } from 'vue'
 import axios from 'axios'
 import { AppBarTitle, AppBarColor, MedicalInstitutionSummaryURL } from '@/router/data'
 import router from '@/router/index'
-import { type ILotNumberItem, type IMedicalInstitutionSummary } from '@/types/MedicalInstitutionReports'
+import { type IMedicalInstitutionSummary } from '@/types/MedicalInstitutionReports'
+import type { ILotNumberItem } from '@/types/LotNumberInfomation'
 import { CreateBarChartOption, CreatePieChartOption } from '@/tools/ChartOptions'
 
 AppBarTitle.value = String(router.currentRoute.value.name)
@@ -130,7 +131,7 @@ const createUrl = (value: string) => {
 }
 </script>
 
-<style lang="css">
+<style scoped lang="css">
 .big-bold {
   font-size: 1.4rem;
   font-weight: bolder;

@@ -2,8 +2,8 @@
   <v-container fluid>
 
     <v-container>
-      <h4 class="text-h4">副反応疑い報告</h4>
-      <p>（製造販売業者からの副反応疑い報告に関するまとめをここに掲載予定）</p>
+      <h4 class="text-h4 mb-2">副反応疑い報告</h4>
+      <p class="text-body-1">（製造販売業者からの副反応疑い報告に関するまとめをここに掲載予定）</p>
     </v-container>
 
     <v-container v-if="carditisSummaryData == undefined">
@@ -17,9 +17,9 @@
 
     <v-container v-else>
 
-      <h4 class="text-h4">心筋炎/心膜炎 報告</h4>
-      <p>
-        「新型コロナワクチン接種後の心筋炎又は心膜炎疑い」として製造販売業者から報告された事例 <b>{{ carditisSummaryData?.carditis_summary.total.toLocaleString() }} [件]</b> の集計結果を示します。
+      <h4 class="text-h4 mb-1">心筋炎/心膜炎 報告</h4>
+      <p class="text-body-1">
+        「新型コロナワクチン接種後の心筋炎又は心膜炎疑い」として製造販売業者から報告された <span class="big-bold">{{ carditisSummaryData?.carditis_summary.total.toLocaleString() }}</span> [件] の集計結果を示します。
       </p>
 
       <div class="d-flex justify-end">
@@ -28,20 +28,20 @@
       </div>
 
       <v-row>
-        <v-col cols="12" sm="6">
+        <v-col cols="12" sm="8">
           <apexchart :options="carditisSummaryOptions" :series="carditisSummarySeries"></apexchart>
         </v-col>
-        <v-col cols="12" sm="6">
+        <v-col cols="12" sm="4">
           <v-table density="comfortable">
             <thead>
               <tr>
-                <th class="text-left">ワクチン名</th>
-                <th class="text-left">心筋炎件数</th>
+                <th class="text-left">症状名</th>
+                <th class="text-right">件数</th>
               </tr>
             </thead>
             <tbody>
               <tr v-for="label, index in ['心筋炎', '心膜炎']" :key="label">
-                <td>{{ label }}</td>
+                <td style="white-space: pre;">{{ label }}</td>
                 <td class="text-right">{{ carditisSummarySeries[index].toLocaleString() }}</td>
               </tr>
               <tr>
@@ -51,12 +51,19 @@
             </tbody>
           </v-table>
         </v-col>
+      </v-row>
 
-        <v-col cols="12" sm="6">
+      <h5 class="text-h5 mt-5 mb-1">心筋炎の件数内訳</h5>
+      <div class="d-flex justify-end">
+        <v-btn size="small" @click="changeChartView" color="blue" v-if="isPersentView">件数を表示</v-btn>
+        <v-btn size="small" @click="changeChartView" color="blue" v-else>割合を表示</v-btn>
+      </div>
+      <v-row>
+        <v-col cols="12" sm="8">
           <apexchart :options="myocarditisByVaccineOptions" :series="myocarditisByVaccineSeries"></apexchart>
         </v-col>
 
-        <v-col  cols="12" sm="6">
+        <v-col  cols="12" sm="4">
           <v-table density="comfortable">
             <thead>
               <tr>
@@ -66,32 +73,39 @@
             </thead>
             <tbody>
               <tr v-for="label, index in myocarditisByVaccineLabels" :key="label">
-                <td>{{ label }}</td>
+                <td class="small-cell">{{ addNewLineWithBrackets(label) }}</td>
                 <td class="text-right">{{ myocarditisByVaccineSeries[index].toLocaleString() }}</td>
               </tr>
               <tr>
                 <td><b>合計</b></td>
-                <td class="text-right"><b>{{ myocarditisByVaccineSeries.reduce(function(a, x){return a + x;}).toLocaleString() }}</b></td>
+                <td class="text-right text-body-2"><b>{{ myocarditisByVaccineSeries.reduce(function(a, x){return a + x;}).toLocaleString() }}</b></td>
               </tr>
             </tbody>
           </v-table>
         </v-col>
+      </v-row>
 
-        <v-col cols="12" sm="6">
+      <h5 class="text-h5 mt-5 mb-2">心膜炎の件数内訳</h5>
+      <div class="d-flex justify-end">
+        <v-btn size="small" @click="changeChartView" color="blue" v-if="isPersentView">件数を表示</v-btn>
+        <v-btn size="small" @click="changeChartView" color="blue" v-else>割合を表示</v-btn>
+      </div>
+      <v-row>
+        <v-col cols="12" sm="8">
           <apexchart :options="pericarditisByVaccineOptions" :series="pericarditisByVaccineSeries"></apexchart>
         </v-col>
 
-        <v-col  cols="12" sm="6">
+        <v-col  cols="12" sm="4">
           <v-table density="comfortable">
             <thead>
               <tr>
                 <th class="text-left">ワクチン名</th>
-                <th class="text-left">心筋炎件数</th>
+                <th class="text-left">心膜炎件数</th>
               </tr>
             </thead>
             <tbody>
               <tr v-for="label, index in pericarditisByVaccineLabels" :key="label">
-                <td>{{ label }}</td>
+                <td class="small-cell">{{ addNewLineWithBrackets(label) }}</td>
                 <td class="text-right">{{ pericarditisByVaccineSeries[index].toLocaleString() }}</td>
               </tr>
               <tr>
@@ -118,27 +132,28 @@
     </v-container>
 
     <v-container v-else>
-      <h4 class="text-h4">亡くなった方に関する報告</h4>
-      <p>
-        「新型コロナワクチン接種後の死亡例」として製造販売業者から報告された事例 <b>{{ deathSummaryData?.death_summary.sum_by_evaluation.total.toLocaleString() }} [件]</b> の集計結果を示します。
+      <h4 class="text-h4 mt-5 mb-2">亡くなった方々に関する報告</h4>
+      <p class="text-body-1">
+        「新型コロナワクチン接種後の死亡例」として製造販売業者から報告された事例 <span class="big-bold">{{ deathSummaryData?.death_summary.sum_by_evaluation.total.toLocaleString() }}</span> [件] の集計結果を示します。
       </p>
 
+      <h5 class="text-h5 mt-5 mb-1">因果関係評価の内訳</h5>
       <div class="d-flex justify-end">
         <v-btn size="small" @click="changeChartView" color="blue" v-if="isPersentView">件数を表示</v-btn>
         <v-btn size="small" @click="changeChartView" color="blue" v-else>割合を表示</v-btn>
       </div>
 
       <v-row>
-        <v-col cols="12" sm="6">
+        <v-col cols="12" sm="8">
           <apexchart :options="deathSummaryOptions" :series="deathSummarySeries"></apexchart>
         </v-col>
 
-        <v-col  cols="12" sm="6">
+        <v-col  cols="12" sm="4">
           <v-table density="comfortable">
             <thead>
               <tr>
                 <th class="text-left">評価結果</th>
-                <th class="text-left">件数</th>
+                <th class="text-right">件数</th>
               </tr>
             </thead>
             <tbody>
@@ -163,21 +178,21 @@
           <EvaluationResultHelpDialog></EvaluationResultHelpDialog>
         </v-col>
 
-        <v-col cols="12" sm="6">
-          <apexchart height="400" :options="deathSummaryByVaccineOptions" :series="deathSummaryByVaccineSeries"></apexchart>
+        <v-col cols="12" sm="8">
+          <apexchart :options="deathSummaryByVaccineOptions" :series="deathSummaryByVaccineSeries"></apexchart>
         </v-col>
 
-        <v-col  cols="12" sm="6">
+        <v-col  cols="12" sm="4">
           <v-table density="comfortable">
             <thead>
               <tr>
                 <th class="text-left">ワクチン名</th>
-                <th class="text-left">α・γの件数</th>
+                <th class="text-right">α・γの件数</th>
               </tr>
             </thead>
             <tbody>
               <tr v-for="label, index in deathSummaryByVaccineLabels" :key="label">
-                <td>{{ label }}</td>
+                <td class="small-cell">{{ addNewLineWithBrackets(label) }}</td>
                 <td class="text-right">{{ deathSummaryByVaccineSeries[index].toLocaleString() }}</td>
               </tr>
               <tr>
@@ -187,10 +202,8 @@
             </tbody>
           </v-table>
         </v-col>
-
       </v-row>
 
-      <br>
       <p class="text-caption text-right">※ 「 <a :href="deathSummaryData?.death_summary.source.url">{{ deathSummaryData?.death_summary.source.name }}</a> 」で
       発表された資料の <b>{{ deathSummaryData?.death_summary.date }}</b> 時点の数値を用いています。</p>
     </v-container>
@@ -205,10 +218,7 @@
     </v-container>
 
     <v-container v-else>
-      <p>
-        以降のグラフは、亡くなった方の症例一覧（{{ deathSummaryDataFromReports.death_summary_from_reports.date }} 時点の数値）を用いています。
-      </p>
-      <br>
+      <h5 class="text-h5 mt-5 mb-2">年代別の内訳</h5>
 
       <v-row>
         <v-col cols="12">
@@ -218,7 +228,7 @@
             :options="{
               chart: { id: 'number_of_deaths_reported_by_age_group' },
               colors: ['#c83f3d'],
-              title: { text: '亡くなられた方の人数（年代別）', floating: true },
+              title: { text: '亡くなられた方々の人数（年代別）', floating: true },
               xaxis: {
                 title: { text: '人数 (人)' },
               },
@@ -229,6 +239,7 @@
           ></apexchart>
         </v-col>
       </v-row>
+      <p class="text-caption text-right">※ <b>{{ deathSummaryDataFromReports.death_summary_from_reports.date }}</b> 時点の数値を用いています。</p>
     </v-container>
 
   </v-container>
@@ -582,6 +593,33 @@ const changeChartView = () => {
   isPersentView.value = !isPersentView.value
   window.dispatchEvent(new Event('resize'))
 }
+
+const addNewLineWithBrackets = (label: string): string => {
+  label = label.replace('（','(')
+  label = label.replace('）',')')
+  
+  let split = label.split('(')
+  if(split.length < 2) return label
+
+  let joined = split[0] + '\r\n'
+  for (let index = 1; index < split.length; index++) {
+    joined += '(' + split[index];
+  }
+  return joined
+}
 </script>
 
-<style lang="scss"></style>
+<style scoped lang="css">
+.big-bold {
+  font-size: 1.4rem;
+  font-weight: bolder;
+}
+
+.v-table {
+  white-space: pre-line;
+}
+
+.small-cell {
+  font-size: 0.9rem
+}
+</style>
