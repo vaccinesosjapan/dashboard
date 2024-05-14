@@ -35,6 +35,13 @@ export const SuspectedIssuesSubRoutes = [
     icon: 'mdi-magnify',
     component: () => import('../views/DeathView.vue')
   },
+  {
+  path: '/reference-of-suspected-issues-reports',
+  name: '製造販売業者からの報告 - 参考情報',
+  menu_name: '参考情報',
+  icon: 'mdi-information-outline',
+  component: () => import('../views/SuspectedIssuesReferenceView.vue')
+}
 ]
 
 export const MedialInstitutionHomeRoute = {

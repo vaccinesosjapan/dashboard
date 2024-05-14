@@ -15,7 +15,6 @@
         <v-card-text class="text-body-1">
           <v-row>
             <v-col cols="1">
-              <v-img src="mdi-alert-decagram-outline.jpeg"></v-img>
               <v-icon icon="mdi-alert-decagram-outline" size="70" color="warning"></v-icon>
             </v-col>
             <v-col cols="11">

@@ -117,26 +117,6 @@
         </v-col>
       </v-row>
 
-      <h5 class="text-h5 mt-5 mb-2">ロットNoによる集計</h5>
-      <p class="text-body-1 mb-2">
-        ロットNoが不明・空白の報告は <span class="big-bold">{{ carditisSummaryDataFromReports?.carditis_summary_from_reports.lot_no_info.invalid_count.toLocaleString() }}</span> [件] です。以下の集計は、それらを除いた結果に基づいた上位10種を示しています。
-      </p>
-      <v-row>
-        <v-col cols="12" sm="6">
-          <apexchart height="400" :options="lotNumberOptions" :series="[{data: lotNumberSeries}]"></apexchart>
-        </v-col>
-
-        <v-col cols="12" sm="6" class="mt-2">
-          <b>ロットNoのリンク一覧</b>
-          <ol class="pl-10 mt-2">
-            <li v-for="(lotno_data, i) in lotNumberTopTenList" :key="i" class="mb-2">
-              <a :href="createUrl(lotno_data.lot_no)" target="_blank"><b>{{ lotno_data.lot_no }}</b></a> ({{ lotno_data.manufacturer }})
-            </li>
-          </ol>
-          <p class="text-caption text-left mt-4">※ 報告一覧では同時接種したワクチンを含む報告も表示されるため、件数が異なる場合があります。</p>
-        </v-col>
-      </v-row>
-
       <p class="text-caption text-right mt-2">※ 「 <a :href="carditisSummaryData?.carditis_summary.source.url">{{ carditisSummaryData?.carditis_summary.source.name }}</a> 」で
       発表された資料の <b>{{ carditisSummaryData?.carditis_summary.date }}</b> 時点の数値を用いています。</p>
     </v-container>
@@ -266,21 +246,17 @@
 <script setup lang="ts">
 import { onMounted, shallowRef } from 'vue'
 import axios from 'axios'
-import { AppBarTitle, AppBarColor, CarditisSummaryURL, DeathSummaryURL, DeathSummaryFromReportsURL, CarditisSummaryFromReportsURL } from '@/router/data'
+import { AppBarTitle, AppBarColor, CarditisSummaryURL, DeathSummaryURL, DeathSummaryFromReportsURL } from '@/router/data'
 import router from '@/router/index'
 import type { ICarditisSummaryRoot } from '@/types/CarditisSummary'
 import type { IDeathSummaryRoot } from '@/types/DeathSummary'
 import type { IDeathSummaryFromReportsRoot } from '@/types/DeathSummaryFromReports'
-import type { ICarditisSummaryFromReportsRoot } from '@/types/CarditisSummaryFromReports'
 import EvaluationResultHelpDialog from '@/components/EvaluationResultHelpDialog.vue'
-import type { ILotNumberItem } from '@/types/LotNumberInfomation'
-import { CreateBarChartOption } from '@/tools/ChartOptions'
 
 AppBarTitle.value = String(router.currentRoute.value.name)
 AppBarColor.value = '#2962ff'
 
 const carditisSummaryData = shallowRef<ICarditisSummaryRoot>()
-const carditisSummaryDataFromReports = shallowRef<ICarditisSummaryFromReportsRoot>()
 const deathSummaryData = shallowRef<IDeathSummaryRoot>()
 const deathSummaryDataFromReports = shallowRef<IDeathSummaryFromReportsRoot>()
 onMounted(() => {
@@ -307,24 +283,6 @@ onMounted(() => {
     })
     .catch((error) => console.log('failed to get carditis summary data: ' + error))
   
-  axios
-    .get<ICarditisSummaryFromReportsRoot>(CarditisSummaryFromReportsURL)
-    .then((response) => {
-      carditisSummaryDataFromReports.value = response.data
-
-      const top_ten_list = carditisSummaryDataFromReports.value.carditis_summary_from_reports.lot_no_info.top_ten_list
-      const lot_no_data = []
-      for (let index = 0; index < top_ten_list.length; index++) {
-        lot_no_data.push({x: top_ten_list[index].lot_no, y: top_ten_list[index].count})
-      }
-      lotNumberSeries.value = lot_no_data
-      lotNumberTopTenList.value = top_ten_list
-
-      // 2つ目以降のグラフが手動リフレッシュ無しにちゃんと表示されるようにするために必要な処理
-      window.dispatchEvent(new Event('resize'))
-    })
-    .catch((error) => console.log('failed to get carditis summary from reports data: ' + error))
-
   axios
     .get<IDeathSummaryRoot>(DeathSummaryURL)
     .then((response) => {
@@ -646,13 +604,6 @@ const addNewLineWithBrackets = (label: string): string => {
     joined += '(' + split[index];
   }
   return joined
-}
-
-const lotNumberSeries = shallowRef<any[]>([])
-const lotNumberOptions = CreateBarChartOption('報告が多いロットNoの上位10種')
-const lotNumberTopTenList = shallowRef<ILotNumberItem[]>([])
-const createUrl = (value: string) => {
-  return '#/reported-myocarditis-issues?ln=' + value
 }
 </script>
 
