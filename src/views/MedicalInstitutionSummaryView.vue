@@ -11,9 +11,14 @@
     </v-container>
 
     <v-container v-else>
-      <h4 class="text-h4">副反応疑い報告</h4>
-      <p>
-        予防接種法により医療機関から報告された事例 <b>{{ medicalInstitutionSummary?.medical_institution_summary_from_reports.total_count.toLocaleString() }} [件]</b> の集計結果を示します。
+      <h4 class="text-h4 mb-2">副反応疑い報告</h4>
+      <p class="text-body-1 mb-5">
+        予防接種法に基づいて医療機関から報告された副反応疑い報告 <span class="big-bold">{{ medicalInstitutionSummary?.medical_institution_summary_from_reports.total_count.toLocaleString() }}</span> [件] の集計結果を示します。
+      </p>
+
+      <h5 class="text-h5 mb-2">報告医の評価</h5>
+      <p class="text-body-1 mb-1">
+        報告医による因果関係評価の内訳や、報告医が関連の有無を評価した結果の内訳です。
       </p>
 
       <div class="d-flex justify-end">
@@ -21,7 +26,7 @@
         <v-btn size="small" @click="changeChartView" color="blue" v-else>割合を表示</v-btn>
       </div>
 
-      <v-row>
+      <v-row class="mb-5">
         <v-col cols="12" sm="6">
           <apexchart :options="causalRelationshipOptions" :series="causalRelationshipSeries"></apexchart>
         </v-col>
@@ -31,8 +36,7 @@
         </v-col>
       </v-row>
 
-      <br>
-      <p class="text-caption text-right">※ <b>{{ medicalInstitutionSummary?.medical_institution_summary_from_reports.date }}</b> 時点までの集計結果を用いています。</p>
+      <p class="text-caption text-right">※ このページは <b>{{ medicalInstitutionSummary?.medical_institution_summary_from_reports.date }}</b> 時点までの報告内容に基づいた集計結果を表示しています。</p>
     </v-container>
 
   </v-container>
@@ -67,7 +71,7 @@ onMounted(() => {
         severityLabels.value.push(Object.keys(ss)[index])      
       }
       severitySeries.value = Object.values(ss)
-   
+
       // 2つ目以降のグラフが手動リフレッシュ無しにちゃんと表示されるようにするために必要な処理
       window.dispatchEvent(new Event('resize'))
     })
@@ -90,4 +94,9 @@ const changeChartView = () => {
 }
 </script>
 
-<style lang="scss"></style>
+<style scoped lang="css">
+.big-bold {
+  font-size: 1.4rem;
+  font-weight: bolder;
+}
+</style>

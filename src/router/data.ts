@@ -15,6 +15,7 @@ export const MedicalInstitutionSummaryURL = DatasetsURL + 'medical-institution-s
 export const CarditisReportsURL = DatasetsURL + 'carditis-reports.json'
 export const CarditisMetadataURL = DatasetsURL + 'carditis-metadata.json'
 export const CarditisSummaryURL = DatasetsURL + 'carditis-summary.json'
+export const CarditisSummaryFromReportsURL = DatasetsURL + 'carditis-summary-from-reports.json'
 
 export const DeathReportsURL = DatasetsURL + 'death-reports.json'
 export const DeathMetadataURL = DatasetsURL + 'death-metadata.json'
