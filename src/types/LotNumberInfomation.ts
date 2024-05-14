@@ -1,5 +1,6 @@
 export interface ILotNumberInformation {
 	top_ten_list: ILotNumberItem[]
+	top_ten_list_moderna: ILotNumberItem[]
 	invalid_count: number
 }
 

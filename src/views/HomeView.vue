@@ -17,6 +17,9 @@
             <v-col cols="12" lg="3" md="4" sm="6" v-for="(r, i) in MedialInstitutionRoutes" :key="i">
               <v-btn :prepend-icon="r.icon" size="x-large" :href="`${baseURL}#${r.path}`" min-width="17rem">{{ r.menu_name }}</v-btn>
             </v-col>
+            <v-col cols="12" lg="3" md="4" sm="6">
+              <v-btn :prepend-icon="MedialInstitutionReferenceRoute.icon" size="x-large" :href="`${baseURL}#${MedialInstitutionReferenceRoute.path}`" min-width="17rem">{{ MedialInstitutionReferenceRoute.menu_name }}</v-btn>
+            </v-col>
           </v-row>
         </v-container>
 
@@ -141,7 +144,8 @@ import {
   SuspectedIssuesHomeRoute,
   SuspectedIssuesSubRoutes,
   MedialInstitutionHomeRoute,
-  MedialInstitutionRoutes
+  MedialInstitutionRoutes,
+  MedialInstitutionReferenceRoute
 } from '@/router/routes'
 import { shallowRef } from 'vue'
 import router from '@/router/index'

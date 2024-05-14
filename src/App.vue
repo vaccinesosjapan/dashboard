@@ -5,6 +5,7 @@ import {
   SuspectedIssuesSubRoutes,
   MedialInstitutionHomeRoute,
   MedialInstitutionRoutes,
+  MedialInstitutionReferenceRoute,
   HealthHazardsHomeRoute,
   AboutRoute,
   HomeRoute,
@@ -95,6 +96,17 @@ export default {
           >
             <v-list-item-title class="sub-title suspeted-issue-sub">{{
               r.menu_name
+            }}</v-list-item-title>
+          </v-list-item>
+          <v-list-item
+            :prepend-icon="MedialInstitutionReferenceRoute.icon"
+            :href="`${baseURL}#${MedialInstitutionReferenceRoute.path}`"
+            class="sub-icon suspeted-issue-sub"
+            :active="MedialInstitutionReferenceRoute.name === selectedItem"
+            @click="selectedItem = MedialInstitutionReferenceRoute.name"
+          >
+            <v-list-item-title class="sub-title suspeted-issue-sub">{{
+              MedialInstitutionReferenceRoute.menu_name
             }}</v-list-item-title>
           </v-list-item>
         </v-list-group>

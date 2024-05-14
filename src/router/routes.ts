@@ -53,6 +53,13 @@ export const MedialInstitutionRoutes = [
     component: () => import('../views/MedicalInstitutionView.vue')
   },
 ]
+export const MedialInstitutionReferenceRoute = {
+  path: '/reference-of-medical-institution-reports',
+  name: '医療機関からの報告 - 副反応疑い報告の参考情報',
+  menu_name: '参考情報',
+  icon: 'mdi-information-outline',
+  component: () => import('../views/MedicalInstitutionReferenceView.vue')
+}
 
 export const HealthHazardsHomeRoute = {
   path: '/certified-health-hazard-summary',
@@ -86,6 +93,7 @@ export const AllRoutes = [
   ...SuspectedIssuesSubRoutes,
   MedialInstitutionHomeRoute,
   ...MedialInstitutionRoutes,
+  MedialInstitutionReferenceRoute,
   HealthHazardsHomeRoute,
   ...HealthHazardsSubRoutes
 ]
