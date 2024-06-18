@@ -41,6 +41,7 @@
               </tr>
             </tbody>
           </v-table>
+          <p class="text-caption text-right">※ 未処理の <b>{{ items?.open_cases_count.toLocaleString() }}</b> [件] を除いた合計件数です。</p>
         </v-col>
       </v-row>
       <p class="text-caption text-right">※ <b>{{ items?.date }}</b> までの「疾病・障害認定審査会」累計データを用いて算出しています。</p>
@@ -182,13 +183,11 @@ onMounted(() => {
       judgementChartSeries.value.push(items.value.certified_count)
       judgementChartSeries.value.push(items.value.denied_count)
       judgementChartSeries.value.push(items.value.pending_count)
-      judgementChartSeries.value.push(items.value.open_cases_count)
 
       judgementTableSeries.value.push({name: '認定', data: items.value.certified_count})
       judgementTableSeries.value.push({name: '否認', data: items.value.denied_count})
       judgementTableSeries.value.push({name: '保留', data: items.value.pending_count})
-      judgementTableSeries.value.push({name: '未処理', data: items.value.open_cases_count})
-      judgementTableSeries.value.push({name: '合計', data: items.value.total_entries})
+      judgementTableSeries.value.push({name: '合計', data: items.value.total_entries - items.value.open_cases_count})
 
       certified_and_denied_count.value = items.value.certified_count + items.value.denied_count
 
@@ -290,7 +289,7 @@ const selectItemColor = (name: any): string => {
 const judgementChartSeries = shallowRef<number[]>([])
 const judgementChartOptions = {
   chart: { type: 'pie' },
-  labels: ['認定', '否認', '保留', '未処理'],
+  labels: ['認定', '否認', '保留'],
   legend: {
     position: 'bottom',
   },
