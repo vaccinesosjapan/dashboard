@@ -8,6 +8,7 @@ import {
   MedialInstitutionReferenceRoute,
   HealthHazardsHomeRoute,
   AboutRoute,
+  HowToUseRoute,
   HomeRoute,
   HealthHazardsSubRoutes
 } from '@/router/routes'
@@ -196,6 +197,17 @@ export default {
             }}</v-list-item-title>
           </v-list-item>
         </v-list-group>
+
+        <v-list-item
+          :prepend-icon="HowToUseRoute.icon"
+          :value="HowToUseRoute.name"
+          :href="`${baseURL}#${HowToUseRoute.path}`"
+          class="root-icon"
+          :active="HowToUseRoute.name === selectedItem"
+          @click="selectedItem = HowToUseRoute.name"
+        >
+          <v-list-item-title class="root-title">{{ HowToUseRoute.menu_name }}</v-list-item-title>
+        </v-list-item>
 
         <v-list-item
           :prepend-icon="AboutRoute.icon"

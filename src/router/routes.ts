@@ -5,10 +5,17 @@ export const HomeRoute = {
   icon: 'mdi-home',
   component: () => import('../views/HomeView.vue')
 }
+export const HowToUseRoute = {
+  path: '/how-to-use',
+  name: '使い方の説明',
+  menu_name: '使い方の説明',
+  icon: 'mdi-book-open-page-variant-outline',
+  component: () => import('../views/HowToUseView.vue')
+}
 export const AboutRoute = {
   path: '/about',
-  name: 'Aboutページ',
-  menu_name: 'Aboutページ',
+  name: '本サイトについて',
+  menu_name: '本サイトについて',
   icon: 'mdi-information-outline',
   component: () => import('../views/AboutView.vue')
 }
@@ -36,12 +43,12 @@ export const SuspectedIssuesSubRoutes = [
     component: () => import('../views/DeathView.vue')
   },
   {
-  path: '/reference-of-suspected-issues-reports',
-  name: '製造販売業者からの報告 - 参考情報',
-  menu_name: '参考情報',
-  icon: 'mdi-information-outline',
-  component: () => import('../views/SuspectedIssuesReferenceView.vue')
-}
+    path: '/reference-of-suspected-issues-reports',
+    name: '製造販売業者からの報告 - 参考情報',
+    menu_name: '参考情報',
+    icon: 'mdi-information-outline',
+    component: () => import('../views/SuspectedIssuesReferenceView.vue')
+  }
 ]
 
 export const MedialInstitutionHomeRoute = {
@@ -95,6 +102,7 @@ export const HealthHazardsSubRoutes = [
 
 export const AllRoutes = [
   HomeRoute,
+  HowToUseRoute,
   AboutRoute,
   SuspectedIssuesHomeRoute,
   ...SuspectedIssuesSubRoutes,

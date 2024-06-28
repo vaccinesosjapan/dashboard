@@ -3,12 +3,12 @@
 		<v-card-text>
 		2023年2月10日 以前の報告では、否認理由は下図のように5段階で分けられていました。
 		</v-card-text>
-		<v-img src="TypeA.png"></v-img>
+		<v-img src="images/TypeA.png"></v-img>
 
 		<v-card-text>
 		しかし、2023年3月14日 以降の報告では、否認理由は下図の4段階で表現されるようになりました。
 		</v-card-text>
-		<v-img src="TypeB.png"></v-img>
+		<v-img src="images/TypeB.png"></v-img>
 
 		<v-card-text>
 		それぞれの数字が表す内容が異なるため、本サイトではタイプを表す文字列をつけて区別するようにしました。
