@@ -22,7 +22,7 @@
             <SelectItems v-else-if="sItem.type == 'reasons'"
             v-model:values="reasonsForRepudiationValues" v-model:items="reasonsForRepudiationItems"
             :search-triger-func="searchTrigerFunc" :clear-trigger-func="clearTriggerFunc"
-            label="判定理由"
+            label="否認理由"
             ></SelectItems>
 
             <v-dialog v-else-if="sItem.type == 'reasons-help'" transition="dialog-bottom-transition" width="auto">
