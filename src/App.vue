@@ -12,20 +12,13 @@ import {
   HomeRoute,
   HealthHazardsSubRoutes
 } from '@/router/routes'
-import { AppBarTitle, AppBarColor } from '@/router/data'
+import { AppBarTitle, AppBarColor, AppBarUseTableOfContent, AppBarTableOfContentFunc } from '@/router/data'
 import { shallowRef } from 'vue'
 
-const selectedItem = shallowRef('')
-
 const baseURL = import.meta.env.BASE_URL
-</script>
 
-<script lang="ts">
-export default {
-  data: () => ({
-    drawer: false
-  })
-}
+const selectedItem = shallowRef('')
+const drawer = shallowRef<boolean>(false)
 </script>
 
 <template>
@@ -36,6 +29,10 @@ export default {
         <v-toolbar-title class="d-none d-sm-flex">{{ AppBarTitle }}</v-toolbar-title>
         <v-toolbar-title class="d-flex d-sm-none small-app-title">{{ AppBarTitle }}</v-toolbar-title>
       </template>
+      <v-spacer v-if="AppBarUseTableOfContent"></v-spacer>
+      <v-btn v-if="AppBarUseTableOfContent" prepend-icon="mdi-table-of-contents" @click.stop="AppBarTableOfContentFunc">
+        目次
+      </v-btn>
     </v-app-bar>
 
     <v-navigation-drawer v-model="drawer" temporary width="10rem">
