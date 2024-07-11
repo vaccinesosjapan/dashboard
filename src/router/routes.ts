@@ -5,13 +5,6 @@ export const HomeRoute = {
   icon: 'mdi-home',
   component: () => import('../views/HomeView.vue')
 }
-export const HowToUseRoute = {
-  path: '/how-to-use',
-  name: '使い方の説明',
-  menu_name: '使い方の説明',
-  icon: 'mdi-book-open-page-variant-outline',
-  component: () => import('../views/HowToUseView.vue')
-}
 export const AboutRoute = {
   path: '/about',
   name: '本サイトについて',
@@ -100,9 +93,33 @@ export const HealthHazardsSubRoutes = [
   }
 ]
 
+export const HowToUseSearchPageRoutes = [
+  {
+    path: '/how-to-use-search-feature',
+    name: '検索機能の使い方',
+    menu_name: '検索機能の使い方',
+    icon: 'mdi-book-open-page-variant-outline',
+    component: () => import('../views/HowToUseSearchFeature.vue')
+  },
+  {
+    path: '/how-to-use-issue-list',
+    name: 'データ一覧の使い方',
+    menu_name: 'データ一覧の使い方',
+    icon: 'mdi-book-open-page-variant-outline',
+    component: () => import('../views/HowToUseIssueList.vue')
+  },
+  {
+    path: '/how-to-use-summary-page',
+    name: 'サマリページの使い方',
+    menu_name: 'サマリページの使い方',
+    icon: 'mdi-book-open-page-variant-outline',
+    component: () => import('../views/HowToUseSummaryPage.vue')
+  },
+]
+
 export const AllRoutes = [
   HomeRoute,
-  HowToUseRoute,
+  ...HowToUseSearchPageRoutes,
   AboutRoute,
   SuspectedIssuesHomeRoute,
   ...SuspectedIssuesSubRoutes,

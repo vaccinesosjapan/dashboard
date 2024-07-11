@@ -8,7 +8,7 @@ import {
   MedialInstitutionReferenceRoute,
   HealthHazardsHomeRoute,
   AboutRoute,
-  HowToUseRoute,
+  HowToUseSearchPageRoutes,
   HomeRoute,
   HealthHazardsSubRoutes
 } from '@/router/routes'
@@ -195,16 +195,35 @@ const drawer = shallowRef<boolean>(false)
           </v-list-item>
         </v-list-group>
 
-        <v-list-item
-          :prepend-icon="HowToUseRoute.icon"
-          :value="HowToUseRoute.name"
-          :href="`${baseURL}#${HowToUseRoute.path}`"
-          class="root-icon"
-          :active="HowToUseRoute.name === selectedItem"
-          @click="selectedItem = HowToUseRoute.name"
-        >
-          <v-list-item-title class="root-title">{{ HowToUseRoute.menu_name }}</v-list-item-title>
-        </v-list-item>
+        <v-list-group value="HowToUseSeries">
+          <template v-slot:activator="{ props }">
+            <v-list-item
+              v-bind="props"
+              prepend-icon="mdi-book-open-page-variant-outline"
+              class="root-icon"
+            >
+              <v-list-item-title class="d-none d-sm-flex root-title"
+                >使い方の説明</v-list-item-title
+              >
+              <v-list-item-title class="d-flex d-sm-none root-small-title2"
+                >使い方の説明</v-list-item-title
+              >
+            </v-list-item>
+          </template>
+
+          <v-list-item
+            v-for="(r, i) in HowToUseSearchPageRoutes"
+            :key="i"
+            :prepend-icon="r.icon"
+            :value="r.name"
+            :href="`${baseURL}#${r.path}`"
+            class="sub-icon"
+            :active="r.name === selectedItem"
+            @click="selectedItem = r.name"
+          >
+            <v-list-item-title class="sub-title">{{ r.menu_name }}</v-list-item-title>
+          </v-list-item>
+        </v-list-group>
 
         <v-list-item
           :prepend-icon="AboutRoute.icon"
