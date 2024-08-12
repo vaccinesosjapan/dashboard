@@ -8,8 +8,8 @@ export const StringFilterFunc = (value: string, filterVal: ShallowRef<string>): 
   // フィルタリング処理が不要な場合はtrueを返すことで、項目を表示させる
   if (nullOrEmptyString(filterVal.value)) return true
 
-  const targetVal = value.normalize('NFKC')
-  const searchVal = filterVal.value.normalize('NFKC')
+  const targetVal = value.normalize('NFKC').toLowerCase()
+  const searchVal = filterVal.value.normalize('NFKC').toLowerCase()
 
   return targetVal.indexOf(searchVal) > -1
 }
