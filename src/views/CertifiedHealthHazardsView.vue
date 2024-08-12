@@ -3,7 +3,7 @@
     <v-expansion-panel>
       <v-expansion-panel-title color="#66BB6A">
         <v-icon class="search-icon">mdi-magnify</v-icon>
-        <span class="search-title">詳細検索...</span>
+        <span class="search-title">検索...</span>
         <v-spacer></v-spacer>
         <v-chip v-if="searchConditionChanged" size="small" variant="elevated" color="orange-lighten-3">検索ワード入力中</v-chip>
       </v-expansion-panel-title>
@@ -291,7 +291,7 @@ const clearTriggerFunc = () => {
   searchConditionChanged.value = IsConditionChanged(queryParamMap)
 }
 
-// 詳細検索の入力欄を作るための設定たち
+// 検索の入力欄を作るための設定たち
 const _blank = shallowRef()
 const issueSearchItems = [
   { md: 6, label: "請求内容", model: descriptionOfClaimFilterVal, type: "text"},

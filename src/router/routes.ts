@@ -95,25 +95,25 @@ export const HealthHazardsSubRoutes = [
 
 export const HowToUseSearchPageRoutes = [
   {
-    path: '/how-to-use-search-feature',
-    name: '検索機能の使い方',
-    menu_name: '検索機能の使い方',
+    path: '/how-to-search',
+    name: '検索の仕方',
+    menu_name: '検索の仕方',
     icon: 'mdi-book-open-page-variant-outline',
-    component: () => import('../views/HowToUseSearchFeature.vue')
+    component: () => import('../views/HowToSearch.vue')
   },
   {
-    path: '/how-to-use-issue-list',
-    name: 'データ一覧の使い方',
-    menu_name: 'データ一覧の使い方',
+    path: '/how-to-save',
+    name: '保存の仕方',
+    menu_name: '保存の仕方',
     icon: 'mdi-book-open-page-variant-outline',
-    component: () => import('../views/HowToUseIssueList.vue')
+    component: () => import('../views/HowToSave.vue')
   },
   {
     path: '/how-to-use-summary-page',
-    name: 'サマリページの使い方',
-    menu_name: 'サマリページの使い方',
+    name: '集計結果の使い方',
+    menu_name: '集計結果の使い方',
     icon: 'mdi-book-open-page-variant-outline',
-    component: () => import('../views/HowToUseSummaryPage.vue')
+    component: () => import('../views/HowToUseSummary.vue')
   },
 ]
 
