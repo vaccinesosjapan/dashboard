@@ -1,41 +1,43 @@
 <template>
   <v-container>
 
-    <v-navigation-drawer location="right" temporary width="15rem" v-model="tocDrawer">
+    <v-card title="目次" valiant="outlined" color="indigo-darken-3">
       <v-list density="compact" nav>
-        <v-list-item @click="scrollView(howToUseSummaryPageChapter2.id)">{{ howToUseSummaryPageChapter2.title }}</v-list-item>
-        <v-list-item class="pl-6" v-for="item in howToUseSummaryPageChapter3List" :key="item.id" :title="item.title"
-          @click="scrollView(item.id)"></v-list-item>
+        <v-list-item class="pl-6" v-for="item in howToUseSummaryPageChapter3List" :key="item.id" @click="scrollView(item.id, item.position)">
+          <v-icon icon="mdi-square-medium"></v-icon> {{ item.title }}
+        </v-list-item>
       </v-list>
-    </v-navigation-drawer>
+    </v-card>
 
     <v-sheet>
-      <h2 class="text-h4 mb-2" :id="howToUseSummaryPageChapter2.id">{{ howToUseSummaryPageChapter2.title }}
-        <CopyLinkSnackBar :id="howToUseSummaryPageChapter2.id"></CopyLinkSnackBar>
-      </h2>
+      <h3 :id="sectionSelectPercentOrCount.id" class="text-h5 mt-10 mb-2">{{ sectionSelectPercentOrCount.title }}
+        <CopyLinkSnackBar :id="sectionSelectPercentOrCount.id" :position="sectionSelectPercentOrCount.position"></CopyLinkSnackBar>
+      </h3>
       <p class="text-body-1">
-        判定結果などの情報を集計したサマリ情報をグラフなどで表示しているサマリページの使い方を説明します。
+        「件数を表示」ボタンを押すことで、グラフに表示される数値を全体に対する割合から総件数へと切り替え可能です。
+        <v-img src="images/how-to-use/select-count-view-mode.png"></v-img><br>
+        逆に「割合を表示」ボタンを押すことで、グラフに表示される数値を総件数から全体に対する割合へと切り替え可能です。
+        <v-img src="images/how-to-use/select-percent-view-mode.png"></v-img><br>
       </p>
     </v-sheet>
 
-    <v-sheet v-for="item in howToUseSummaryPageChapter3List" :key="item.id">
-      <h3 :id="item.id" class="text-h5 mt-8 mb-2">{{ item.title }}
-        <CopyLinkSnackBar :id="item.id"></CopyLinkSnackBar>
+    <v-sheet>
+      <h3 :id="sectionSaveGraph.id" class="text-h5 mt-10 mb-2">{{ sectionSaveGraph.title }}
+        <CopyLinkSnackBar :id="sectionSaveGraph.id" :position="sectionSaveGraph.position"></CopyLinkSnackBar>
       </h3>
-
-      <p v-if="item.id == 'confirm-issue-counts'" class="text-body-1">
-        グラフにマウスを重ねたりタップして選択すると、下図のように件数が表示されます。
-        <v-img max-width="400" src="images/show-issue-count-by-mouse-over.png"></v-img><br>
-        また、「件数を表示」ボタンを押すことでページ全体のグラフを件数表示に変更できます。
-        逆に「割合を表示」ボタンを押すことで割合表示に戻せます。
-        <v-img max-width="500" src="images/exchange-graph-display-mode.png"></v-img>
-      </p>
-
-      <p v-if="item.id == 'save-graph-data-as-csv-etc'" class="text-body-1">
-        グラフの右上にあるメニュー（<v-icon icon="mdi-menu"></v-icon>アイコン）を選択すると、下図のようにメニューが表示されます。
-        <v-img max-width="700" src="images/show-apecharts-menu.png"></v-img><br>
-        「Download SVG」や「Download PNG」を選べばそれぞれの形式の画像として、「Download CSV」を選べばCSV形式のテキストとして、
-        グラフのデータを保存できます。
+      <p class="text-body-1">
+        グラフ右上の<v-icon icon="mdi-menu"></v-icon>アイコンをクリック（タップ）すると、グラフを保存するためのメニューが表示されます。
+        <v-img src="images/how-to-use/show-graph-menu.png"></v-img><br>
+        メニューの選択肢でダウンロードできるファイルは以下の通りです。
+        <v-list density="compact">
+          <v-list-item class="pl-6"><v-icon icon="mdi-square-medium"></v-icon>Download SVG: グラフをSVG形式の画像としてダウンロードします。</v-list-item>
+          <v-list-item class="pl-6"><v-icon icon="mdi-square-medium"></v-icon>Download PNG: グラフをPNG形式の画像としてダウンロードします。</v-list-item>
+          <v-list-item class="pl-6"><v-icon icon="mdi-square-medium"></v-icon>Download CSV: グラフをCSV形式のテキストとしてダウンロードします。</v-list-item>
+        </v-list>
+        <v-alert class="mt-2" density="compact" title="CSVファイルとは" type="info" elevation="2" border="start" border-color="blue-darken-4">
+          CSVファイルは、表形式のデータをカンマ「,」で区切ったテキストデータを保存したファイルです。
+          Excelで開いてご自身で集計したり、グラフ作成を行う際に利用することができます。
+        </v-alert>
       </p>
     </v-sheet>
 
@@ -55,17 +57,18 @@ AppBarTableOfContentFunc.value = () => { tocDrawer.value = !tocDrawer.value }
 
 const tocDrawer = shallowRef<boolean>(false)
 
-const howToUseSummaryPageChapter2 = { title: 'サマリページの使い方', id: 'how-to-use-summary' }
+const sectionSelectPercentOrCount = { title: '割合表示と件数表示を切り替える', id: 'select-percent-or-count', position: 'top' }
+const sectionSaveGraph = { title: 'グラフを保存する', id: 'save-graph', position: 'middle' }
 const howToUseSummaryPageChapter3List = [
-  { title: 'グラフの各項目で件数を確認する', id: 'confirm-issue-counts' },
-  { title: 'グラフをCSVや画像で保存する', id: 'save-graph-data-as-csv-etc' }
+  sectionSelectPercentOrCount,
+  sectionSaveGraph
 ]
 
-const scrollView = (id: string) => {
+const scrollView = (id: string, position: string) => {
   const chapterElement = document.getElementById(id)
   if (chapterElement != null) {
     chapterElement.scrollIntoView({ behavior: "smooth", block: "start", inline: "nearest" });
-    router.push({ path: 'how-to-use-summary-page', query: { anchor: id } })
+    router.push({ query: { anchor: id, position: position} })
   }
 }
 </script>
