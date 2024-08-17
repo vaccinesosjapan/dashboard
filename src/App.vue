@@ -36,7 +36,7 @@ const drawer = shallowRef<boolean>(false)
         </v-toolbar-title>
         <v-hover v-if="AppBarUseHelpPage">
           <template v-slot:default="{ isHovering, props }">
-            <v-btn prepend-icon="mdi-help-circle" :href="`${baseURL}#${AppBarHelpPageLink}`"
+            <v-btn prepend-icon="mdi-help-circle-outline" :href="`${baseURL}#${AppBarHelpPageLink}`"
               class="ml-4" variant=elevated v-bind="props" :color="isHovering ? 'grey-lighten-2' : undefined" :elevation="isHovering ? 10 : 2" text="使い方"></v-btn>
           </template>
         </v-hover>
