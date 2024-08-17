@@ -12,13 +12,17 @@ import {
   HomeRoute,
   HealthHazardsSubRoutes
 } from '@/router/routes'
-import { AppBarTitle, AppBarColor } from '@/router/data'
+import { AppBarTitle, AppBarColor, AppBarUseHelpPage, AppBarHelpPageLink } from '@/router/data'
 import { shallowRef } from 'vue'
 
 const baseURL = import.meta.env.BASE_URL
 
 const selectedItem = shallowRef('')
 const drawer = shallowRef<boolean>(false)
+
+// メモ:
+// v-app-bar-title を使うと画面サイズによってはタイトルが文字切れしてしまうため、独自の実装で
+// 文字切れしないようにしている。
 </script>
 
 <template>
@@ -27,7 +31,15 @@ const drawer = shallowRef<boolean>(false)
       <template v-slot:prepend>
         <v-app-bar-nav-icon variant="text" @click.stop="drawer = !drawer"></v-app-bar-nav-icon>
         <v-toolbar-title class="d-none d-sm-flex">{{ AppBarTitle }}</v-toolbar-title>
-        <v-toolbar-title class="d-flex d-sm-none small-app-title">{{ AppBarTitle }}</v-toolbar-title>
+        <v-toolbar-title class="d-flex d-sm-none small-app-title">
+          <span v-for="(item, index) in AppBarTitle.split('-')" :key="index">{{ item }}<br></span>
+        </v-toolbar-title>
+        <v-hover v-if="AppBarUseHelpPage">
+          <template v-slot:default="{ isHovering, props }">
+            <v-btn prepend-icon="mdi-help-circle" :href="`${baseURL}#${AppBarHelpPageLink}`"
+              class="ml-4" variant=elevated v-bind="props" :color="isHovering ? 'grey-lighten-2' : undefined" :elevation="isHovering ? 10 : 2" text="使い方"></v-btn>
+          </template>
+        </v-hover>
       </template>
     </v-app-bar>
 
@@ -291,7 +303,7 @@ const drawer = shallowRef<boolean>(false)
 }
 
 .small-app-title {
-  font-size: 0.85rem;
+  font-size: 1rem;
 }
 
 .v-list-group {
