@@ -146,7 +146,7 @@
 <script setup lang="ts">
 import { onMounted, shallowRef } from 'vue'
 import axios from 'axios'
-import { AppBarTitle, AppBarColor, CertifiedSummaryURL, CertifiedSummaryWithOtherVaccinesURL, CertifiedTrendsURL } from '@/router/data'
+import { AppBarTitle, AppBarColor, CertifiedSummaryURL, CertifiedSummaryWithOtherVaccinesURL, CertifiedTrendsURL, AppBarUseHelpPage, AppBarHelpPageLink } from '@/router/data'
 import router from '@/router/index'
 import type { ICertifiedSummary, ICertifiedSummaryWithOtherVaccines } from '@/types/CertifiedSummary'
 import type { ICertifiedTrends } from '@/types/CertifiedTrends'
@@ -154,6 +154,8 @@ import { CreateBarChartOption } from '@/tools/ChartOptions'
 
 AppBarTitle.value = String(router.currentRoute.value.name)
 AppBarColor.value = 'green'
+AppBarUseHelpPage.value = true
+AppBarHelpPageLink.value = 'how-to-use-summary-page'
 
 const isPersentView = shallowRef(true)
 

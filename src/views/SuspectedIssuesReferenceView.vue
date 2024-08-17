@@ -123,7 +123,7 @@
 <script setup lang="ts">
 import { onMounted, shallowRef } from 'vue'
 import axios from 'axios'
-import { AppBarTitle, AppBarColor, CarditisSummaryFromReportsURL, DeathSummaryFromReportsURL } from '@/router/data'
+import { AppBarTitle, AppBarColor, CarditisSummaryFromReportsURL, DeathSummaryFromReportsURL, AppBarUseHelpPage, AppBarHelpPageLink } from '@/router/data'
 import router from '@/router/index'
 import type { ILotNumberItem } from '@/types/LotNumberInfomation'
 import { CreateBarChartOption } from '@/tools/ChartOptions'
@@ -132,6 +132,8 @@ import type { IDeathSummaryFromReportsRoot } from '@/types/DeathSummaryFromRepor
 
 AppBarTitle.value = String(router.currentRoute.value.name)
 AppBarColor.value = 'blue-accent-1'
+AppBarUseHelpPage.value = true
+AppBarHelpPageLink.value = 'how-to-use-summary-page'
 
 const carditisSummary = shallowRef<ICarditisSummaryFromReportsRoot>()
 const deathSummary = shallowRef<IDeathSummaryFromReportsRoot>()

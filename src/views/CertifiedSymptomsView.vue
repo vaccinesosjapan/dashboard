@@ -66,7 +66,7 @@
 import { onMounted, shallowRef } from 'vue'
 import axios from 'axios'
 import router from '@/router/index'
-import { AppBarTitle, AppBarColor, CertifiedSymptomsDataURL, CertifiedSymptomsMetadataURL } from '@/router/data'
+import { AppBarTitle, AppBarColor, CertifiedSymptomsDataURL, CertifiedSymptomsMetadataURL, AppBarUseHelpPage, AppBarHelpPageLink } from '@/router/data'
 import type { ICertifiedSymptom } from '@/types/CertifiedSymptom'
 import type { IQueryParam } from '@/types/QueryParam'
 import { ClearFilterValues, CreateUrlWithQueryParams, IsConditionChanged, ParseQueryParams } from '@/types/QueryParam'
@@ -80,6 +80,8 @@ import NumberFilter from '@/components/NumberFilter.vue'
 
 AppBarTitle.value = String(router.currentRoute.value.name)
 AppBarColor.value = 'green'
+AppBarUseHelpPage.value = true
+AppBarHelpPageLink.value = 'how-to-search'
 
 const loading = shallowRef(true)
 const dataTableItems = shallowRef<ICertifiedSymptom[]>()

@@ -156,7 +156,7 @@
 </template>
 
 <script setup lang="ts">
-import { AppBarTitle, AppBarColor } from '@/router/data'
+import { AppBarTitle, AppBarColor, AppBarUseHelpPage, AppBarHelpPageLink } from '@/router/data'
 import {
   HealthHazardsHomeRoute,
   HealthHazardsSubRoutes,
@@ -172,6 +172,8 @@ import router from '@/router/index'
 
 AppBarTitle.value = String(router.currentRoute.value.name)
 AppBarColor.value = '#E57373'
+AppBarUseHelpPage.value = false
+AppBarHelpPageLink.value = ''
 
 const baseURL = import.meta.env.BASE_URL
 const expandSuspectedIssues = shallowRef(false)

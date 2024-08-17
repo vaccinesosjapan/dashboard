@@ -158,7 +158,7 @@
 import { onMounted, shallowRef } from 'vue'
 import axios from 'axios'
 import router from '@/router/index'
-import { AppBarTitle, AppBarColor, CertifiedHealthHazardDataURL, CertifiedMetadataURL } from '@/router/data'
+import { AppBarTitle, AppBarColor, CertifiedHealthHazardDataURL, CertifiedMetadataURL, AppBarUseHelpPage, AppBarHelpPageLink } from '@/router/data'
 import type { ICertifiedHealthHazardIssue } from '@/types/CertifiedHealthHazard'
 import type { IQueryParam } from '@/types/QueryParam'
 import { ClearFilterValues, CreateUrlWithQueryParams, IsConditionChanged, ParseQueryParams } from '@/types/QueryParam'
@@ -177,6 +177,8 @@ import SearchRelatedToolBar from '@/components/SearchRelatedToolBar.vue'
 
 AppBarTitle.value = String(router.currentRoute.value.name)
 AppBarColor.value = 'green'
+AppBarUseHelpPage.value = true
+AppBarHelpPageLink.value = 'how-to-search'
 
 const loading = shallowRef(true)
 const dataTableItems = shallowRef<ICertifiedHealthHazardIssue[]>()

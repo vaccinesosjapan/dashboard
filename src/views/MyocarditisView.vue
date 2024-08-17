@@ -179,7 +179,7 @@ import { ClearFilterValues, CreateUrlWithQueryParams, IsConditionChanged, ParseQ
 import { CreateCsvContentRaw, DownloadCsvFile } from '@/types/FilteredDataAsCsv'
 import type { ICarditisMetadata } from '@/types/CarditisMetadata'
 import type { ICarditisSummaryRoot } from '@/types/CarditisSummary'
-import { AppBarTitle, AppBarColor, CarditisReportsURL, CarditisSummaryURL, CarditisMetadataURL } from '@/router/data'
+import { AppBarTitle, AppBarColor, CarditisReportsURL, CarditisSummaryURL, CarditisMetadataURL, AppBarUseHelpPage, AppBarHelpPageLink } from '@/router/data'
 import router from '@/router/index'
 import { DateArrayFilterFunc, DateFilterFunc, NumberFilterFunc, StringArrayFilterFunc, StringFilterFunc } from '@/tools/FilterFunc'
 import { SearchTrigger, SearchTriggerFunc } from '@/tools/SearchTriggerFunc'
@@ -195,6 +195,8 @@ import EvaluationResultHelpDialog from '@/components/EvaluationResultHelpDialog.
 
 AppBarTitle.value = String(router.currentRoute.value.name)
 AppBarColor.value = '#2962ff'
+AppBarUseHelpPage.value = true
+AppBarHelpPageLink.value = 'how-to-search'
 
 const loading = shallowRef(true)
 const dataTableItems = shallowRef<IReportedMyocarditisIssue[]>()

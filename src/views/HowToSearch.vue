@@ -120,12 +120,14 @@
 </template>
 
 <script setup lang="ts">
-import { AppBarTitle, AppBarColor } from '@/router/data'
+import { AppBarTitle, AppBarColor, AppBarUseHelpPage, AppBarHelpPageLink } from '@/router/data'
 import router from '@/router/index'
 import CopyLinkSnackBar from '@/components/CopyLinkSnackBar.vue'
 
 AppBarTitle.value = String(router.currentRoute.value.name)
 AppBarColor.value = 'blue-grey-lighten-4'
+AppBarUseHelpPage.value = false
+AppBarHelpPageLink.value = ''
 
 const sectionOpenSearchWindow = { title: '検索画面を開く', id: 'open-search-window', position: 'top' }
 const sectionFilterByClaim = { title: '請求内容で検索する', id: 'search-by-claim', position: 'top' }
