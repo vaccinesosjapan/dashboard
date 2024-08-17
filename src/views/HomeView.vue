@@ -134,6 +134,25 @@
       </v-expand-transition>
     </v-card>
   </v-container>
+
+  <v-container>
+    <v-card color="blue-grey-lighten-1" variant="elevated">
+      <v-card-title>使い方の説明</v-card-title>
+      <v-card-text class="card-text">
+        検索ページや集計結果ページの使い方を解説した記事です。
+      </v-card-text>
+
+      <v-item-group selected-class="bg-primary">
+        <v-container>
+          <v-row>
+            <v-col cols="12" lg="3" md="4" sm="6" v-for="(r, i) in HowToUseSearchPageRoutes" :key="i">
+              <v-btn :prepend-icon="r.icon" size="x-large" :href="`${baseURL}#${r.path}`" min-width="17rem">{{ r.menu_name }}</v-btn>
+            </v-col>
+          </v-row>
+        </v-container>
+      </v-item-group>
+    </v-card>
+  </v-container>
 </template>
 
 <script setup lang="ts">
@@ -145,7 +164,8 @@ import {
   SuspectedIssuesSubRoutes,
   MedialInstitutionHomeRoute,
   MedialInstitutionRoutes,
-  MedialInstitutionReferenceRoute
+  MedialInstitutionReferenceRoute,
+  HowToUseSearchPageRoutes
 } from '@/router/routes'
 import { shallowRef } from 'vue'
 import router from '@/router/index'
