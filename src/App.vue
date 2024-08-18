@@ -8,23 +8,21 @@ import {
   MedialInstitutionReferenceRoute,
   HealthHazardsHomeRoute,
   AboutRoute,
+  HowToUseSearchPageRoutes,
   HomeRoute,
   HealthHazardsSubRoutes
 } from '@/router/routes'
-import { AppBarTitle, AppBarColor } from '@/router/data'
+import { AppBarTitle, AppBarColor, AppBarUseHelpPage, AppBarHelpPageLink } from '@/router/data'
 import { shallowRef } from 'vue'
 
-const selectedItem = shallowRef('')
-
 const baseURL = import.meta.env.BASE_URL
-</script>
 
-<script lang="ts">
-export default {
-  data: () => ({
-    drawer: false
-  })
-}
+const selectedItem = shallowRef('')
+const drawer = shallowRef<boolean>(false)
+
+// メモ:
+// v-app-bar-title を使うと画面サイズによってはタイトルが文字切れしてしまうため、独自の実装で
+// 文字切れしないようにしている。
 </script>
 
 <template>
@@ -33,7 +31,15 @@ export default {
       <template v-slot:prepend>
         <v-app-bar-nav-icon variant="text" @click.stop="drawer = !drawer"></v-app-bar-nav-icon>
         <v-toolbar-title class="d-none d-sm-flex">{{ AppBarTitle }}</v-toolbar-title>
-        <v-toolbar-title class="d-flex d-sm-none small-app-title">{{ AppBarTitle }}</v-toolbar-title>
+        <v-toolbar-title class="d-flex d-sm-none small-app-title">
+          <span v-for="(item, index) in AppBarTitle.split('-')" :key="index">{{ item }}<br></span>
+        </v-toolbar-title>
+        <v-hover v-if="AppBarUseHelpPage">
+          <template v-slot:default="{ isHovering, props }">
+            <v-btn prepend-icon="mdi-book-open-page-variant-outline" :href="`${baseURL}#${AppBarHelpPageLink}`"
+              class="ml-4" variant=elevated v-bind="props" :color="isHovering ? 'grey-lighten-2' : undefined" :elevation="isHovering ? 10 : 2" text="使い方"></v-btn>
+          </template>
+        </v-hover>
       </template>
     </v-app-bar>
 
@@ -197,6 +203,36 @@ export default {
           </v-list-item>
         </v-list-group>
 
+        <v-list-group value="HowToUseSeries">
+          <template v-slot:activator="{ props }">
+            <v-list-item
+              v-bind="props"
+              prepend-icon="mdi-book-open-page-variant-outline"
+              class="root-icon"
+            >
+              <v-list-item-title class="d-none d-sm-flex root-title"
+                >使い方の説明</v-list-item-title
+              >
+              <v-list-item-title class="d-flex d-sm-none root-small-title2"
+                >使い方の説明</v-list-item-title
+              >
+            </v-list-item>
+          </template>
+
+          <v-list-item
+            v-for="(r, i) in HowToUseSearchPageRoutes"
+            :key="i"
+            :prepend-icon="r.icon"
+            :value="r.name"
+            :href="`${baseURL}#${r.path}`"
+            class="sub-icon"
+            :active="r.name === selectedItem"
+            @click="selectedItem = r.name"
+          >
+            <v-list-item-title class="sub-title">{{ r.menu_name }}</v-list-item-title>
+          </v-list-item>
+        </v-list-group>
+
         <v-list-item
           :prepend-icon="AboutRoute.icon"
           :value="AboutRoute.name"
@@ -267,7 +303,7 @@ export default {
 }
 
 .small-app-title {
-  font-size: 0.85rem;
+  font-size: 1rem;
 }
 
 .v-list-group {

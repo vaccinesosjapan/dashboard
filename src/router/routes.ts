@@ -7,8 +7,8 @@ export const HomeRoute = {
 }
 export const AboutRoute = {
   path: '/about',
-  name: 'Aboutページ',
-  menu_name: 'Aboutページ',
+  name: '本サイトについて',
+  menu_name: '本サイトについて',
   icon: 'mdi-information-outline',
   component: () => import('../views/AboutView.vue')
 }
@@ -36,12 +36,12 @@ export const SuspectedIssuesSubRoutes = [
     component: () => import('../views/DeathView.vue')
   },
   {
-  path: '/reference-of-suspected-issues-reports',
-  name: '製造販売業者からの報告 - 参考情報',
-  menu_name: '参考情報',
-  icon: 'mdi-information-outline',
-  component: () => import('../views/SuspectedIssuesReferenceView.vue')
-}
+    path: '/reference-of-suspected-issues-reports',
+    name: '製造販売業者からの報告 - 参考情報',
+    menu_name: '参考情報',
+    icon: 'mdi-information-outline',
+    component: () => import('../views/SuspectedIssuesReferenceView.vue')
+  }
 ]
 
 export const MedialInstitutionHomeRoute = {
@@ -93,8 +93,26 @@ export const HealthHazardsSubRoutes = [
   }
 ]
 
+export const HowToUseSearchPageRoutes = [
+  {
+    path: '/how-to-search',
+    name: '検索ページの使い方',
+    menu_name: '検索ページの使い方',
+    icon: 'mdi-book-open-page-variant-outline',
+    component: () => import('../views/HowToSearch.vue')
+  },
+  {
+    path: '/how-to-use-summary-page',
+    name: '集計結果ページの使い方',
+    menu_name: '集計結果ページの使い方',
+    icon: 'mdi-book-open-page-variant-outline',
+    component: () => import('../views/HowToUseSummary.vue')
+  },
+]
+
 export const AllRoutes = [
   HomeRoute,
+  ...HowToUseSearchPageRoutes,
   AboutRoute,
   SuspectedIssuesHomeRoute,
   ...SuspectedIssuesSubRoutes,

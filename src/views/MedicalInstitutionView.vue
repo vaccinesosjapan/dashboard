@@ -3,7 +3,7 @@
     <v-expansion-panel>
       <v-expansion-panel-title color="#00b0ff">
         <v-icon class="search-icon">mdi-magnify</v-icon>
-        <span class="search-title">詳細検索...</span>
+        <span class="search-title">検索...</span>
         <v-spacer></v-spacer>
         <v-chip v-if="searchConditionChanged" size="small" variant="elevated" color="orange-lighten-3">検索ワード入力中</v-chip>
       </v-expansion-panel-title>
@@ -199,7 +199,7 @@
 import { onMounted, shallowRef } from 'vue'
 import axios from 'axios'
 import router from '@/router/index'
-import { AppBarTitle, AppBarColor, MedicalInstitutionReportsURL, MedicalInstitutionSummaryURL, MedicalInstitutionMetadataURL } from '@/router/data'
+import { AppBarTitle, AppBarColor, MedicalInstitutionReportsURL, MedicalInstitutionSummaryURL, MedicalInstitutionMetadataURL, AppBarUseHelpPage, AppBarHelpPageLink } from '@/router/data'
 import { DateArrayFilterFunc, NumberFilterFunc, StringArrayFilterFunc, StringFilterFunc } from '@/tools/FilterFunc'
 import { SearchTrigger, SearchTriggerFunc } from '@/tools/SearchTriggerFunc'
 import type { IQueryParam } from '@/types/QueryParam'
@@ -220,6 +220,8 @@ import ManufacturerHelpDialog from '@/components/ManufacturerHelpDialog.vue'
 
 AppBarTitle.value = String(router.currentRoute.value.name)
 AppBarColor.value = '#2962ff'
+AppBarUseHelpPage.value = true
+AppBarHelpPageLink.value = 'how-to-search'
 
 const loading = shallowRef(true)
 const dataTableItems = shallowRef<IMedicalInstitutionReport[]>()

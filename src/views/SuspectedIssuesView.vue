@@ -246,7 +246,7 @@
 <script setup lang="ts">
 import { onMounted, shallowRef } from 'vue'
 import axios from 'axios'
-import { AppBarTitle, AppBarColor, CarditisSummaryURL, DeathSummaryURL, DeathSummaryFromReportsURL } from '@/router/data'
+import { AppBarTitle, AppBarColor, CarditisSummaryURL, DeathSummaryURL, DeathSummaryFromReportsURL, AppBarUseHelpPage, AppBarHelpPageLink } from '@/router/data'
 import router from '@/router/index'
 import type { ICarditisSummaryRoot } from '@/types/CarditisSummary'
 import type { IDeathSummaryRoot } from '@/types/DeathSummary'
@@ -255,6 +255,8 @@ import EvaluationResultHelpDialog from '@/components/EvaluationResultHelpDialog.
 
 AppBarTitle.value = String(router.currentRoute.value.name)
 AppBarColor.value = '#2962ff'
+AppBarUseHelpPage.value = true
+AppBarHelpPageLink.value = 'how-to-use-summary-page'
 
 const carditisSummaryData = shallowRef<ICarditisSummaryRoot>()
 const deathSummaryData = shallowRef<IDeathSummaryRoot>()

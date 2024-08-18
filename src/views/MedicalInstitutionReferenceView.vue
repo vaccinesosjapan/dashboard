@@ -83,7 +83,7 @@
 <script setup lang="ts">
 import { onMounted, shallowRef } from 'vue'
 import axios from 'axios'
-import { AppBarTitle, AppBarColor, MedicalInstitutionSummaryURL } from '@/router/data'
+import { AppBarTitle, AppBarColor, MedicalInstitutionSummaryURL, AppBarUseHelpPage, AppBarHelpPageLink } from '@/router/data'
 import router from '@/router/index'
 import { type IMedicalInstitutionSummary } from '@/types/MedicalInstitutionReports'
 import type { ILotNumberItem } from '@/types/LotNumberInfomation'
@@ -91,6 +91,8 @@ import { CreateBarChartOption } from '@/tools/ChartOptions'
 
 AppBarTitle.value = String(router.currentRoute.value.name)
 AppBarColor.value = 'blue-accent-1'
+AppBarUseHelpPage.value = true
+AppBarHelpPageLink.value = 'how-to-use-summary-page'
 
 const medicalInstitutionSummary = shallowRef<IMedicalInstitutionSummary>()
 onMounted(() => {

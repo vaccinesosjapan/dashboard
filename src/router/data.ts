@@ -2,6 +2,8 @@ import { shallowRef } from 'vue'
 
 export const AppBarTitle = shallowRef('副反応ダッシュボード')
 export const AppBarColor = shallowRef('white')
+export const AppBarUseHelpPage = shallowRef(false)
+export const AppBarHelpPageLink = shallowRef('')
 
 // production
 const DatasetsURL = import.meta.env.VITE_DATASETS_URL

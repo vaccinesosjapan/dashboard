@@ -3,7 +3,7 @@
     <v-expansion-panel>
       <v-expansion-panel-title color="#66BB6A">
         <v-icon class="search-icon">mdi-magnify</v-icon>
-        <span class="search-title">詳細検索...</span>
+        <span class="search-title">検索...</span>
         <v-spacer></v-spacer>
         <v-chip v-if="searchConditionChanged" size="small" variant="elevated" color="orange-lighten-3">検索ワード入力中</v-chip>
       </v-expansion-panel-title>
@@ -22,7 +22,7 @@
             <SelectItems v-else-if="sItem.type == 'reasons'"
             v-model:values="reasonsForRepudiationValues" v-model:items="reasonsForRepudiationItems"
             :search-triger-func="searchTrigerFunc" :clear-trigger-func="clearTriggerFunc"
-            label="判定理由"
+            label="否認理由"
             ></SelectItems>
 
             <v-dialog v-else-if="sItem.type == 'reasons-help'" transition="dialog-bottom-transition" width="auto">
@@ -158,7 +158,7 @@
 import { onMounted, shallowRef } from 'vue'
 import axios from 'axios'
 import router from '@/router/index'
-import { AppBarTitle, AppBarColor, CertifiedHealthHazardDataURL, CertifiedMetadataURL } from '@/router/data'
+import { AppBarTitle, AppBarColor, CertifiedHealthHazardDataURL, CertifiedMetadataURL, AppBarUseHelpPage, AppBarHelpPageLink } from '@/router/data'
 import type { ICertifiedHealthHazardIssue } from '@/types/CertifiedHealthHazard'
 import type { IQueryParam } from '@/types/QueryParam'
 import { ClearFilterValues, CreateUrlWithQueryParams, IsConditionChanged, ParseQueryParams } from '@/types/QueryParam'
@@ -177,6 +177,8 @@ import SearchRelatedToolBar from '@/components/SearchRelatedToolBar.vue'
 
 AppBarTitle.value = String(router.currentRoute.value.name)
 AppBarColor.value = 'green'
+AppBarUseHelpPage.value = true
+AppBarHelpPageLink.value = 'how-to-search'
 
 const loading = shallowRef(true)
 const dataTableItems = shallowRef<ICertifiedHealthHazardIssue[]>()
@@ -291,7 +293,7 @@ const clearTriggerFunc = () => {
   searchConditionChanged.value = IsConditionChanged(queryParamMap)
 }
 
-// 詳細検索の入力欄を作るための設定たち
+// 検索の入力欄を作るための設定たち
 const _blank = shallowRef()
 const issueSearchItems = [
   { md: 6, label: "請求内容", model: descriptionOfClaimFilterVal, type: "text"},

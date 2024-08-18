@@ -1,9 +1,11 @@
 <script setup lang="ts">
-import { AppBarTitle, AppBarColor } from '@/router/data'
+import { AppBarTitle, AppBarColor, AppBarUseHelpPage, AppBarHelpPageLink } from '@/router/data'
 import router from '@/router/index'
 
 AppBarTitle.value = String(router.currentRoute.value.name)
 AppBarColor.value = 'blue-grey-lighten-4'
+AppBarUseHelpPage.value = false
+AppBarHelpPageLink.value = ''
 </script>
 
 <template>
