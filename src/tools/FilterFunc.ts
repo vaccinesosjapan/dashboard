@@ -21,7 +21,9 @@ export const StringArrayFilterFunc = (values: string[], filterVal: ShallowRef<st
   if(values.length == 0) return false
 
   for (let index = 0; index < values.length; index++) {
-    if(values[index].toLowerCase().indexOf(filterVal.value.toLowerCase()) > -1) return true
+    const targetVal = values[index].normalize('NFKC').toLowerCase()
+    const searchVal = filterVal.value.normalize('NFKC').toLowerCase()
+    if(targetVal.indexOf(searchVal) > -1) return true
   }
 
   return false
