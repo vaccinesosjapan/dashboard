@@ -67,6 +67,31 @@
       </v-row>
       <p class="text-caption text-right">※ <b>{{ items?.date }}</b> までの「疾病・障害認定審査会」累計データを用いて算出しています。</p>
     </v-container>
+
+    <v-container v-if="!judgedDataLoaded || items == undefined">
+      <v-progress-circular
+        color="primary"
+        indeterminate
+        :size="100"
+        :width="10"
+      ></v-progress-circular>
+    </v-container>
+    <v-container v-else>
+      <h2 class="text-h4">審議会の傾向</h2>
+      <p class="text-body-1">各審議会での件数および認定比率や、全審議会における累計の件数および認定比率は以下の通りです。</p>
+
+      <v-row class="mt-5">
+        <v-col cols="12">
+          <apexchart :options="judgedEachCountAndRateChartOption" :series="judgedDataEachCountAndRate" ></apexchart>
+        </v-col>
+      </v-row>
+      <v-row>
+        <v-col cols="12">
+          <apexchart :options="judgedAllCountAndRateChartOption" :series="judgedDataAllCountAndRate" ></apexchart>
+        </v-col>
+      </v-row>
+      <p class="text-caption text-right mt-2">※ <b>{{ items?.date }}</b> までの「疾病・障害認定審査会」累計データを用いて算出しています。</p>
+    </v-container>
     
     <v-container v-if="!trendsLoaded">
       <v-progress-circular
@@ -146,11 +171,12 @@
 <script setup lang="ts">
 import { onMounted, shallowRef } from 'vue'
 import axios from 'axios'
-import { AppBarTitle, AppBarColor, CertifiedSummaryURL, CertifiedSummaryWithOtherVaccinesURL, CertifiedTrendsURL, AppBarUseHelpPage, AppBarHelpPageLink } from '@/router/data'
+import { AppBarTitle, AppBarColor, CertifiedSummaryURL, CertifiedSummaryWithOtherVaccinesURL, CertifiedTrendsURL, JudgedDataURL, AppBarUseHelpPage, AppBarHelpPageLink } from '@/router/data'
 import router from '@/router/index'
 import type { ICertifiedSummary, ICertifiedSummaryWithOtherVaccines } from '@/types/CertifiedSummary'
 import type { ICertifiedTrends } from '@/types/CertifiedTrends'
-import { CreateBarChartOption } from '@/tools/ChartOptions'
+import { CreateBarChartOption, CreateEachCertifiedCountAndRateChartOption, type ICertifiedCountAndRateGraphInfo } from '@/tools/ChartOptions'
+import type { IJudgedData } from '@/types/JudgedData'
 
 AppBarTitle.value = String(router.currentRoute.value.name)
 AppBarColor.value = 'green'
@@ -164,6 +190,7 @@ const summaryWithOtherVaccines = shallowRef<ICertifiedSummaryWithOtherVaccines>(
 const certified_and_denied_count = shallowRef<number>(0)
 const certifiedSummaryLoaded = shallowRef<boolean>(false)
 const trendsLoaded = shallowRef<boolean>(false)
+const judgedDataLoaded = shallowRef<boolean>(false)
 const otherVaccinesLoaded = shallowRef<boolean>(false)
 onMounted(() => {
   axios.get<ICertifiedSummary>(CertifiedSummaryURL)
@@ -261,7 +288,102 @@ onMounted(() => {
       window.dispatchEvent(new Event('resize'))
     })
     .catch((error) => console.log('failed to get certified summary with other vaccines data: ' + error))
+  
+  axios.get<IJudgedData[]>(JudgedDataURL)
+    .then(response => {
+      const judgedData = response.data
+
+      const numberOfCertified :number[] = []
+      const numberOfRepudiation :number[] = []
+      const numberOfCertifiedRate :number[] = []
+      const numberOfCertifiedSum :number[] = []
+      const numberOfRepudiationSum :number[] = []
+      const numberOfCertifiedRateSum :number[] = []
+
+      for (let index = 0; index < judgedData.length; index++) {
+        const element = judgedData[index];
+        judgedDataLabels.value.push(element.Date)
+
+        numberOfCertified.push(element.CertifiedCount)
+        numberOfRepudiation.push(element.RepudiationCount)
+        numberOfCertifiedRate.push(element.CertifiedRate)
+
+        numberOfCertifiedSum.push(element.CertifiedCountSum)
+        numberOfRepudiationSum.push(element.RepudiationCountSum)
+        numberOfCertifiedRateSum.push(element.CertifiedRateSum)
+      }
+
+      // todo: グラフのY軸（件数）のMax値。
+      // 本当はデータからいい感じの値を算出して使いたいが、いいロジックが浮かばないので決め打ち（仮）
+      const eachCountYaxisMax = 350
+      const eachInfo: ICertifiedCountAndRateGraphInfo = {
+        CountTitle: '件数 [件]',
+        RateTitle: '認定比率 [%]',
+        RepudiationSeriesName: '否認件数',
+        CertifiedSeriesName: '認定件数',
+        RateSeriesName: '認定の比率'
+      }
+      judgedEachCountAndRateChartOption.value = CreateEachCertifiedCountAndRateChartOption(
+        '各審議会での件数および認定比率', eachInfo, judgedDataLabels.value, eachCountYaxisMax)
+      judgedDataEachCountAndRate.value = [
+        {
+          name: eachInfo.RepudiationSeriesName,
+          type: 'bar',
+          data: numberOfRepudiation
+        },
+        {
+          name: eachInfo.CertifiedSeriesName,
+          type: 'bar',
+          data: numberOfCertified
+        },
+        {
+          name: eachInfo.RateSeriesName,
+          type: 'line',
+          data: numberOfCertifiedRate
+        },
+      ]
+
+      // todo: グラフのY軸（件数）のMax値。
+      // 本当はデータからいい感じの値を算出して使いたいが、いいロジックが浮かばないので決め打ち（仮）
+      const allCountYaxisMax = 12000
+      const allInfo: ICertifiedCountAndRateGraphInfo = {
+        CountTitle: '累計の件数 [件]',
+        RateTitle: '累計の認定比率 [%]',
+        RepudiationSeriesName: '累計の否認件数',
+        CertifiedSeriesName: '累計の認定件数',
+        RateSeriesName: '累計の認定比率'
+      }
+      judgedAllCountAndRateChartOption.value = CreateEachCertifiedCountAndRateChartOption(
+        '累計の件数および累計の認定比率', allInfo, judgedDataLabels.value, allCountYaxisMax)
+      judgedDataAllCountAndRate.value = [
+        {
+          name: allInfo.RepudiationSeriesName,
+          type: 'bar',
+          data: numberOfRepudiationSum
+        },
+        {
+          name: allInfo.CertifiedSeriesName,
+          type: 'bar',
+          data: numberOfCertifiedSum
+        },
+        {
+          name: allInfo.RateSeriesName,
+          type: 'line',
+          data: numberOfCertifiedRateSum
+        },
+      ]
+
+      judgedDataLoaded.value = true
+      window.dispatchEvent(new Event('resize'))
+    })
+    .catch((error) => console.log('failed to get judged data: ' + error))
 })
+
+const judgedDataLabels = shallowRef<string[]>([])
+const judgedEachCountAndRateChartOption = shallowRef<any>()
+const judgedAllCountAndRateChartOption = shallowRef<any>()
+const judgedDataEachCountAndRate = shallowRef<any[]>([])
+const judgedDataAllCountAndRate = shallowRef<any[]>([])
 
 const trendsFemaleSeries = shallowRef<{x: string, y: number}[]>()
 const trendsFemaleChartOptions = CreateBarChartOption('女性の認定症状 上位10種')
