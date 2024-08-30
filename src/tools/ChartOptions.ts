@@ -136,7 +136,7 @@ export const CreateEachCertifiedCountAndRateChartOption = (title: string, info: 
     },
     tooltip: {
     y: {
-        formatter: function(value: any, { series, seriesIndex, dataPointIndex, w }) {
+        formatter: function(value: any, { series, seriesIndex, dataPointIndex, w } :any) {
           if(w.config.series[seriesIndex].name == info.RateSeriesName){
             return (value as number).toFixed(1) + ' %'
           } else {
