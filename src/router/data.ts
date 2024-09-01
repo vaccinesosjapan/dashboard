@@ -33,4 +33,7 @@ export const CertifiedMetadataURL = DatasetsURL + 'certified-metadata.json'
 
 export const CertifiedSymptomsDataURL = DatasetsURL + 'certified-symptoms.json'
 export const CertifiedSymptomsMetadataURL = DatasetsURL + 'certified-symptoms-metadata.json'
+
 export const JudgedDataURL = DatasetsURL + 'judged-data.json'
+export const JudgedDataEachGraphSmallImageURL = DatasetsURL + 'images/each-result-of-judged-count.svg'
+export const JudgedDataAllGraphSmallImageURL = DatasetsURL + 'images/all-result-of-judged-count.svg'
