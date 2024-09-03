@@ -7,10 +7,18 @@
 
   <v-row class="d-flex d-md-none">
     <v-col cols="12">
+      <h3 class="small-h3">{{ eachInfo.GraphTitle }}</h3>
       <v-img :src="eachAltImagePath"></v-img>
+      <div class="container">
+        <ul class="legend">
+          <li><span class="series1"></span> {{ eachInfo.RepudiationSeriesName }}</li>
+          <li><span class="series2"></span> {{ eachInfo.CertifiedSeriesName }}</li>
+          <li><span class="series3"></span> {{ eachInfo.RateSeriesName }}</li>
+        </ul>
+      </div>
     </v-col>
     <v-col cols="12">
-      <p class="text-caption text-right">※ グラフを画像で表示しています。詳しいデータを見れるグラフは、横幅 960 px以上のPC画面などでご覧ください。</p>
+      <p class="text-caption text-right">{{ noticeForImage }}</p>
     </v-col>
   </v-row>
 
@@ -22,10 +30,20 @@
 
   <v-row class="d-flex d-md-none">
     <v-col cols="12">
+      <h3 class="small-h3">{{ allInfo.GraphTitle }}</h3>
       <v-img :src="allAltImagePath"></v-img>
+      <div class="container">
+        <ul class="legend">
+          <li><span class="series1"></span> {{ allInfo.RepudiationSeriesName }}</li>
+          <li><span class="series2"></span> {{ allInfo.CertifiedSeriesName }}</li>
+        </ul>
+        <ul class="legend small-top">
+          <li><span class="series3"></span> {{ allInfo.RateSeriesName }}</li>
+        </ul>
+      </div>
     </v-col>
     <v-col cols="12">
-      <p class="text-caption text-right">※ グラフを画像で表示しています。詳しいデータを見れるグラフは、横幅 960 px以上のPC画面などでご覧ください。</p>
+      <p class="text-caption text-right">{{ noticeForImage }}</p>
     </v-col>
   </v-row>
 </template>
@@ -68,6 +86,8 @@ for (let index = 0; index < props.data.length; index++) {
 	numberOfRepudiationSum.push(element.RepudiationCountSum)
 	numberOfCertifiedRateSum.push(element.CertifiedRateSum)
 }
+
+const noticeForImage = '※ グラフを画像で表示しています。詳しいデータを見る場合は、横幅 960 px以上のPC画面などでご覧ください。'
 
 // Seriesデータを作成
 const eachCountAndRateSeries = shallowRef<ISeriesValue[]>([])
@@ -230,4 +250,50 @@ eachCountAndRateChartOption.value = CreateCountAndRateChartOption(props.eachInfo
 allCountAndRateChartOption.value = CreateCountAndRateChartOption(props.allInfo, xAxisLabels.value)
 </script>
 
-<style scoped></style>
+<style scoped>
+.small-h3 {
+  font-size: 0.9rem;
+  font-weight: bold;
+}
+
+div.container {
+  text-align: center;
+}
+
+/* basic positioning */
+.legend {
+  display: inline-block;
+  text-align: left;
+  list-style: none;
+  margin-left: auto;
+  margin-right: auto;
+  margin-top: 0.4rem
+}
+.legend li { 
+  float: left;
+  font-size: 0.7rem;
+}
+.legend span {
+  border: 1px solid #ccc;
+  float: left;
+  width: 12px;
+  height: 0.7rem;
+  margin-left: 0.4rem;
+  margin-top: 0.15rem;
+  margin-right: 0.15rem
+}
+/* your colors */
+.legend .series1 { 
+  background-color: #E83938;
+}
+.legend .series2 {
+  background-color: #6CAF52;
+}
+.legend .series3 {
+  background-color: #7560CF;
+}
+
+.small-top{
+  margin-top: 0rem;
+}
+</style>
