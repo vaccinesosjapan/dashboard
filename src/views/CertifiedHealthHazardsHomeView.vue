@@ -326,7 +326,7 @@ onMounted(() => {
       }
 
       eachCountAndRateGraphInfo.value = {
-        GraphTitle: '各審議会での件数および認定比率',
+        GraphTitle: '各審議会の審議件数と認定比率',
         CountTitle: '件数 [件]',
         RateTitle: '認定比率 [%]',
         RepudiationSeriesName: '否認件数',
@@ -336,7 +336,7 @@ onMounted(() => {
       }
 
       allCountAndRateGraphInfo.value = {
-        GraphTitle: '累計の件数および累計の認定比率',
+        GraphTitle: '累計の審議件数と認定比率',
         CountTitle: '累計の件数 [件]',
         RateTitle: '累計の認定比率 [%]',
         RepudiationSeriesName: '累計の否認件数',
