@@ -430,8 +430,6 @@ const certifiedClaimChartOptions = {
   title: {
     text: '認定された案件の内訳',
     align: 'center',
-    offsetX: 10,
-    offsetY: 10,
   },
   chart: { type: 'pie' },
   legend: {
@@ -478,8 +476,7 @@ const deniedClaimChartOptions = {
   title: {
     text: '否認された案件の内訳',
     align: 'center',
-    offsetX: 10,
-    offsetY: 10,
+
   },
   chart: { type: 'pie' },
   legend: {
