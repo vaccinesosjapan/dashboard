@@ -1,7 +1,8 @@
 <template>
 	<v-dialog transition="dialog-bottom-transition" width="auto">
 		<template v-slot:activator="{ props }">
-			<v-btn prepend-icon="mdi-help-circle-outline" v-bind="props">評価記号について...</v-btn>
+			<v-btn class="text-body-2 mb-5" prepend-icon="mdi-help-circle-outline" 
+			v-bind="props" text="評価記号について..." color="blue-grey-lighten-4"></v-btn>
 		</template>
 
 		<template v-slot:default="{ isActive }">
