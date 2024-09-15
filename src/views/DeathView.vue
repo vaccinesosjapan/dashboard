@@ -312,7 +312,8 @@ const testsForDeterminationFunc = (value: any): boolean => {
 
 const causalRelFilterValues = shallowRef<any[]>([])
 // todo: 本来はdatasetsのmetadataから値を取りたい
-const causalRelFilterItems = ['', '不明', '評価不能', '関連なし', '関連あり']
+const causalRelFilterItems = shallowRef<string[]>([])
+causalRelFilterItems.value = ['', '不明', '評価不能', '関連なし', '関連あり']
 const causalRelFilterFunc = (value: string): boolean => {
   if (causalRelFilterValues.value.length == 0) return true
   // valueが空で検索したい場合もあるので、空文字か否かのチェックは不要

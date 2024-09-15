@@ -270,7 +270,8 @@ const preExistingConditionFilterFunc = (value: any): boolean => {
   return StringArrayFilterFunc(value, preExistingConditionFilterVal)
 }
 
-const reasonsForRepudiationItems = ['TypeA-1', 'TypeA-2', 'TypeA-3', 'TypeA-4', 'TypeA-5', 'TypeB-1', 'TypeB-2', 'TypeB-3', 'TypeB-4']
+const reasonsForRepudiationItems = shallowRef<string[]>([])
+reasonsForRepudiationItems.value = ['TypeA-1', 'TypeA-2', 'TypeA-3', 'TypeA-4', 'TypeA-5', 'TypeB-1', 'TypeB-2', 'TypeB-3', 'TypeB-4']
 const reasonsForRepudiationValues = shallowRef<any>([])
 const reasonsForRepudiationFilterFunc = (value: any): boolean => {
   if(reasonsForRepudiationValues.value.length == 0) return true
