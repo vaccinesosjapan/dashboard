@@ -9,9 +9,9 @@
       </v-expansion-panel-title>
 
       <v-expansion-panel-text>
-        <h6 class="text-h6">症状など申請に関する条件の設定</h6>
+        <h6 class="text-h6 mb-2 underline">症状など申請に関する条件の設定</h6>
         <v-row align="end">
-          <v-col v-for="sItem, i in issueSearchItems" :key="i" cols="12" :md="sItem.md" class="group">
+          <v-col v-for="sItem, i in issueSearchItems" :key="i" cols="12" :md="sItem.md" class="group mt-1">
 
             <SelectItems v-if="sItem.type == 'judged_result'"
             v-model:values="judgedResultFilterValues" v-model:items="judgedResultFilterItems"
@@ -27,7 +27,8 @@
 
             <v-dialog v-else-if="sItem.type == 'reasons-help'" transition="dialog-bottom-transition" width="auto">
               <template v-slot:activator="{ props }">
-                <v-btn outlined height="3rem" prepend-icon="mdi-help-circle-outline" v-bind="props">否認理由に<br>ついて...</v-btn>
+                <v-btn class="text-body-2 mb-5" prepend-icon="mdi-help-circle-outline" color="blue-grey-lighten-4"
+                 v-bind="props">否認理由について...</v-btn>
               </template>
 
               <template v-slot:default="{ isActive }">
@@ -54,7 +55,7 @@
         </v-row>
 
         <br />
-        <h6 class="text-h6">個人に関する条件の設定</h6>
+        <h6 class="text-h6 mb-2 underline">個人に関する条件の設定</h6>
         <v-row align="end">
           <v-col v-for="item, i in individualSearchItems" :key="i" cols="12" :md="item.md" class="group">
             <NumberFilter v-if="item.type == 'age-range'"
@@ -269,7 +270,8 @@ const preExistingConditionFilterFunc = (value: any): boolean => {
   return StringArrayFilterFunc(value, preExistingConditionFilterVal)
 }
 
-const reasonsForRepudiationItems = ['TypeA-1', 'TypeA-2', 'TypeA-3', 'TypeA-4', 'TypeA-5', 'TypeB-1', 'TypeB-2', 'TypeB-3', 'TypeB-4']
+const reasonsForRepudiationItems = shallowRef<string[]>([])
+reasonsForRepudiationItems.value = ['TypeA-1', 'TypeA-2', 'TypeA-3', 'TypeA-4', 'TypeA-5', 'TypeB-1', 'TypeB-2', 'TypeB-3', 'TypeB-4']
 const reasonsForRepudiationValues = shallowRef<any>([])
 const reasonsForRepudiationFilterFunc = (value: any): boolean => {
   if(reasonsForRepudiationValues.value.length == 0) return true
@@ -298,13 +300,13 @@ const _blank = shallowRef()
 const issueSearchItems = [
   { md: 6, label: "請求内容", model: descriptionOfClaimFilterVal, type: "text"},
   { md: 6, label: "症状", model: symptomsFilterVal, type: "text"},
-  { md: 2, label: "判定", model: _blank, type: "judged_result"},
-  { md: 2, label: "否認理由", model: _blank , type: "reasons"},
-  { md: 2, label: "", model: _blank , type: "reasons-help"},
-  { md: 6, label: "判定日（選択した日付のみ）", model: _blank, type: "judged-date"},
+  { md: 3, label: "判定", model: _blank, type: "judged_result"},
+  { md: 3, label: "判定日（選択した日付のみ）", model: _blank, type: "judged-date"},
+  { md: 3, label: "否認理由", model: _blank , type: "reasons"},
+  { md: 3, label: "", model: _blank , type: "reasons-help"},
 ]
 const individualSearchItems = [
-  { md: 4, label: "年齢（最小/最大でフィルタ）", model: _blank, type: "age-range"},
+  { md: 4, label: "年齢", model: _blank, type: "age-range"},
   { md: 4, label: "性別", model: _blank, type: "gender"},
   { md: 4, label: "基礎疾患", model: preExistingConditionFilterVal, type: "text"},
 ]
@@ -390,5 +392,12 @@ const clearFilter = () => {
 .search-title {
   font-size: 1.5rem;
   padding-left: 0.8rem;
+}
+
+.underline{
+  text-underline-offset: 0.2rem;
+  text-decoration-line: underline;
+  text-decoration-color: rgba(var(--v-theme-on-surface), var(--v-high-emphasis-opacity));
+  text-decoration-thickness: 1.2px;
 }
 </style>

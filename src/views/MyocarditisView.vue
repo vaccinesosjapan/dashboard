@@ -9,7 +9,7 @@
       </v-expansion-panel-title>
 
       <v-expansion-panel-text>
-        <h6 class="text-h6">ワクチンに関する条件の設定</h6>
+        <h6 class="text-h6 mb-2 underline">ワクチンに関する条件の設定</h6>
         <v-row align="end">
           <v-col v-for="item, i in vaccineSearchItems" :key="i" cols="12" :md="item.md">
             <v-text-field
@@ -25,9 +25,9 @@
         </v-row>
 
         <br />
-        <h6 class="text-h6">個人に関する条件の設定</h6>
+        <h6 class="text-h6 mb-2 underline">個人に関する条件の設定</h6>
         <v-row align="end">
-          <v-col v-for="item, i in individualSearchItems" :key="i" cols="12" :md="item.md" class="group">
+          <v-col v-for="item, i in individualSearchItems" :key="i" cols="12" :md="item.md" class="group mb-1">
 
             <NumberFilter v-if="item.type == 'age'"
             v-model:min="ageFromFilterVal" v-model:max="ageToFilterVal"
@@ -40,10 +40,8 @@
             :label="item.label"
             ></SelectItems>
 
-            <DateFilter v-else-if="item.type == 'vaccinated_date'"
-              v-model:start="vaccinatedDateFromFilterVal" v-model:end="vaccinatedDateToFilterVal"
-              :title="item.label" :search-triger-func="searchTrigerFunc" :clear-trigger-func="clearTriggerFunc"
-            ></DateFilter>
+            <FlatpickrCalendar v-else-if="item.type == 'vaccinated_date'"
+             :title="item.label" v-model:start="vaccinatedDateFromFilterVal" v-model:end="vaccinatedDateToFilterVal"></FlatpickrCalendar>
 
             <NumberFilter v-else-if="item.type == 'days_to_onset'"
             v-model:min="daysToOnsetFromFilterVal" v-model:max="daysToOnsetToFilterVal"
@@ -55,10 +53,8 @@
             :title="item.label" :search-triger-func="searchTrigerFunc" :clear-trigger-func="clearTriggerFunc"
             ></NumberFilter>
 
-            <DateFilter v-else-if="item.type == 'gross_result_date'"
-              v-model:start="grossResultDateFromFilterVal" v-model:end="grossResultDateToFilterVal"
-              :title="item.label" :search-triger-func="searchTrigerFunc" :clear-trigger-func="clearTriggerFunc"
-            ></DateFilter>
+            <FlatpickrCalendar v-else-if="item.type == 'gross_result_date'"
+             :title="item.label" v-model:start="grossResultDateFromFilterVal" v-model:end="grossResultDateToFilterVal"></FlatpickrCalendar>
 
             <v-text-field v-else
               :label="item.label"
@@ -73,7 +69,7 @@
         </v-row>
 
         <v-row align="end">
-          <v-col cols="12" md="2" class="group">
+          <v-col cols="12" md="4" class="group">
             <SelectItems
             v-model:values="causalRelFilterValues" v-model:items="causalRelFilterItems"
             :search-triger-func="searchTrigerFunc" :clear-trigger-func="clearTriggerFunc"
@@ -81,7 +77,7 @@
             ></SelectItems>
           </v-col>
 
-          <v-col cols="12" md="2" class="group">
+          <v-col cols="12" md="4" class="group">
             <EvaluationResultHelpDialog></EvaluationResultHelpDialog>
           </v-col>
         </v-row>
@@ -188,10 +184,10 @@ import DatesRow from '@/components/DatesRow.vue'
 import PreExistingDiseaseCard from '@/components/PreExistingDiseaseCard.vue'
 import DateAndPTnames from '@/components/DateAndPTnames.vue'
 import NumberFilter from '@/components/NumberFilter.vue'
-import DateFilter from '@/components/DateFilter.vue'
 import SelectItems from '@/components/SelectItems.vue'
 import SearchRelatedToolBar from '@/components/SearchRelatedToolBar.vue'
 import EvaluationResultHelpDialog from '@/components/EvaluationResultHelpDialog.vue'
+import FlatpickrCalendar from '@/components/FlatpickrCalendar.vue'
 
 AppBarTitle.value = String(router.currentRoute.value.name)
 AppBarColor.value = '#2962ff'
@@ -456,5 +452,11 @@ const clearFilter = () => {
 .search-title {
   font-size: 1.5rem;
   padding-left: 0.8rem;
+}
+.underline{
+  text-underline-offset: 0.2rem;
+  text-decoration-line: underline;
+  text-decoration-color: rgba(var(--v-theme-on-surface), var(--v-high-emphasis-opacity));
+  text-decoration-thickness: 1.2px;
 }
 </style>

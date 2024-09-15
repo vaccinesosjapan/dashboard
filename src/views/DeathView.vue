@@ -9,7 +9,7 @@
       </v-expansion-panel-title>
 
       <v-expansion-panel-text>
-        <h6 class="text-h6">ワクチンに関する条件の設定</h6>
+        <h6 class="text-h6 mb-2 underline">ワクチンに関する条件の設定</h6>
         <v-row align="end">
           <v-col v-for="item, i in vaccineSearchItems" :key="i" cols="12" :md="item.md">
             <v-text-field
@@ -25,9 +25,9 @@
         </v-row>
 
         <br />
-        <h6 class="text-h6">個人に関する条件の設定</h6>
+        <h6 class="text-h6 mb-2 underline">個人に関する条件の設定</h6>
         <v-row align="end">
-          <v-col v-for="item, i in individualSearchItems" :key="i" cols="12" :md="item.md" class="group">
+          <v-col v-for="item, i in individualSearchItems" :key="i" cols="12" :md="item.md" class="group mb-1">
             <NumberFilter v-if="item.type == 'age'"
             v-model:min="ageFromFilterVal" v-model:max="ageToFilterVal"
             :title="item.label" :search-triger-func="searchTrigerFunc" :clear-trigger-func="clearTriggerFunc"
@@ -39,15 +39,11 @@
             :label="item.label"
             ></SelectItems>
 
-            <DateFilter v-else-if="item.type == 'vaccinated_date'"
-              v-model:start="vaccinatedDateFromFilterVal" v-model:end="vaccinatedDateToFilterVal"
-              :title="item.label" :search-triger-func="searchTrigerFunc" :clear-trigger-func="clearTriggerFunc"
-            ></DateFilter>
+            <FlatpickrCalendar v-else-if="item.type == 'vaccinated_date'"
+             :title="item.label" v-model:start="vaccinatedDateFromFilterVal" v-model:end="vaccinatedDateToFilterVal"></FlatpickrCalendar>
 
-            <DateFilter v-else-if="item.type == 'occurred_date'"
-              v-model:start="occurredDateFromFilterVal" v-model:end="occurredDateToFilterVal"
-              :title="item.label" :search-triger-func="searchTrigerFunc" :clear-trigger-func="clearTriggerFunc"
-            ></DateFilter>
+            <FlatpickrCalendar v-else-if="item.type == 'occurred_date'"
+             :title="item.label" v-model:start="occurredDateFromFilterVal" v-model:end="occurredDateToFilterVal"></FlatpickrCalendar>
 
             <NumberFilter v-else-if="item.type == 'vaccinated_times'"
             v-model:min="vaccinatedTimesFromFilterVal" v-model:max="vaccinatedTimesToFilterVal"
@@ -209,7 +205,7 @@ import SearchRelatedToolBar from '@/components/SearchRelatedToolBar.vue'
 import SelectItems from '@/components/SelectItems.vue'
 import EvaluationResultHelpDialog from '@/components/EvaluationResultHelpDialog.vue'
 import NumberFilter from '@/components/NumberFilter.vue'
-import DateFilter from '@/components/DateFilter.vue'
+import FlatpickrCalendar from '@/components/FlatpickrCalendar.vue'
 
 AppBarTitle.value = String(router.currentRoute.value.name)
 AppBarColor.value = '#2962ff'
@@ -316,7 +312,8 @@ const testsForDeterminationFunc = (value: any): boolean => {
 
 const causalRelFilterValues = shallowRef<any[]>([])
 // todo: 本来はdatasetsのmetadataから値を取りたい
-const causalRelFilterItems = ['', '不明', '評価不能', '関連なし', '関連あり']
+const causalRelFilterItems = shallowRef<string[]>([])
+causalRelFilterItems.value = ['', '不明', '評価不能', '関連なし', '関連あり']
 const causalRelFilterFunc = (value: string): boolean => {
   if (causalRelFilterValues.value.length == 0) return true
   // valueが空で検索したい場合もあるので、空文字か否かのチェックは不要
@@ -421,8 +418,8 @@ const individualSearchItems = [
   { md: 4, label: "死因(MedDRA PT)", model: ptFilterVal, type: "text"},
   { md: 4, label: "報告医が死因等の判断に至った検査", model: testsForDeterminationVal, type: "text"},
   { md: 4, label: "報告医の因果関係評価", model: _blank, type: "causal_rel"},
-  { md: 2, label: "専門家の因果関係評価", model: _blank, type: "causal_rel_expert"},
-  { md: 2, label: "専門家の因果関係評価のヘルプ", model: _blank, type: "causal_rel_expert_help"},
+  { md: 4, label: "専門家の因果関係評価", model: _blank, type: "causal_rel_expert"},
+  { md: 4, label: "専門家の因果関係評価のヘルプ", model: _blank, type: "causal_rel_expert_help"},
 ]
 
 const downloadFilteredDataAsCsv = () => {
@@ -487,5 +484,12 @@ const clearFilter = () => {
 .td-list {
   padding-left: 20px;
   padding-top: 5px;
+}
+
+.underline{
+  text-underline-offset: 0.2rem;
+  text-decoration-line: underline;
+  text-decoration-color: rgba(var(--v-theme-on-surface), var(--v-high-emphasis-opacity));
+  text-decoration-thickness: 1.2px;
 }
 </style>
