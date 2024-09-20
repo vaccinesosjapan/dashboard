@@ -154,7 +154,7 @@
         </v-col>
 
         <v-col cols="12">
-          <apexchart :options="otherVaccinesChartOptions" :series="otherVaccinesChartSeries"></apexchart>
+          <OtherVaccinesGraph :options="otherVaccinesChartOptions" :series="otherVaccinesChartSeries"></OtherVaccinesGraph>
         </v-col>
       </v-row>
     </v-container>    
@@ -176,6 +176,7 @@ import { CreateBarChartOption } from '@/tools/ChartOptions'
 import type { IJudgedData, IJudgedDataGraphInfo } from '@/types/JudgedData'
 import CountAndRateGraph from '@/components/CountAndRateGraph.vue'
 import CustomHeader1 from '@/components/CustomHeader1.vue'
+import OtherVaccinesGraph from '@/components/OtherVaccinesGraph.vue'
 
 AppBarTitle.value = String(router.currentRoute.value.name)
 AppBarColor.value = 'green'
@@ -552,7 +553,7 @@ const otherVaccinesChartOptions = {
     }
   },
   legend: {
-    position: 'bottom',
+    show: false
   },
   tooltip: {
     y: {
