@@ -586,6 +586,11 @@ const otherVaccinesChartOptions = {
   stroke: {
     width: 1,
     colors: ['#fff']
+  },
+  dataLabels: {
+    formatter: (val: any, { seriesIndex, dataPointIndex, w } :any ) => {
+      return val.toLocaleString()
+    },
   }
 }
 

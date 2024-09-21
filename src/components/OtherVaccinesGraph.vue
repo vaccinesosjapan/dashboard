@@ -7,10 +7,10 @@
 
   <v-card v-else subtitle="表示項目を選択" variant="outlined">
     <template v-slot:text>
-      <div class="d-flex flex-wrap">
+      <div class="d-flex flex-wrap justify-center">
         <div v-for="(seriesName, i) in seriesNames" :key="i" class="mr-5">
-          <label :for="`series-check-${i}`" class="checkbox-label" @click="toggleLegend(i)">
-            <input type="checkbox" checked :style="getColor(i)" :id="`series-check-${i}`" :value="seriesName" 
+          <label :for="`series-check-${i}`" class="text-body-2 text-md-subtitle-1">
+            <input type="checkbox" class="check check-md" checked :style="getColor(i)" :id="`series-check-${i}`" :value="seriesName" 
               v-model="checkNames" @update:model-value="toggleLegend(i)">
           {{ seriesName }}</label>
         </div>
@@ -67,8 +67,18 @@ const toggleLegend = (index: number) => {
 </script>
 
 <style scoped>
-input[type=checkbox]{
-  vertical-align: -1px;
+.check {
+  vertical-align: -2px;
+  margin-right: -3px;
+  transform: scale(1) !important;
+}
+
+@media (min-width: 960px) {
+  .check-md {
+    vertical-align: -1px;
+    margin-right: -1px;
+    transform: scale(1.4) !important;
+  }
 }
 
 label, input[type='checkbox'] {
