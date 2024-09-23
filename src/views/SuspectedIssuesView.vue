@@ -2,7 +2,7 @@
   <v-container fluid>
 
     <v-container>
-      <h4 class="text-h4 mb-2">副反応疑い報告</h4>
+      <CustomHeader1 title="副反応疑い報告"></CustomHeader1>
       <p class="text-body-1">（製造販売業者からの副反応疑い報告に関するまとめをここに掲載予定）</p>
     </v-container>
 
@@ -16,9 +16,8 @@
     </v-container>
 
     <v-container v-else>
-
-      <h4 class="text-h4 mb-1">心筋炎/心膜炎 報告</h4>
-      <p class="text-body-1">
+      <CustomHeader1 title="心筋炎/心膜炎 報告"></CustomHeader1>
+      <p class="text-body-1 mb-2">
         「新型コロナワクチン接種後の心筋炎又は心膜炎疑い」として製造販売業者から報告された <span class="big-bold">{{ carditisSummaryData?.carditis_summary.total.toLocaleString() }}</span> [件] の集計結果を示します。
       </p>
 
@@ -27,11 +26,11 @@
         <v-btn size="small" @click="changeChartView" color="blue" v-else>割合を表示</v-btn>
       </div>
 
-      <v-row>
-        <v-col cols="12" sm="8">
+      <v-row class="mb-2">
+        <v-col cols="12" md="8">
           <apexchart :options="carditisSummaryOptions" :series="carditisSummarySeries"></apexchart>
         </v-col>
-        <v-col cols="12" sm="4">
+        <v-col cols="12" md="4">
           <v-table density="comfortable">
             <thead>
               <tr>
@@ -53,17 +52,17 @@
         </v-col>
       </v-row>
 
-      <h5 class="text-h5 mt-5 mb-1">心筋炎の件数内訳</h5>
+      <CustomHeader2 title="心筋炎の件数内訳"></CustomHeader2>
       <div class="d-flex justify-end">
         <v-btn size="small" @click="changeChartView" color="blue" v-if="isPersentView">件数を表示</v-btn>
         <v-btn size="small" @click="changeChartView" color="blue" v-else>割合を表示</v-btn>
       </div>
-      <v-row>
-        <v-col cols="12" sm="8">
+      <v-row class="mb-2">
+        <v-col cols="12" md="8">
           <apexchart :options="myocarditisByVaccineOptions" :series="myocarditisByVaccineSeries"></apexchart>
         </v-col>
 
-        <v-col  cols="12" sm="4">
+        <v-col  cols="12" md="4">
           <v-table density="comfortable">
             <thead>
               <tr>
@@ -85,17 +84,17 @@
         </v-col>
       </v-row>
 
-      <h5 class="text-h5 mt-5 mb-2">心膜炎の件数内訳</h5>
+      <CustomHeader2 title="心膜炎の件数内訳"></CustomHeader2>
       <div class="d-flex justify-end">
         <v-btn size="small" @click="changeChartView" color="blue" v-if="isPersentView">件数を表示</v-btn>
         <v-btn size="small" @click="changeChartView" color="blue" v-else>割合を表示</v-btn>
       </div>
       <v-row>
-        <v-col cols="12" sm="8">
+        <v-col cols="12" md="8">
           <apexchart :options="pericarditisByVaccineOptions" :series="pericarditisByVaccineSeries"></apexchart>
         </v-col>
 
-        <v-col  cols="12" sm="4">
+        <v-col  cols="12" md="4">
           <v-table density="comfortable">
             <thead>
               <tr>
@@ -131,12 +130,12 @@
     </v-container>
 
     <v-container v-else>
-      <h4 class="text-h4 mt-5 mb-2">亡くなった方々に関する報告</h4>
-      <p class="text-body-1">
+      <CustomHeader1 title="亡くなった方々に関する報告"></CustomHeader1>
+      <p class="text-body-1 mb-2">
         「新型コロナワクチン接種後の死亡例」として製造販売業者から報告された事例 <span class="big-bold">{{ deathSummaryData?.death_summary.sum_by_evaluation.total.toLocaleString() }}</span> [件] の集計結果を示します。
       </p>
 
-      <h5 class="text-h5 mt-5 mb-1">因果関係評価の内訳</h5>
+      <CustomHeader2 title="因果関係評価の内訳"></CustomHeader2>
       <div class="d-flex justify-end">
         <v-btn size="small" @click="changeChartView" color="blue" v-if="isPersentView">件数を表示</v-btn>
         <v-btn size="small" @click="changeChartView" color="blue" v-else>割合を表示</v-btn>
@@ -214,7 +213,7 @@
     </v-container>
 
     <v-container v-else>
-      <h5 class="text-h5 mt-5 mb-2">年代別の内訳</h5>
+      <CustomHeader2 title="年代別の内訳"></CustomHeader2>
 
       <v-row>
         <v-col cols="12">
@@ -252,6 +251,8 @@ import type { ICarditisSummaryRoot } from '@/types/CarditisSummary'
 import type { IDeathSummaryRoot } from '@/types/DeathSummary'
 import type { IDeathSummaryFromReportsRoot } from '@/types/DeathSummaryFromReports'
 import EvaluationResultHelpDialog from '@/components/EvaluationResultHelpDialog.vue'
+import CustomHeader1 from '@/components/CustomHeader1.vue'
+import CustomHeader2 from '@/components/CustomHeader2.vue'
 
 AppBarTitle.value = String(router.currentRoute.value.name)
 AppBarColor.value = '#2962ff'

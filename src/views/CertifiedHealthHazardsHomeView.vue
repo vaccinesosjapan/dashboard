@@ -10,8 +10,8 @@
       ></v-progress-circular>
     </v-container>
     <v-container v-else>
-      <h2 class="text-h4">判定結果</h2>
-      <p class="text-body-1">進達受理件数の総数 <b>{{ items.total_entries.toLocaleString() }}</b> [件] に対して、判定結果の割合は以下の通りです。</p>
+      <CustomHeader1 title="判定結果"></CustomHeader1>
+      <p class="text-body-1 mb-2">進達受理件数の総数 <b>{{ items.total_entries.toLocaleString() }}</b> [件] に対して、判定結果の割合は以下の通りです。</p>
 
       <div class="d-flex justify-end">
         <v-btn size="small" @click="changeChartView" color="blue" v-if="isPersentView">件数を表示</v-btn>
@@ -48,8 +48,8 @@
       <br>
       <br>
 
-      <h2 class="text-h4">申請内容</h2>
-      <p class="text-body-1">認定・否認された申請の総数 <b>{{ certified_and_denied_count.toLocaleString() }}</b> [件] に対して、申請内容の内訳はそれぞれ以下の通りです。</p>
+      <CustomHeader1 title="申請内容"></CustomHeader1>
+      <p class="text-body-1 mb-2">認定・否認された申請の総数 <b>{{ certified_and_denied_count.toLocaleString() }}</b> [件] に対して、申請内容の内訳はそれぞれ以下の通りです。</p>
 
       <div class="d-flex justify-end">
         <v-btn size="small" @click="changeChartView" color="blue" v-if="isPersentView">件数を表示</v-btn>
@@ -77,8 +77,8 @@
       ></v-progress-circular>
     </v-container>
     <v-container v-else>
-      <h2 class="text-h4">審議会の傾向</h2>
-      <p class="text-body-1">各審議会での件数および認定比率や、全審議会における累計の件数および認定比率は以下の通りです。</p>
+      <CustomHeader1 title="審議会の傾向"></CustomHeader1>
+      <p class="text-body-1 mb-2">各審議会での件数および認定比率や、全審議会における累計の件数および認定比率は以下の通りです。</p>
 
       <CountAndRateGraph :data="judgedDataArray"
       :each-info="eachCountAndRateGraphInfo" :each-alt-image-path="JudgedDataEachGraphSmallImageURL"
@@ -97,7 +97,7 @@
       ></v-progress-circular>
     </v-container>
     <v-container v-else>
-      <h2 class="text-h4">性別ごとの症状傾向</h2>
+      <CustomHeader1 title="性別ごとの症状傾向"></CustomHeader1>
       <p>女性・男性・両方の3つの区分で、どのような症状が多く認定されているのかを以下に示します。</p>
       <v-row>
         <v-col cols="12">
@@ -123,38 +123,38 @@
       ></v-progress-circular>
     </v-container>
     <v-container v-else>
-      <h2 class="text-h4">過去の各種ワクチンの認定件数との比較</h2>
+      <CustomHeader1 title="過去の各種ワクチンの認定件数との比較"></CustomHeader1>
      
       <v-row>
-        <v-col cols="12">
+        <v-col cols="12" class="d-flex justify-center">
           <v-table density="comfortable">
             <thead>
               <tr>
-                <th class="text-left">ワクチン種類</th>
-                <th class="text-left">集計期間</th>
-                <th class="text-left">認定件数</th>
-                <th class="text-left">元資料</th>
+                <th class="text-body-2 text-md-subtitle-1">ワクチン種類</th>
+                <th class="text-body-2 text-md-subtitle-1">集計期間</th>
+                <th class="text-body-2 text-md-subtitle-1">認定件数</th>
+                <th class="text-body-2 text-md-subtitle-1">元資料</th>
               </tr>
             </thead>
             <tbody>
               <tr>
-                <td>過去の各種ワクチン</td>
-                <td>{{ summaryWithOtherVaccines.meta_data.other_vaccines.period }}（{{summaryWithOtherVaccines.meta_data.other_vaccines.first_date}}～{{summaryWithOtherVaccines.meta_data.other_vaccines.last_date}}）</td>
-                <td class="text-right"><b>{{ summaryWithOtherVaccines.meta_data.other_vaccines.certified_count.toLocaleString() }} [件]</b></td>
-                <td><a :href="summaryWithOtherVaccines.meta_data.other_vaccines.source_url">元資料</a></td>
+                <td><span class="text-body-2 text-md-subtitle-1">過去の各種ワクチン</span></td>
+                <td><span class="text-body-2 text-md-subtitle-1">{{ summaryWithOtherVaccines.meta_data.other_vaccines.period }}（{{summaryWithOtherVaccines.meta_data.other_vaccines.first_date}}～{{summaryWithOtherVaccines.meta_data.other_vaccines.last_date}}）</span></td>
+                <td class="text-right"><span class="text-body-2 text-md-subtitle-1"><b class="text-right">{{ summaryWithOtherVaccines.meta_data.other_vaccines.certified_count.toLocaleString() }} [件]</b></span></td>
+                <td><span class="text-body-2 text-md-subtitle-1"><a :href="summaryWithOtherVaccines.meta_data.other_vaccines.source_url">元資料</a></span></td>
               </tr>
               <tr>
-                <td>新型コロナワクチン</td>
-                <td>{{ summaryWithOtherVaccines.meta_data.covid19_vaccine.period }}（{{summaryWithOtherVaccines.meta_data.covid19_vaccine.first_date}}～{{summaryWithOtherVaccines.meta_data.covid19_vaccine.last_date}}）</td>
-                <td class="text-right"><b>{{ summaryWithOtherVaccines.meta_data.covid19_vaccine.certified_count.toLocaleString() }} [件]</b></td>
-                <td><a :href="summaryWithOtherVaccines.meta_data.covid19_vaccine.source_url">元資料</a></td>
+                <td><span class="text-body-2 text-md-subtitle-1">新型コロナワクチン</span></td>
+                <td><span class="text-body-2 text-md-subtitle-1">{{ summaryWithOtherVaccines.meta_data.covid19_vaccine.period }}（{{summaryWithOtherVaccines.meta_data.covid19_vaccine.first_date}}～{{summaryWithOtherVaccines.meta_data.covid19_vaccine.last_date}}）</span></td>
+                <td class="text-right"><span class="text-body-2 text-md-subtitle-1"><b>{{ summaryWithOtherVaccines.meta_data.covid19_vaccine.certified_count.toLocaleString() }} [件]</b></span></td>
+                <td><span class="text-body-2 text-md-subtitle-1"><a :href="summaryWithOtherVaccines.meta_data.covid19_vaccine.source_url">元資料</a></span></td>
               </tr>
             </tbody>
           </v-table>
         </v-col>
 
         <v-col cols="12">
-          <apexchart :options="otherVaccinesChartOptions" :series="otherVaccinesChartSeries"></apexchart>
+          <OtherVaccinesGraph :summay-data="summaryWithOtherVaccines" :thumbnail-image-path="CertifiedSummaryWithOtherVaccinesThumbnailURL"></OtherVaccinesGraph>
         </v-col>
       </v-row>
     </v-container>    
@@ -168,13 +168,15 @@ import { onMounted, shallowRef } from 'vue'
 import axios from 'axios'
 import { AppBarTitle, AppBarColor, CertifiedSummaryURL, CertifiedSummaryWithOtherVaccinesURL, 
   CertifiedTrendsURL, JudgedDataURL, AppBarUseHelpPage, AppBarHelpPageLink,
-  JudgedDataEachGraphSmallImageURL, JudgedDataAllGraphSmallImageURL } from '@/router/data'
+  JudgedDataEachGraphSmallImageURL, JudgedDataAllGraphSmallImageURL, CertifiedSummaryWithOtherVaccinesThumbnailURL } from '@/router/data'
 import router from '@/router/index'
 import type { ICertifiedSummary, ICertifiedSummaryWithOtherVaccines } from '@/types/CertifiedSummary'
 import type { ICertifiedTrends } from '@/types/CertifiedTrends'
 import { CreateBarChartOption } from '@/tools/ChartOptions'
 import type { IJudgedData, IJudgedDataGraphInfo } from '@/types/JudgedData'
 import CountAndRateGraph from '@/components/CountAndRateGraph.vue'
+import CustomHeader1 from '@/components/CustomHeader1.vue'
+import OtherVaccinesGraph from '@/components/OtherVaccinesGraph.vue'
 
 AppBarTitle.value = String(router.currentRoute.value.name)
 AppBarColor.value = 'green'
@@ -265,33 +267,6 @@ onMounted(() => {
   axios.get<ICertifiedSummaryWithOtherVaccines>(CertifiedSummaryWithOtherVaccinesURL)
     .then((response) => {
       summaryWithOtherVaccines.value = response.data
-
-      for (let index = 0; index < summaryWithOtherVaccines.value.chart_data.data.length; index++) {
-        const chartData = summaryWithOtherVaccines.value.chart_data.data[index]
-
-        otherVaccinesChartCategories.value.push(chartData.vaccine_name)
-        otherVaccinesChartSeriesMedical.value.push(chartData.medical)
-        otherVaccinesChartSeriesDisabilityOfChildren.value.push(chartData.disability_of_children)
-        otherVaccinesChartSeriesDisability.value.push(chartData.disability)
-        otherVaccinesChartSeriesDeath.value.push(chartData.death)
-      }
-
-      otherVaccinesChartSeries.value.push({
-        name: summaryWithOtherVaccines.value.chart_data.headers[1],
-        data: otherVaccinesChartSeriesMedical.value
-      })
-      otherVaccinesChartSeries.value.push({
-        name: summaryWithOtherVaccines.value.chart_data.headers[2],
-        data: otherVaccinesChartSeriesDisabilityOfChildren.value
-      })
-      otherVaccinesChartSeries.value.push({
-        name: summaryWithOtherVaccines.value.chart_data.headers[3],
-        data: otherVaccinesChartSeriesDisability.value
-      })
-      otherVaccinesChartSeries.value.push({
-        name: summaryWithOtherVaccines.value.chart_data.headers[4],
-        data: otherVaccinesChartSeriesDeath.value
-      })
 
       otherVaccinesLoaded.value =  true
 
@@ -516,67 +491,6 @@ const deniedClaimChartOptions = {
       foreColor: '#fff',
     }
   }
-}
-
-const otherVaccinesChartSeriesMedical = shallowRef<number[]>([])
-const otherVaccinesChartSeriesDisabilityOfChildren = shallowRef<number[]>([])
-const otherVaccinesChartSeriesDisability = shallowRef<number[]>([])
-const otherVaccinesChartSeriesDeath = shallowRef<number[]>([])
-const otherVaccinesChartSeries = shallowRef<{name: string, data: number[]}[]>([])
-const otherVaccinesChartCategories = shallowRef<string[]>([])
-const otherVaccinesChartCategoryName = 'ワクチン名'
-const downloadFileName = 'certified-summary-with-other-vaccines'
-const otherVaccinesChartOptions = {
-  title: {
-    text: '新型コロナワクチンとその他ワクチンの認定件数まとめ',
-    align: 'center',
-    offsetX: 10,
-    offsetY: 10,
-  },
-  chart: {
-    type: 'bar',
-    stacked: true,
-    toolbar:{
-    export: {
-      csv: {
-        headerCategory: otherVaccinesChartCategoryName,
-        filename: downloadFileName,
-      },
-      svg: {
-        filename: downloadFileName,
-      },
-      png: {
-        filename: downloadFileName,
-      }
-    }
-  }
-  },
-  legend: {
-    position: 'bottom',
-  },
-  tooltip: {
-    y: {
-        formatter: (val: any) => {
-          return (val as number).toLocaleString() + ' 件'
-        },
-    },
-  },
-  responsive: [{
-    breakpoint: 800,
-    options: {
-      chart: {
-        height: 600
-      }
-    }
-  }],
-  plotOptions: {
-    bar: {
-      horizontal: true,
-    },
-  },
-  xaxis: {
-    categories: otherVaccinesChartCategories.value,
-  },
 }
 
 const changeChartView = () => {
