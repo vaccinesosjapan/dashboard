@@ -154,7 +154,7 @@
         </v-col>
 
         <v-col cols="12">
-          <OtherVaccinesGraph :options="otherVaccinesChartOptions" :series="otherVaccinesChartSeries"></OtherVaccinesGraph>
+          <OtherVaccinesGraph :summay-data="summaryWithOtherVaccines" :thumbnail-image-path="CertifiedSummaryWithOtherVaccinesThumbnailURL"></OtherVaccinesGraph>
         </v-col>
       </v-row>
     </v-container>    
@@ -168,7 +168,7 @@ import { onMounted, shallowRef } from 'vue'
 import axios from 'axios'
 import { AppBarTitle, AppBarColor, CertifiedSummaryURL, CertifiedSummaryWithOtherVaccinesURL, 
   CertifiedTrendsURL, JudgedDataURL, AppBarUseHelpPage, AppBarHelpPageLink,
-  JudgedDataEachGraphSmallImageURL, JudgedDataAllGraphSmallImageURL } from '@/router/data'
+  JudgedDataEachGraphSmallImageURL, JudgedDataAllGraphSmallImageURL, CertifiedSummaryWithOtherVaccinesThumbnailURL } from '@/router/data'
 import router from '@/router/index'
 import type { ICertifiedSummary, ICertifiedSummaryWithOtherVaccines } from '@/types/CertifiedSummary'
 import type { ICertifiedTrends } from '@/types/CertifiedTrends'
@@ -267,33 +267,6 @@ onMounted(() => {
   axios.get<ICertifiedSummaryWithOtherVaccines>(CertifiedSummaryWithOtherVaccinesURL)
     .then((response) => {
       summaryWithOtherVaccines.value = response.data
-
-      for (let index = 0; index < summaryWithOtherVaccines.value.chart_data.data.length; index++) {
-        const chartData = summaryWithOtherVaccines.value.chart_data.data[index]
-
-        otherVaccinesChartCategories.value.push(chartData.vaccine_name)
-        otherVaccinesChartSeriesMedical.value.push(chartData.medical)
-        otherVaccinesChartSeriesDisabilityOfChildren.value.push(chartData.disability_of_children)
-        otherVaccinesChartSeriesDisability.value.push(chartData.disability)
-        otherVaccinesChartSeriesDeath.value.push(chartData.death)
-      }
-     
-      otherVaccinesChartSeries.value.push({
-        name: summaryWithOtherVaccines.value.chart_data.headers[1],
-        data: otherVaccinesChartSeriesMedical.value
-      })
-      otherVaccinesChartSeries.value.push({
-        name: summaryWithOtherVaccines.value.chart_data.headers[2],
-        data: otherVaccinesChartSeriesDisabilityOfChildren.value
-      })
-      otherVaccinesChartSeries.value.push({
-        name: summaryWithOtherVaccines.value.chart_data.headers[3],
-        data: otherVaccinesChartSeriesDisability.value
-      })
-      otherVaccinesChartSeries.value.push({
-        name: summaryWithOtherVaccines.value.chart_data.headers[4],
-        data: otherVaccinesChartSeriesDeath.value
-      })
 
       otherVaccinesLoaded.value =  true
 
@@ -517,80 +490,6 @@ const deniedClaimChartOptions = {
       enabled: true,
       foreColor: '#fff',
     }
-  }
-}
-
-const otherVaccinesChartSeriesMedical = shallowRef<number[]>([])
-const otherVaccinesChartSeriesDisabilityOfChildren = shallowRef<number[]>([])
-const otherVaccinesChartSeriesDisability = shallowRef<number[]>([])
-const otherVaccinesChartSeriesDeath = shallowRef<number[]>([])
-const otherVaccinesChartSeries = shallowRef<{name: string, data: number[]}[]>([])
-const otherVaccinesChartCategories = shallowRef<string[]>([])
-const otherVaccinesChartCategoryName = 'ワクチン名'
-const downloadFileName = 'certified-summary-with-other-vaccines'
-const otherVaccinesChartOptions = {
-  title: {
-    text: ['新型コロナワクチンと', '過去の各種ワクチンの認定件数まとめ'],
-    align: 'center',
-    offsetY: 10,
-  },
-  chart: {
-    type: 'bar',
-    stacked: true,
-    toolbar:{
-      export: {
-        csv: {
-          headerCategory: otherVaccinesChartCategoryName,
-          filename: downloadFileName,
-        },
-        svg: {
-          filename: downloadFileName,
-        },
-        png: {
-          filename: downloadFileName,
-        }
-      },
-    }
-  },
-  legend: {
-    show: false
-  },
-  tooltip: {
-    y: {
-        formatter: (val: any) => {
-          return (val as number).toLocaleString() + ' 件'
-        },
-    },
-  },
-  responsive: [{
-    breakpoint: 800,
-    options: {
-      chart: {
-        height: 800
-      }
-    }
-  }],
-  plotOptions: {
-    bar: {
-      horizontal: true,
-    },
-  },
-  xaxis: {
-    categories: otherVaccinesChartCategories.value,
-    labels: {
-      formatter: function (value: any) {
-        return value.toLocaleString() + ' [件]'
-      }
-    },
-  },
-  stroke: {
-    width: 1,
-    colors: ['#fff']
-  },
-  dataLabels: {
-    formatter: (val: any, { seriesIndex, dataPointIndex, w } :any ) => {
-      return val.toLocaleString()
-    },
   }
 }
 
