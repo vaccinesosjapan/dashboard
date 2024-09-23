@@ -101,15 +101,15 @@
       <p>女性・男性・両方の3つの区分で、どのような症状が多く認定されているのかを以下に示します。</p>
       <v-row>
         <v-col cols="12">
-          <apexchart height="400" :options="trendsFemaleChartOptions" :series="[{data: trendsFemaleSeries}]"></apexchart>
+          <JudgedTrendsGraph title="女性の認定症状 上位10種" :series="trendsFemaleSeries"></JudgedTrendsGraph>
         </v-col>
 
         <v-col cols="12">
-          <apexchart height="400" :options="trendsMaleChartOptions" :series="[{data: trendsMaleSeries}]"></apexchart>
+          <JudgedTrendsGraph title="男性の認定症状 上位10種" :series="trendsMaleSeries"></JudgedTrendsGraph>
         </v-col>
 
         <v-col cols="12">
-          <apexchart height="400" :options="trendsSumChartOptions" :series="[{data: trendsSumSeries}]"></apexchart>
+          <JudgedTrendsGraph title="認定症状 上位10種" :series="trendsSumSeries"></JudgedTrendsGraph>
         </v-col>
       </v-row>
     </v-container>
@@ -172,10 +172,10 @@ import { AppBarTitle, AppBarColor, CertifiedSummaryURL, CertifiedSummaryWithOthe
 import router from '@/router/index'
 import type { ICertifiedSummary, ICertifiedSummaryWithOtherVaccines } from '@/types/CertifiedSummary'
 import type { ICertifiedTrends } from '@/types/CertifiedTrends'
-import { CreateBarChartOption } from '@/tools/ChartOptions'
 import type { IJudgedData, IJudgedDataGraphInfo } from '@/types/JudgedData'
 import CountAndRateGraph from '@/components/CountAndRateGraph.vue'
 import CustomHeader1 from '@/components/CustomHeader1.vue'
+import JudgedTrendsGraph from '@/components/JudgedTrendsGraph.vue'
 import OtherVaccinesGraph from '@/components/OtherVaccinesGraph.vue'
 
 AppBarTitle.value = String(router.currentRoute.value.name)
@@ -326,14 +326,9 @@ onMounted(() => {
     .catch((error) => console.log('failed to get judged data: ' + error))
 })
 
-const trendsFemaleSeries = shallowRef<{x: string, y: number}[]>()
-const trendsFemaleChartOptions = CreateBarChartOption('女性の認定症状 上位10種')
-
-const trendsMaleSeries = shallowRef<{x: string, y: number}[]>()
-const trendsMaleChartOptions = CreateBarChartOption('男性の認定症状 上位10種')
-
-const trendsSumSeries = shallowRef<{x: string, y: number}[]>()
-const trendsSumChartOptions = CreateBarChartOption('認定症状 上位10種')
+const trendsFemaleSeries = shallowRef<{x: string, y: number}[]>([])
+const trendsMaleSeries = shallowRef<{x: string, y: number}[]>([])
+const trendsSumSeries = shallowRef<{x: string, y: number}[]>([])
 
 const judgementTableSeries = shallowRef<any[]>([])
 const itemColors = ['#5FAF51', '#F44336', '#F6AD21', '#808080']

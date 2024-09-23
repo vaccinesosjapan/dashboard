@@ -13,7 +13,6 @@
     <apexchart class="mt-2" :options="disabilityOfChildrenChartOption" :series="[{data: disabilityOfChildrenValues}]"></apexchart>
     <apexchart class="mt-2" :options="disabilityChartOption" :series="[{data: disabilityValues}]"></apexchart>
     <apexchart class="mt-2" :options="deathChartOption" :series="[{data: deathValues}]"></apexchart>
-
   </v-sheet>
 
   <v-sheet class="d-none d-md-block">
