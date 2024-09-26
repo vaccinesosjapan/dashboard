@@ -6,12 +6,13 @@
     </v-container>
 
     <v-container v-else>
-      <h4 class="text-h4 mb-5">参考情報</h4>
+      <CustomHeader1 title="参考情報"></CustomHeader1>
 
       <v-card class="mx-auto mb-10" elevation="6">
         <template v-slot:title>
           <span class="font-weight-black">注意事項</span>
         </template>
+
         <v-card-text class="text-body-1">
           <v-row>
             <v-col cols="1">
@@ -20,16 +21,17 @@
             <v-col cols="11">
               <p class="text-body-1">
                 このページの内容は、膨大な心筋炎/心膜炎報告や亡くなった方々の報告（いずれも製造販売業者からの副反応疑い報告が母集団）から考察・調査を行う糸口を掴んでいただく一助となることを意図しております。
+              </p>
+              <p class="mt-2">
                 <span class="wave-under-bar">特定ロットNoと報告の多寡は複合的な要因が関連する情報であり、<span class="big-bold">直接的な因果関係は実証されていません。</span>
                 あくまでも「 <span class="big-bold">参考情報</span> 」としてご活用ください。</span>
               </p>
             </v-col>
           </v-row>
-
         </v-card-text>
       </v-card>
 
-      <h5 class="text-h5 mt-4 mb-2">ロットNoによる集計（心筋炎/心膜炎）</h5>
+      <CustomHeader2 title="ロットNoによる集計（心筋炎/心膜炎）"></CustomHeader2>
       <p class="text-body-1 mb-7">
         ロットNoが不明・空白の報告は <span class="big-bold">{{
           carditisSummary?.carditis_summary_from_reports.lot_no_info.invalid_count.toLocaleString()
@@ -71,7 +73,7 @@
         </v-col>
       </v-row>
 
-      <h5 class="text-h5 mt-4 mb-2">ロットNoによる集計（亡くなった方々）</h5>
+      <CustomHeader2 title="ロットNoによる集計（亡くなった方々）"></CustomHeader2>
       <p class="text-body-1 mb-7">
         ロットNoが不明・空白の報告は <span class="big-bold">{{
           deathSummary?.death_summary_from_reports.lot_no_info.invalid_count.toLocaleString()
@@ -129,6 +131,8 @@ import type { ILotNumberItem } from '@/types/LotNumberInfomation'
 import { CreateBarChartOption } from '@/tools/ChartOptions'
 import type { ICarditisSummaryFromReportsRoot } from '@/types/CarditisSummaryFromReports'
 import type { IDeathSummaryFromReportsRoot } from '@/types/DeathSummaryFromReports'
+import CustomHeader1 from '@/components/CustomHeader1.vue'
+import CustomHeader2 from '@/components/CustomHeader2.vue'
 
 AppBarTitle.value = String(router.currentRoute.value.name)
 AppBarColor.value = 'blue-accent-1'
@@ -192,11 +196,11 @@ onMounted(() => {
 })
 
 const carditisLotNumberSeries = shallowRef<any[]>([])
-const carditisLotNumberOptions = CreateBarChartOption('心筋炎/心膜炎の報告が多いロットNoの上位10種')
+const carditisLotNumberOptions = CreateBarChartOption(['心筋炎/心膜炎の報告が多い','ロットNoの上位10種'])
 const carditisLotNumberTopTenList = shallowRef<ILotNumberItem[]>([])
 
 const carditisModernaLotNumberSeries = shallowRef<any[]>([])
-const carditisModernaLotNumberOptions = CreateBarChartOption('心筋炎/心膜炎の報告が多いロットNoの上位10種（モデルナのみ）')
+const carditisModernaLotNumberOptions = CreateBarChartOption(['心筋炎/心膜炎の報告が多い','ロットNoの上位10種（モデルナのみ）'])
 const carditisModernaLotNumberTopTenList = shallowRef<ILotNumberItem[]>([])
 
 const createUrlForCarditis = (value: string) => {
@@ -204,11 +208,11 @@ const createUrlForCarditis = (value: string) => {
 }
 
 const deathLotNumberSeries = shallowRef<any[]>([])
-const deathLotNumberOptions = CreateBarChartOption('亡くなった方の報告が多いロットNoの上位10種')
+const deathLotNumberOptions = CreateBarChartOption(['亡くなった方の報告が多い','ロットNoの上位10種'])
 const deathLotNumberTopTenList = shallowRef<ILotNumberItem[]>([])
 
 const deathModernaLotNumberSeries = shallowRef<any[]>([])
-const deathModernaLotNumberOptions = CreateBarChartOption('亡くなった方の報告が多いロットNoの上位10種（モデルナのみ）')
+const deathModernaLotNumberOptions = CreateBarChartOption(['亡くなった方の報告が多い','ロットNoの上位10種（モデルナのみ）'])
 const deathModernaLotNumberTopTenList = shallowRef<ILotNumberItem[]>([])
 
 const createUrlForDeath = (value: string) => {

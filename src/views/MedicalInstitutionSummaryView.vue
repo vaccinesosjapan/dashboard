@@ -11,12 +11,12 @@
     </v-container>
 
     <v-container v-else>
-      <h4 class="text-h4 mb-2">副反応疑い報告</h4>
+      <CustomHeader1 title="副反応疑い報告"></CustomHeader1>
       <p class="text-body-1 mb-5">
         予防接種法に基づいて医療機関から報告された副反応疑い報告 <span class="big-bold">{{ medicalInstitutionSummary?.medical_institution_summary_from_reports.total_count.toLocaleString() }}</span> [件] の集計結果を示します。
       </p>
 
-      <h5 class="text-h5 mb-2">報告医の評価</h5>
+      <CustomHeader2 title="報告医の評価"></CustomHeader2>
       <p class="text-body-1 mb-1">
         報告医による因果関係評価の内訳や、報告医が関連の有無を評価した結果の内訳です。
       </p>
@@ -49,6 +49,8 @@ import { AppBarTitle, AppBarColor, MedicalInstitutionSummaryURL, AppBarUseHelpPa
 import router from '@/router/index'
 import { type IMedicalInstitutionSummary } from '@/types/MedicalInstitutionReports'
 import { CreatePieChartOption } from '@/tools/ChartOptions'
+import CustomHeader1 from '@/components/CustomHeader1.vue'
+import CustomHeader2 from '@/components/CustomHeader2.vue'
 
 AppBarTitle.value = String(router.currentRoute.value.name)
 AppBarColor.value = '#2962ff'

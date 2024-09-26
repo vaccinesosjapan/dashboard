@@ -55,7 +55,7 @@ export const CreatePieChartOption = (title: string, labels: ShallowRef<string[]>
   }
 }
 
-export const CreateBarChartOption = (title: string): any =>{
+export const CreateBarChartOption = (title: string[]): any =>{
   return {
     title: {
       text: title,
