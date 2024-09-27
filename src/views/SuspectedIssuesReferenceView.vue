@@ -40,7 +40,8 @@
 
       <v-row class="mb-2">
         <v-col cols="12" sm="6">
-          <apexchart height="400" :options="carditisLotNumberOptions" :series="[{data: carditisLotNumberSeries}]"></apexchart>
+          <HorizontalBarGraph :graph-title="['心筋炎/心膜炎の報告が多い','ロットNoの上位10種']"
+          x-axis-title="報告件数" download-file-name="carditis-lot-number-graph" :series="carditisLotNumberSeries"></HorizontalBarGraph>
         </v-col>
 
         <v-col cols="12" sm="6" class="mt-2">
@@ -57,8 +58,8 @@
 
       <v-row class="mb-2">
         <v-col cols="12" sm="6">
-          <apexchart height="400" :options="carditisModernaLotNumberOptions" :series="[{data: carditisModernaLotNumberSeries}]">
-          </apexchart>
+          <HorizontalBarGraph :graph-title="['心筋炎/心膜炎の報告が多い','ロットNoの上位10種（モデルナのみ）']"
+          x-axis-title="報告件数" download-file-name="carditis-moderna-lot-number-graph" :series="carditisModernaLotNumberSeries"></HorizontalBarGraph>
         </v-col>
 
         <v-col cols="12" sm="6" class="mt-2">
@@ -82,7 +83,8 @@
 
       <v-row class="mb-2">
         <v-col cols="12" sm="6">
-          <apexchart height="400" :options="deathLotNumberOptions" :series="[{data: deathLotNumberSeries}]"></apexchart>
+          <HorizontalBarGraph :graph-title="['亡くなった方の報告が多い','ロットNoの上位10種']"
+          x-axis-title="報告件数" download-file-name="death-lot-number-graph" :series="deathLotNumberSeries"></HorizontalBarGraph>
         </v-col>
 
         <v-col cols="12" sm="6" class="mt-2">
@@ -99,8 +101,8 @@
 
       <v-row class="mb-2">
         <v-col cols="12" sm="6">
-          <apexchart height="400" :options="deathModernaLotNumberOptions" :series="[{data: deathModernaLotNumberSeries}]">
-          </apexchart>
+          <HorizontalBarGraph :graph-title="['亡くなった方の報告が多い','ロットNoの上位10種（モデルナのみ）']"
+          x-axis-title="報告件数" download-file-name="death-moderna-lot-number-graph" :series="deathModernaLotNumberSeries"></HorizontalBarGraph>
         </v-col>
 
         <v-col cols="12" sm="6" class="mt-2">
@@ -128,11 +130,11 @@ import axios from 'axios'
 import { AppBarTitle, AppBarColor, CarditisSummaryFromReportsURL, DeathSummaryFromReportsURL, AppBarUseHelpPage, AppBarHelpPageLink } from '@/router/data'
 import router from '@/router/index'
 import type { ILotNumberItem } from '@/types/LotNumberInfomation'
-import { CreateBarChartOption } from '@/tools/ChartOptions'
 import type { ICarditisSummaryFromReportsRoot } from '@/types/CarditisSummaryFromReports'
 import type { IDeathSummaryFromReportsRoot } from '@/types/DeathSummaryFromReports'
 import CustomHeader1 from '@/components/CustomHeader1.vue'
 import CustomHeader2 from '@/components/CustomHeader2.vue'
+import HorizontalBarGraph from '@/components/HorizontalBarGraph.vue'
 
 AppBarTitle.value = String(router.currentRoute.value.name)
 AppBarColor.value = 'blue-accent-1'
@@ -196,11 +198,9 @@ onMounted(() => {
 })
 
 const carditisLotNumberSeries = shallowRef<any[]>([])
-const carditisLotNumberOptions = CreateBarChartOption(['心筋炎/心膜炎の報告が多い','ロットNoの上位10種'])
 const carditisLotNumberTopTenList = shallowRef<ILotNumberItem[]>([])
 
 const carditisModernaLotNumberSeries = shallowRef<any[]>([])
-const carditisModernaLotNumberOptions = CreateBarChartOption(['心筋炎/心膜炎の報告が多い','ロットNoの上位10種（モデルナのみ）'])
 const carditisModernaLotNumberTopTenList = shallowRef<ILotNumberItem[]>([])
 
 const createUrlForCarditis = (value: string) => {
@@ -208,11 +208,9 @@ const createUrlForCarditis = (value: string) => {
 }
 
 const deathLotNumberSeries = shallowRef<any[]>([])
-const deathLotNumberOptions = CreateBarChartOption(['亡くなった方の報告が多い','ロットNoの上位10種'])
 const deathLotNumberTopTenList = shallowRef<ILotNumberItem[]>([])
 
 const deathModernaLotNumberSeries = shallowRef<any[]>([])
-const deathModernaLotNumberOptions = CreateBarChartOption(['亡くなった方の報告が多い','ロットNoの上位10種（モデルナのみ）'])
 const deathModernaLotNumberTopTenList = shallowRef<ILotNumberItem[]>([])
 
 const createUrlForDeath = (value: string) => {

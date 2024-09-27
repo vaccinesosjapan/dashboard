@@ -41,7 +41,8 @@
 
       <v-row class="mb-2">
         <v-col cols="12" sm="6">
-          <apexchart height="400" :options="lotNumberOptions" :series="[{data: lotNumberSeries}]"></apexchart>
+          <HorizontalBarGraph :graph-title="['報告が多いロットNoの上位10種']"
+          x-axis-title="報告件数" download-file-name="lot-number-graph" :series="lotNumberSeries"></HorizontalBarGraph>
         </v-col>
 
         <v-col cols="12" sm="6" class="mt-2">
@@ -58,8 +59,8 @@
 
       <v-row class="mb-2">
         <v-col cols="12" sm="6">
-          <apexchart height="400" :options="modernaLotNumberOptions" :series="[{data: modernaLotNumberSeries}]">
-          </apexchart>
+          <HorizontalBarGraph :graph-title="['報告が多いロットNoの','上位10種（モデルナのみ）']" 
+          x-axis-title="報告件数" download-file-name="moderna-lot-number-graph" :series="modernaLotNumberSeries"></HorizontalBarGraph>
         </v-col>
 
         <v-col cols="12" sm="6" class="mt-2">
@@ -89,9 +90,9 @@ import { AppBarTitle, AppBarColor, MedicalInstitutionSummaryURL, AppBarUseHelpPa
 import router from '@/router/index'
 import { type IMedicalInstitutionSummary } from '@/types/MedicalInstitutionReports'
 import type { ILotNumberItem } from '@/types/LotNumberInfomation'
-import { CreateBarChartOption } from '@/tools/ChartOptions'
 import CustomHeader1 from '@/components/CustomHeader1.vue'
 import CustomHeader2 from '@/components/CustomHeader2.vue'
+import HorizontalBarGraph from '@/components/HorizontalBarGraph.vue'
 
 AppBarTitle.value = String(router.currentRoute.value.name)
 AppBarColor.value = 'blue-accent-1'
@@ -128,11 +129,9 @@ onMounted(() => {
 })
 
 const lotNumberSeries = shallowRef<any[]>([])
-const lotNumberOptions = CreateBarChartOption(['報告が多いロットNoの上位10種'])
 const lotNumberTopTenList = shallowRef<ILotNumberItem[]>([])
 
 const modernaLotNumberSeries = shallowRef<any[]>([])
-const modernaLotNumberOptions = CreateBarChartOption(['報告が多いロットNoの','上位10種（モデルナのみ）'])
 const modernaLotNumberTopTenList = shallowRef<ILotNumberItem[]>([])
 
 const createUrl = (value: string) => {
