@@ -217,21 +217,7 @@
 
       <v-row>
         <v-col cols="12">
-          <apexchart
-            height="400"
-            type="bar"
-            :options="{
-              chart: { id: 'number_of_deaths_reported_by_age_group' },
-              colors: ['#c83f3d'],
-              title: { text: '亡くなられた方々の人数（年代別）', floating: true },
-              xaxis: {
-                title: { text: '人数 (人)' },
-              },
-              yaxis: { title: { text: '年代' } },
-              plotOptions: { bar: { horizontal: true, borderRadius: 2 } }
-            }"
-            :series="[{ data: deathSummaryDataFromReports.death_summary_from_reports.sum_by_age }]"
-          ></apexchart>
+          <DeathPerAgeGraph :series="deathSummaryDataFromReports.death_summary_from_reports.sum_by_age"></DeathPerAgeGraph>
         </v-col>
       </v-row>
       
@@ -253,6 +239,7 @@ import type { IDeathSummaryFromReportsRoot } from '@/types/DeathSummaryFromRepor
 import EvaluationResultHelpDialog from '@/components/EvaluationResultHelpDialog.vue'
 import CustomHeader1 from '@/components/CustomHeader1.vue'
 import CustomHeader2 from '@/components/CustomHeader2.vue'
+import DeathPerAgeGraph from '@/components/DeathPerAgeGraph.vue'
 
 AppBarTitle.value = String(router.currentRoute.value.name)
 AppBarColor.value = '#2962ff'
