@@ -6,12 +6,13 @@
     </v-container>
 
     <v-container v-else>
-      <h4 class="text-h4 mb-5">参考情報</h4>
+      <CustomHeader1 title="参考情報"></CustomHeader1>
 
       <v-card class="mx-auto mb-10" elevation="6">
         <template v-slot:title>
           <span class="font-weight-black">注意事項</span>
         </template>
+
         <v-card-text class="text-body-1">
           <v-row>
             <v-col cols="1">
@@ -20,17 +21,18 @@
             <v-col cols="11">
               <p class="text-body-1">
                 このページの内容は、膨大な副反応疑い報告から考察・調査を行う糸口を掴んでいただく一助となることを意図しております。
+              </p>
+              <p class="mt-2">
                 <span class="wave-under-bar">特定ロットNoと報告の多寡は複合的な要因が関連する情報であり、<span
                     class="big-bold">直接的な因果関係は実証されていません。</span>
                   あくまでも「 <span class="big-bold">参考情報</span> 」としてご活用ください。</span>
               </p>
             </v-col>
           </v-row>
-
         </v-card-text>
       </v-card>
 
-      <h5 class="text-h5 mb-2">ロットNoによる集計</h5>
+      <CustomHeader2 title="ロットNoによる集計"></CustomHeader2>
       <p class="text-body-1 mb-7">
         ロットNoが不明・空白の報告は <span class="big-bold">{{
           medicalInstitutionSummary?.medical_institution_summary_from_reports.lot_no_info.invalid_count.toLocaleString()
@@ -39,7 +41,8 @@
 
       <v-row class="mb-2">
         <v-col cols="12" sm="6">
-          <apexchart height="400" :options="lotNumberOptions" :series="[{data: lotNumberSeries}]"></apexchart>
+          <HorizontalBarGraph :graph-title="['報告が多いロットNoの上位10種']"
+          x-axis-title="報告件数" download-file-name="lot-number-graph" :series="lotNumberSeries"></HorizontalBarGraph>
         </v-col>
 
         <v-col cols="12" sm="6" class="mt-2">
@@ -56,8 +59,8 @@
 
       <v-row class="mb-2">
         <v-col cols="12" sm="6">
-          <apexchart height="400" :options="modernaLotNumberOptions" :series="[{data: modernaLotNumberSeries}]">
-          </apexchart>
+          <HorizontalBarGraph :graph-title="['報告が多いロットNoの','上位10種（モデルナのみ）']" 
+          x-axis-title="報告件数" download-file-name="moderna-lot-number-graph" :series="modernaLotNumberSeries"></HorizontalBarGraph>
         </v-col>
 
         <v-col cols="12" sm="6" class="mt-2">
@@ -87,7 +90,9 @@ import { AppBarTitle, AppBarColor, MedicalInstitutionSummaryURL, AppBarUseHelpPa
 import router from '@/router/index'
 import { type IMedicalInstitutionSummary } from '@/types/MedicalInstitutionReports'
 import type { ILotNumberItem } from '@/types/LotNumberInfomation'
-import { CreateBarChartOption } from '@/tools/ChartOptions'
+import CustomHeader1 from '@/components/CustomHeader1.vue'
+import CustomHeader2 from '@/components/CustomHeader2.vue'
+import HorizontalBarGraph from '@/components/HorizontalBarGraph.vue'
 
 AppBarTitle.value = String(router.currentRoute.value.name)
 AppBarColor.value = 'blue-accent-1'
@@ -124,11 +129,9 @@ onMounted(() => {
 })
 
 const lotNumberSeries = shallowRef<any[]>([])
-const lotNumberOptions = CreateBarChartOption('報告が多いロットNoの上位10種')
 const lotNumberTopTenList = shallowRef<ILotNumberItem[]>([])
 
 const modernaLotNumberSeries = shallowRef<any[]>([])
-const modernaLotNumberOptions = CreateBarChartOption('報告が多いロットNoの上位10種（モデルナのみ）')
 const modernaLotNumberTopTenList = shallowRef<ILotNumberItem[]>([])
 
 const createUrl = (value: string) => {

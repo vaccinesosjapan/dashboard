@@ -60,12 +60,6 @@ const props = defineProps<{
   allAltImagePath: string
 }>()
 
-interface ISeriesValue {
-	name: string,
-	type: string,
-	data: number[]
-}
-
 const xAxisLabels = shallowRef<string[]>([])
 const numberOfCertified :number[] = []
 const numberOfRepudiation :number[] = []
@@ -86,8 +80,6 @@ for (let index = 0; index < props.data.length; index++) {
 	numberOfRepudiationSum.push(element.RepudiationCountSum)
 	numberOfCertifiedRateSum.push(element.CertifiedRateSum)
 }
-
-const noticeForImage = '※ グラフを画像で表示しています。詳しいデータを見る場合は、横幅 960 px以上のPC画面などでご覧ください。'
 
 // Seriesデータを作成
 const eachCountAndRateSeries = shallowRef<ISeriesValue[]>([])
@@ -133,8 +125,21 @@ allCountAndRateSeries.value = [
 const eachCountAndRateChartOption = shallowRef<any>()
 const allCountAndRateChartOption = shallowRef<any>()
 
+eachCountAndRateChartOption.value = CreateCountAndRateChartOption(props.eachInfo, xAxisLabels.value, 'each-result-of-judged-count')
+allCountAndRateChartOption.value = CreateCountAndRateChartOption(props.allInfo, xAxisLabels.value, 'all-result-of-judged-count')
+</script>
+
+<script lang="ts">
+interface ISeriesValue {
+	name: string,
+	type: string,
+	data: number[]
+}
+
+const noticeForImage = '※ グラフを画像で表示しています。詳しいデータを見る場合は、横幅 960 px以上のPC画面などでご覧ください。'
 const xAxisTitle = '審議会の開催日'
-const CreateCountAndRateChartOption = (info: IJudgedDataGraphInfo, labels: string[]): any =>{
+
+const CreateCountAndRateChartOption = (info: IJudgedDataGraphInfo, labels: string[], downloadFileName: string): any =>{
   return {
     chart: {
       type: 'line',
@@ -146,8 +151,15 @@ const CreateCountAndRateChartOption = (info: IJudgedDataGraphInfo, labels: strin
             headerValue: 'value',
             categoryFormatter(x: any) {
               return new Date(x).toDateString()
-            }
-          }
+            },
+						filename: downloadFileName,
+          },
+          svg: {
+						filename: downloadFileName,
+					},
+					png: {
+						filename: downloadFileName,
+					}
         }
       }
     },
@@ -245,9 +257,6 @@ const CreateCountAndRateChartOption = (info: IJudgedDataGraphInfo, labels: strin
     }
   }
 }
-
-eachCountAndRateChartOption.value = CreateCountAndRateChartOption(props.eachInfo, xAxisLabels.value)
-allCountAndRateChartOption.value = CreateCountAndRateChartOption(props.allInfo, xAxisLabels.value)
 </script>
 
 <style scoped>
