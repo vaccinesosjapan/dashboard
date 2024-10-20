@@ -20,7 +20,7 @@ defineProps<{
 const mediumChartOption = shallowRef<any>()
 const mChartOp = createBaseChartOption()
 mChartOp.dataLabels.style = {
-	fontSize: '0.9rem',
+	fontSize: '1rem',
 	colors: ['#818181'],
 }
 mChartOp.dataLabels.background = {

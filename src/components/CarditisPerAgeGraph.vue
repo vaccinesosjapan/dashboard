@@ -20,7 +20,7 @@ defineProps<{
 const mediumChartOption = shallowRef<any>()
 const mChartOp = createBaseChartOption()
 mChartOp.dataLabels.style = {
-	fontSize: '0.9rem',
+	fontSize: '1rem',
 	colors: ['#818181'],
 }
 mChartOp.dataLabels.background = {
@@ -55,7 +55,7 @@ const issueFormatter = (value: any) => { return value.toLocaleString() + ' 人' 
 const createBaseChartOption = (): any =>{
   return {
     title: {
-      text: '心筋炎/心膜炎になった方々の人数（年代別）',
+      text: '心筋炎/心膜炎の方々の人数（年代別）',
 	    floating: true
     },
     chart: {

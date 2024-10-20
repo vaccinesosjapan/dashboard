@@ -58,7 +58,7 @@ const medicalChartOption = CreateEachBillingDetailsChartOption([`${headerNames[0
 const disabilityOfChildrenChartOption = CreateEachBillingDetailsChartOption([`${headerNames[1]} の認定件数まとめ`], '#54E496', categories, false)
 const disabilityChartOption = CreateEachBillingDetailsChartOption([`${headerNames[2]} の認定件数まとめ`], '#F6AD21', categories, false)
 const header4Array = headerNames[3].split('・')
-const deathChartOption = CreateEachBillingDetailsChartOption([`${header4Array.slice(0,2)}`,`${header4Array.slice(2,4)} の認定件数まとめ`], '#F23B61', categories, false)
+const deathChartOption = CreateEachBillingDetailsChartOption([`${header4Array.slice(0,2).join('、')}`,`${header4Array.slice(2,4).join('、')} の認定件数まとめ`], '#F23B61', categories, false)
 
 const updateFuncAll = (chart: any) => {
   if(allChartInstance.value !== undefined) return ''
