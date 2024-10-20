@@ -52,72 +52,26 @@
         </v-col>
       </v-row>
 
-      <CustomHeader2 title="心筋炎の件数内訳"></CustomHeader2>
-      <div class="d-flex justify-end">
-        <v-btn size="small" @click="changeChartView" color="blue" v-if="isPersentView">件数を表示</v-btn>
-        <v-btn size="small" @click="changeChartView" color="blue" v-else>割合を表示</v-btn>
+      <CustomHeader2 title="製造販売業者別の集計"></CustomHeader2>
+      <div class="text-body-1">
+        心筋炎の報告 {{ carditisSummaryData.carditis_summary.myocarditis.toLocaleString() }} 件 を製造販売業者ごとに集計した結果です。
       </div>
-      <v-row class="mb-2">
-        <v-col cols="12" md="8">
-          <apexchart :options="myocarditisByVaccineOptions" :series="myocarditisByVaccineSeries"></apexchart>
-        </v-col>
+      <HorizontalBarGraph :graph-title="['心筋炎の報告件数（製造販売業者別）']"
+          x-axis-title="報告件数" download-file-name="myocarditis-count-by-manufacturer" :series="myocarditisSeries"></HorizontalBarGraph>
 
-        <v-col  cols="12" md="4">
-          <v-table density="comfortable">
-            <thead>
-              <tr>
-                <th class="text-left">ワクチン名</th>
-                <th class="text-left">心筋炎件数</th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr v-for="label, index in myocarditisByVaccineLabels" :key="label">
-                <td class="small-cell">{{ addNewLineWithBrackets(label) }}</td>
-                <td class="text-right">{{ myocarditisByVaccineSeries[index].toLocaleString() }}</td>
-              </tr>
-              <tr>
-                <td><b>合計</b></td>
-                <td class="text-right text-body-2"><b>{{ myocarditisByVaccineSeries.reduce(function(a, x){return a + x;}).toLocaleString() }}</b></td>
-              </tr>
-            </tbody>
-          </v-table>
-        </v-col>
-      </v-row>
-
-      <CustomHeader2 title="心膜炎の件数内訳"></CustomHeader2>
-      <div class="d-flex justify-end">
-        <v-btn size="small" @click="changeChartView" color="blue" v-if="isPersentView">件数を表示</v-btn>
-        <v-btn size="small" @click="changeChartView" color="blue" v-else>割合を表示</v-btn>
+      <div class="text-body-1 mt-2">
+        心膜炎の報告 {{ carditisSummaryData.carditis_summary.pericarditis.toLocaleString() }} 件 を製造販売業者ごとに集計した結果です。
       </div>
-      <v-row>
-        <v-col cols="12" md="8">
-          <apexchart :options="pericarditisByVaccineOptions" :series="pericarditisByVaccineSeries"></apexchart>
-        </v-col>
+      <HorizontalBarGraph :graph-title="['心膜炎の報告件数（製造販売業者別）']"
+          x-axis-title="報告件数" download-file-name="pericarditis-count-by-manufacturer" :series="pericarditisSeries"></HorizontalBarGraph>
 
-        <v-col  cols="12" md="4">
-          <v-table density="comfortable">
-            <thead>
-              <tr>
-                <th class="text-left">ワクチン名</th>
-                <th class="text-left">心膜炎件数</th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr v-for="label, index in pericarditisByVaccineLabels" :key="label">
-                <td class="small-cell">{{ addNewLineWithBrackets(label) }}</td>
-                <td class="text-right">{{ pericarditisByVaccineSeries[index].toLocaleString() }}</td>
-              </tr>
-              <tr>
-                <td><b>合計</b></td>
-                <td class="text-right"><b>{{ pericarditisByVaccineSeries.reduce(function(a, x){return a + x;}).toLocaleString() }}</b></td>
-              </tr>
-            </tbody>
-          </v-table>
-        </v-col>
-      </v-row>
+      <CustomHeader2 title="年代別の集計"></CustomHeader2>
+      <div class="text-body-1 mb-2">
+        心筋炎/心膜炎の報告 {{ (carditisAgesCount + carditisUnkownAgesCount).toLocaleString() }} 件のうち、年代が判明している {{ carditisAgesCount.toLocaleString() }} 件を年代ごとに集計した結果です。（{{ carditisUnkownAgesCount.toLocaleString() }} 件は年代不明）
+      </div>
+      <CarditisPerAgeGraph :series="carditisSummaryByAges"></CarditisPerAgeGraph>
+      <p class="text-caption text-right mt-1">※ 「 <a :href="carditisSummaryData?.carditis_summary.source.url">{{ carditisSummaryData?.carditis_summary.source.name }}</a> 」が発表した資料の <b>{{ carditisSummaryData?.carditis_summary.date }}</b> 時点の数値を用いています。</p>
 
-      <p class="text-caption text-right mt-2">※ 「 <a :href="carditisSummaryData?.carditis_summary.source.url">{{ carditisSummaryData?.carditis_summary.source.name }}</a> 」で
-      発表された資料の <b>{{ carditisSummaryData?.carditis_summary.date }}</b> 時点の数値を用いています。</p>
     </v-container>
 
     <v-container v-if="deathSummaryData == undefined">
@@ -175,11 +129,13 @@
           </v-table>
           <EvaluationResultHelpDialog></EvaluationResultHelpDialog>
         </v-col>
+      </v-row>
 
+      <CustomHeader2 title="製造販売業者別の集計"></CustomHeader2>
+      <v-row>
         <v-col cols="12" sm="8">
           <apexchart :options="deathSummaryByVaccineOptions" :series="deathSummaryByVaccineSeries"></apexchart>
         </v-col>
-
         <v-col  cols="12" sm="4">
           <v-table density="comfortable">
             <thead>
@@ -213,8 +169,7 @@
     </v-container>
 
     <v-container v-else>
-      <CustomHeader2 title="年代別の内訳"></CustomHeader2>
-
+      <CustomHeader2 title="年代別の集計"></CustomHeader2>
       <v-row>
         <v-col cols="12">
           <DeathPerAgeGraph :series="deathSummaryDataFromReports.death_summary_from_reports.sum_by_age"></DeathPerAgeGraph>
@@ -233,12 +188,14 @@ import { onMounted, shallowRef } from 'vue'
 import axios from 'axios'
 import { AppBarTitle, AppBarColor, CarditisSummaryURL, DeathSummaryURL, DeathSummaryFromReportsURL, AppBarUseHelpPage, AppBarHelpPageLink } from '@/router/data'
 import router from '@/router/index'
-import type { ICarditisSummaryRoot } from '@/types/CarditisSummary'
+import { ConvertCarditisIssuesByAgesTo2dData, type ICarditisSummaryRoot } from '@/types/CarditisSummary'
 import type { IDeathSummaryRoot } from '@/types/DeathSummary'
 import type { IDeathSummaryFromReportsRoot } from '@/types/DeathSummaryFromReports'
 import EvaluationResultHelpDialog from '@/components/EvaluationResultHelpDialog.vue'
 import CustomHeader1 from '@/components/CustomHeader1.vue'
 import CustomHeader2 from '@/components/CustomHeader2.vue'
+import HorizontalBarGraph from '@/components/HorizontalBarGraph.vue'
+import CarditisPerAgeGraph from '@/components/CarditisPerAgeGraph.vue'
 import DeathPerAgeGraph from '@/components/DeathPerAgeGraph.vue'
 
 AppBarTitle.value = String(router.currentRoute.value.name)
@@ -247,6 +204,11 @@ AppBarUseHelpPage.value = true
 AppBarHelpPageLink.value = 'how-to-use-summary-page'
 
 const carditisSummaryData = shallowRef<ICarditisSummaryRoot>()
+const myocarditisSeries = shallowRef<{x: string, y: number}[]>([])
+const pericarditisSeries = shallowRef<{x: string, y: number}[]>([])
+const carditisSummaryByAges = shallowRef<{x:string, y:number}[]>([])
+const carditisAgesCount = shallowRef<number>(0)
+const carditisUnkownAgesCount = shallowRef<number>(0)
 const deathSummaryData = shallowRef<IDeathSummaryRoot>()
 const deathSummaryDataFromReports = shallowRef<IDeathSummaryFromReportsRoot>()
 onMounted(() => {
@@ -267,6 +229,21 @@ onMounted(() => {
         pericarditisByVaccineLabels.value.push(issue.vaccine_name)
         pericarditisByVaccineSeries.value.push(issue.pericarditis_count)
       }
+
+      const issuesByM = carditisSummaryData.value.carditis_issues.issues_by_manufacturers
+      const mSeries: {x: string, y: number}[] = []
+      const pSeries: {x: string, y: number}[] = []
+      for (let index = 0; index < issuesByM.length; index++) {
+        const issue = issuesByM[index];
+        mSeries.push({x: issue.manufacturer, y: issue.myocarditis_count})
+        pSeries.push({x: issue.manufacturer, y: issue.pericarditis_count})
+      }
+      myocarditisSeries.value = mSeries
+      pericarditisSeries.value = pSeries
+      
+      carditisAgesCount.value = carditisSummaryData.value.carditis_issues.issues_by_ages.ages_count
+      carditisUnkownAgesCount.value = carditisSummaryData.value.carditis_issues.issues_by_ages.unknown_ages_count
+      carditisSummaryByAges.value = ConvertCarditisIssuesByAgesTo2dData(carditisSummaryData.value.carditis_issues.issues_by_ages.issues)
       
       // 2つ目以降のグラフが手動リフレッシュ無しにちゃんと表示されるようにするために必要な処理
       window.dispatchEvent(new Event('resize'))
