@@ -26,7 +26,7 @@ mediumChartOption.value = createBaseChartOption(props.graphTitle, props.xAxisTit
 const shortChartOption = shallowRef<any>()
 const sChartOp = createBaseChartOption(props.graphTitle, props.xAxisTitle, props.downloadFileName)
 sChartOp.dataLabels.style = {
-	fontSize: '0.7rem',
+	fontSize: '0.9rem',
 	colors: ['#818181'],
 }
 sChartOp.dataLabels.background = {
@@ -51,18 +51,18 @@ const createBaseChartOption = (graphTitle: string[], xAxisTitle: string, downloa
     },
     chart: {
       type: 'bar',
-	  toolbar:{
-		export: {
-			csv: {
-				filename: downloadFileName,
-			},
-			svg: {
-				filename: downloadFileName,
-			},
-			png: {
-				filename: downloadFileName,
-			}
-		},
+      toolbar:{
+        export: {
+          csv: {
+            filename: downloadFileName,
+          },
+          svg: {
+            filename: downloadFileName,
+          },
+          png: {
+            filename: downloadFileName,
+          }
+        },
       }
     },
     xaxis: {
@@ -70,7 +70,7 @@ const createBaseChartOption = (graphTitle: string[], xAxisTitle: string, downloa
         text: xAxisTitle
       },
 	  labels: {
-		formatter: numberFormatter
+		  formatter: numberFormatter
 	  },
     },
     yaxis: {

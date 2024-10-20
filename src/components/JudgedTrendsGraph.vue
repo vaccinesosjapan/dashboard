@@ -74,7 +74,7 @@ mediumChartOption.value = createBaseChartOption(props.title)
 const shortChartOption = shallowRef<any>()
 const sChartOp = createBaseChartOption(props.title)
 sChartOp.dataLabels.style = {
-	fontSize: '0.7rem',
+	fontSize: '0.9rem',
 	colors: ['#818181'],
 }
 sChartOp.dataLabels.background = {

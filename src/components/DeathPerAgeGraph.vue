@@ -20,7 +20,7 @@ defineProps<{
 const mediumChartOption = shallowRef<any>()
 const mChartOp = createBaseChartOption()
 mChartOp.dataLabels.style = {
-	fontSize: '0.7rem',
+	fontSize: '0.9rem',
 	colors: ['#818181'],
 }
 mChartOp.dataLabels.background = {
@@ -34,7 +34,7 @@ mediumChartOption.value = mChartOp
 const shortChartOption = shallowRef<any>()
 const sChartOp = createBaseChartOption()
 sChartOp.dataLabels.style = {
-	fontSize: '0.7rem',
+	fontSize: '0.9rem',
 	colors: ['#818181'],
 }
 sChartOp.dataLabels.background = {
@@ -56,37 +56,37 @@ const createBaseChartOption = (): any =>{
   return {
     title: {
       text: '亡くなられた方々の人数（年代別）',
-	  floating: true
+	    floating: true
     },
     chart: {
       type: 'bar',
-	  toolbar:{
-		export: {
-			csv: {
-				filename: downloadFileName,
-			},
-			svg: {
-				filename: downloadFileName,
-			},
-			png: {
-				filename: downloadFileName,
-			}
-		},
+      toolbar:{
+        export: {
+          csv: {
+            filename: downloadFileName,
+          },
+          svg: {
+            filename: downloadFileName,
+          },
+          png: {
+            filename: downloadFileName,
+          }
+        },
       }
     },
-	colors: ['#c83f3d'],
+	  colors: ['#c83f3d'],
     xaxis: {
       title: {
         text: '人数'
       },
-	  labels: {
-		formatter: numberFormatter
-	  },
+	    labels: {
+        formatter: numberFormatter
+      },
     },
     yaxis: {
-	  title: {
-		text: '年代'
-	  },
+      title: {
+        text: '年代'
+      },
       labels: {
         style: {
           fontSize: '0.8rem'
@@ -99,16 +99,16 @@ const createBaseChartOption = (): any =>{
       y: {
         formatter: issueFormatter,
         title: {
-			formatter: (): string => {
-				return `人数: `
-			}
-		}
+          formatter: (): string => {
+            return `人数: `
+          }
+        }
       },
     },
     plotOptions: {
       bar: {
         horizontal: true,
-		borderRadius: 2
+		    borderRadius: 2
       },
     },
     dataLabels: {
