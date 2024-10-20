@@ -133,7 +133,7 @@
 
       <CustomHeader2 title="製造販売業者別の集計"></CustomHeader2>
       <div class="text-body-1 mt-2">
-        専門家による因果関係評価がβとγの報告 {{ (deathSummaryData?.death_summary.sum_by_evaluation.beta + deathSummaryData?.death_summary.sum_by_evaluation.gamma).toLocaleString() }} 件 を製造販売業者ごとに集計した結果です。
+        専門家による因果関係評価がβとγの報告 <span class="big-bold">{{ (deathSummaryData?.death_summary.sum_by_evaluation.beta + deathSummaryData?.death_summary.sum_by_evaluation.gamma).toLocaleString() }}</span> [件] を製造販売業者ごとに集計した結果です。
       </div>
       <HorizontalBarGraph :graph-title="['死亡報告の件数（製造販売業者別）']"
           x-axis-title="報告件数" download-file-name="death-count-by-manufacturer" :series="deathSummaryByManufacturer"></HorizontalBarGraph>
@@ -202,16 +202,6 @@ onMounted(() => {
       carditisSummarySeries.value.push(carditisSummaryData.value.carditis_summary.myocarditis)
       carditisSummarySeries.value.push(carditisSummaryData.value.carditis_summary.pericarditis)
 
-      for (let index = 0; index < carditisSummaryData.value.carditis_issues.issues_with_vaccine_name.length; index++) {
-        const issue = carditisSummaryData.value.carditis_issues.issues_with_vaccine_name[index]
-
-        myocarditisByVaccineLabels.value.push(issue.vaccine_name)
-        myocarditisByVaccineSeries.value.push(issue.myocarditis_count)
-
-        pericarditisByVaccineLabels.value.push(issue.vaccine_name)
-        pericarditisByVaccineSeries.value.push(issue.pericarditis_count)
-      }
-
       const issuesByM = carditisSummaryData.value.carditis_issues.issues_by_manufacturers
       const mSeries: {x: string, y: number}[] = []
       const pSeries: {x: string, y: number}[] = []
@@ -243,12 +233,6 @@ onMounted(() => {
       deathSummarySeries.value.push(deathSummaryData.value.death_summary.sum_by_evaluation.beta)
       deathSummaryLabels.value.push('γ')
       deathSummarySeries.value.push(deathSummaryData.value.death_summary.sum_by_evaluation.gamma)
-
-      for (let index = 0; index < deathSummaryData.value.death_summary.sum_by_vaccine_name.length; index++) {
-        const element = deathSummaryData.value.death_summary.sum_by_vaccine_name[index];
-        deathSummaryByVaccineLabels.value.push(element.vaccine_name)
-        deathSummaryByVaccineSeries.value.push(element.evaluations.alpha + element.evaluations.gamma)
-      }
 
       const sum_by_manufacturer = deathSummaryData.value.death_summary.sum_by_manufacturer
       const seriesManufacturer: {x:string, y:number}[] = []
@@ -324,116 +308,6 @@ const carditisSummaryOptions = {
   }
 }
 
-const myocarditisByVaccineLabels = shallowRef<string[]>([])
-const myocarditisByVaccineSeries = shallowRef<any[]>([])
-const myocarditisByVaccineOptions = {
-  title: {
-    text: 'ワクチン種類ごとの心筋炎件数',
-    align: 'center',
-    offsetX: 10,
-    offsetY: 10,
-  },
-  chart: { type: 'pie' },
-  legend: {
-    position: 'bottom',
-  },
-  labels: myocarditisByVaccineLabels.value,
-  plotOptions: {
-    pie: {
-      dataLabels: {
-        minAngleToShowLabel: 0.1
-      }, 
-    }
-  },
-  tooltip: {
-    y: {
-        formatter: (val: any) => {
-          return (val as number).toLocaleString() + ' 件'
-        },
-    },
-  },
-  responsive: [{
-    breakpoint: 800,
-    options: {
-      chart: {
-        width: 300
-      }
-    }
-  }],
-  dataLabels: {
-    formatter: function (val: any, { seriesIndex, dataPointIndex, w } :any ) {
-      if(isPersentView.value){
-        return val.toFixed(1) + ' %'
-      } else {
-        return w.config.series[seriesIndex].toLocaleString() + ' 件'
-      }
-    },
-    style: {
-      fontSize: '1.2rem',
-      colors: ['#212121'],
-    },
-    background: {
-      enabled: true,
-      foreColor: '#fff',
-    }
-  }
-}
-
-const pericarditisByVaccineLabels = shallowRef<string[]>([])
-const pericarditisByVaccineSeries = shallowRef<any[]>([])
-const pericarditisByVaccineOptions = {
-  title: {
-    text: 'ワクチン種類ごとの心膜炎件数',
-    align: 'center',
-    offsetX: 10,
-    offsetY: 10,
-  },
-  chart: { type: 'pie' },
-  legend: {
-    position: 'bottom',
-  },
-  labels: pericarditisByVaccineLabels.value,
-  plotOptions: {
-    pie: {
-      dataLabels: {
-        minAngleToShowLabel: 0.1
-      }, 
-    }
-  },
-  tooltip: {
-    y: {
-        formatter: (val: any) => {
-          return (val as number).toLocaleString() + ' 件'
-        },
-    },
-  },
-  responsive: [{
-    breakpoint: 800,
-    options: {
-      chart: {
-        width: 300
-      }
-    }
-  }],
-  dataLabels: {
-    formatter: function (val: any, { seriesIndex, dataPointIndex, w } :any ) {
-      if(isPersentView.value){
-        return val.toFixed(1) + ' %'
-      } else {
-        return w.config.series[seriesIndex].toLocaleString() + ' 件'
-      }
-    },
-    style: {
-      fontSize: '1.2rem',
-      colors: ['#212121'],
-    },
-    background: {
-      enabled: true,
-      foreColor: '#fff',
-    }
-  }
-}
-
 const deathSummaryLabels = shallowRef<string[]>([])
 const deathSummarySeries = shallowRef<any[]>([])
 const deathSummaryOptions = {
@@ -443,9 +317,11 @@ const deathSummaryOptions = {
     offsetX: 10,
     offsetY: 10,
   },
-  chart: { type: 'pie' },
+  chart: { 
+    type: 'pie',
+  },
   legend: {
-    position: 'bottom',
+    position: 'right',
   },
   labels: deathSummaryLabels.value,
   plotOptions: {
@@ -489,78 +365,9 @@ const deathSummaryOptions = {
   }
 }
 
-const deathSummaryByVaccineLabels = shallowRef<string[]>([])
-const deathSummaryByVaccineSeries = shallowRef<any[]>([])
-const deathSummaryByVaccineOptions = {
-  title: {
-    text: 'α・γ評価のワクチン別 内訳',
-    align: 'center',
-    offsetX: 10,
-    offsetY: 10,
-  },
-  chart: { type: 'pie' },
-  legend: {
-    position: 'bottom',
-  },
-  labels: deathSummaryByVaccineLabels.value,
-  plotOptions: {
-    pie: {
-      dataLabels: {
-        minAngleToShowLabel: 0.1
-      }, 
-    }
-  },
-  tooltip: {
-    y: {
-        formatter: (val: any) => {
-          return (val as number).toLocaleString() + ' 件'
-        },
-    },
-  },
-  responsive: [{
-    breakpoint: 800,
-    options: {
-      chart: {
-        width: 300
-      }
-    }
-  }],
-  dataLabels: {
-    formatter: function (val: any, { seriesIndex, dataPointIndex, w } :any ) {
-      if(isPersentView.value){
-        return val.toFixed(2) + ' %'
-      } else {
-        return w.config.series[seriesIndex].toLocaleString() + ' 件'
-      }
-    },
-    style: {
-      fontSize: '1.2rem',
-      colors: ['#212121'],
-    },
-    background: {
-      enabled: true,
-      foreColor: '#fff',
-    }
-  }
-}
-
 const changeChartView = () => {
   isPersentView.value = !isPersentView.value
   window.dispatchEvent(new Event('resize'))
-}
-
-const addNewLineWithBrackets = (label: string): string => {
-  label = label.replace('（','(')
-  label = label.replace('）',')')
-  
-  let split = label.split('(')
-  if(split.length < 2) return label
-
-  let joined = split[0] + '\r\n'
-  for (let index = 1; index < split.length; index++) {
-    joined += '(' + split[index];
-  }
-  return joined
 }
 </script>
 
