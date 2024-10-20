@@ -84,8 +84,8 @@
     </v-container>
 
     <v-container v-else>
-      <CustomHeader1 title="亡くなった方々に関する報告"></CustomHeader1>
-      <p class="text-body-1 mb-2">
+      <CustomHeader1 title="亡くなられた方々に関する報告"></CustomHeader1>
+      <p class="text-body-1 mb-3">
         「新型コロナワクチン接種後の死亡例」として製造販売業者から報告された事例 <span class="big-bold">{{ deathSummaryData?.death_summary.sum_by_evaluation.total.toLocaleString() }}</span> [件] の集計結果を示します。
       </p>
 
@@ -95,12 +95,12 @@
         <v-btn size="small" @click="changeChartView" color="blue" v-else>割合を表示</v-btn>
       </div>
 
-      <v-row>
+      <v-row class="mb-3">
         <v-col cols="12" sm="8">
           <apexchart :options="deathSummaryOptions" :series="deathSummarySeries"></apexchart>
         </v-col>
 
-        <v-col  cols="12" sm="4">
+        <v-col cols="12" sm="4">
           <v-table density="comfortable">
             <thead>
               <tr>
@@ -132,31 +132,12 @@
       </v-row>
 
       <CustomHeader2 title="製造販売業者別の集計"></CustomHeader2>
-      <v-row>
-        <v-col cols="12" sm="8">
-          <apexchart :options="deathSummaryByVaccineOptions" :series="deathSummaryByVaccineSeries"></apexchart>
-        </v-col>
-        <v-col  cols="12" sm="4">
-          <v-table density="comfortable">
-            <thead>
-              <tr>
-                <th class="text-left">ワクチン名</th>
-                <th class="text-right">α・γの件数</th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr v-for="label, index in deathSummaryByVaccineLabels" :key="label">
-                <td class="small-cell">{{ addNewLineWithBrackets(label) }}</td>
-                <td class="text-right">{{ deathSummaryByVaccineSeries[index].toLocaleString() }}</td>
-              </tr>
-              <tr>
-                <td><b>合計</b></td>
-                <td class="text-right"><b>{{ deathSummaryByVaccineSeries.reduce(function(a, x){return a + x;}).toLocaleString() }}</b></td>
-              </tr>
-            </tbody>
-          </v-table>
-        </v-col>
-      </v-row>
+      <div class="text-body-1 mt-2">
+        専門家による因果関係評価がβとγの報告 {{ (deathSummaryData?.death_summary.sum_by_evaluation.beta + deathSummaryData?.death_summary.sum_by_evaluation.gamma).toLocaleString() }} 件 を製造販売業者ごとに集計した結果です。
+      </div>
+      <HorizontalBarGraph :graph-title="['死亡報告の件数（製造販売業者別）']"
+          x-axis-title="報告件数" download-file-name="death-count-by-manufacturer" :series="deathSummaryByManufacturer"></HorizontalBarGraph>
+      
     </v-container>
 
     <v-container v-if="deathSummaryDataFromReports == undefined">
@@ -210,6 +191,7 @@ const carditisSummaryByAges = shallowRef<{x:string, y:number}[]>([])
 const carditisAgesCount = shallowRef<number>(0)
 const carditisUnkownAgesCount = shallowRef<number>(0)
 const deathSummaryData = shallowRef<IDeathSummaryRoot>()
+const deathSummaryByManufacturer = shallowRef<{x:string, y:number}[]>([])
 const deathSummaryDataFromReports = shallowRef<IDeathSummaryFromReportsRoot>()
 onMounted(() => {
   axios
@@ -267,6 +249,14 @@ onMounted(() => {
         deathSummaryByVaccineLabels.value.push(element.vaccine_name)
         deathSummaryByVaccineSeries.value.push(element.evaluations.alpha + element.evaluations.gamma)
       }
+
+      const sum_by_manufacturer = deathSummaryData.value.death_summary.sum_by_manufacturer
+      const seriesManufacturer: {x:string, y:number}[] = []
+      for (let index = 0; index < sum_by_manufacturer.length; index++) {
+        const element = sum_by_manufacturer[index];
+        seriesManufacturer.push({x: element.manufacturer, y: element.death_count})
+      }
+      deathSummaryByManufacturer.value = seriesManufacturer
 
       // 2つ目以降のグラフが手動リフレッシュ無しにちゃんと表示されるようにするために必要な処理
       window.dispatchEvent(new Event('resize'))

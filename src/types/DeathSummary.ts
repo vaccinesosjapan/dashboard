@@ -10,6 +10,7 @@ export interface IDeathSummary {
 	source: ISourceInfo
 	sum_by_evaluation: ISumByEvaluation
 	sum_by_vaccine_name: ISumByVaccineName[]
+	sum_by_manufacturer: ISumByManufacturer[]
 }
 
 export interface ISumByEvaluation {
@@ -28,6 +29,11 @@ export interface IEvaluations {
 	alpha: number
 	beta: number
 	gamma: number
+}
+
+export interface ISumByManufacturer {
+	manufacturer: string
+	death_count: number
 }
 
 export interface IDeathIssues {
