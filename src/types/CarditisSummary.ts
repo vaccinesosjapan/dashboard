@@ -9,7 +9,7 @@ export interface ICarditisSummaryRoot {
 		issues_by_ages: {
 			ages_count: number
 			unknown_ages_count: number
-			issues: {age: string, count:number}[]
+			issues: {x:string, y:number}[]
 		}
 	}
 }
@@ -32,13 +32,4 @@ export interface ICarditisIssueWithManufacturer {
 	manufacturer: string
 	myocarditis_count: number
 	pericarditis_count: number
-}
-
-export const ConvertCarditisIssuesByAgesTo2dData = (issues: {age: string, count:number}[]): {x:string, y:number}[] => {
-	const data : {x:string, y:number}[] = []
-	for (let index = 0; index < issues.length; index++) {
-		const issue = issues[index];
-		data.push({x: issue.age, y: issue.count})
-	}
-	return data
 }

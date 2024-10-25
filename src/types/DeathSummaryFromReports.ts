@@ -6,6 +6,8 @@ export interface IDeathSummaryFromReportsRoot {
 
 export interface IDeathSummaryFromReports {
 	date: string
+	ages_count: number
+	unknown_ages_count: number
 	sum_by_age: I2DItem[]
 	lot_no_info: ILotNumberInformation
 }

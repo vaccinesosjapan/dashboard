@@ -66,8 +66,8 @@
           x-axis-title="報告件数" download-file-name="pericarditis-count-by-manufacturer" :series="pericarditisSeries"></HorizontalBarGraph>
 
       <CustomHeader2 title="年代別の集計"></CustomHeader2>
-      <div class="text-body-1 mb-2">
-        心筋炎/心膜炎の報告 {{ (carditisAgesCount + carditisUnkownAgesCount).toLocaleString() }} 件のうち、年代が判明している {{ carditisAgesCount.toLocaleString() }} 件を年代ごとに集計した結果です。（{{ carditisUnkownAgesCount.toLocaleString() }} 件は年代不明）
+      <div class="text-body-1 mb-5">
+        心筋炎/心膜炎の報告 {{ (carditisAgesCount + carditisUnknownAgesCount).toLocaleString() }} 件のうち、年代が判明している {{ carditisAgesCount.toLocaleString() }} 件を年代ごとに集計した結果です。（{{ carditisUnknownAgesCount.toLocaleString() }} 件は年代不明）
       </div>
       <CarditisPerAgeGraph :series="carditisSummaryByAges"></CarditisPerAgeGraph>
       <p class="text-caption text-right mt-1">※ 「 <a :href="carditisSummaryData?.carditis_summary.source.url">{{ carditisSummaryData?.carditis_summary.source.name }}</a> 」が発表した資料の <b>{{ carditisSummaryData?.carditis_summary.date }}</b> 時点の数値を用いています。</p>
@@ -151,6 +151,9 @@
 
     <v-container v-else>
       <CustomHeader2 title="年代別の集計"></CustomHeader2>
+      <div class="text-body-1 mb-5">
+        亡くなられた方々に関する報告 {{ (deathAgesCount + deathUnknownAgesCount).toLocaleString() }} 件のうち、年代が判明している {{ deathAgesCount.toLocaleString() }} 件を年代ごとに集計した結果です。（{{ deathUnknownAgesCount.toLocaleString() }} 件は年代不明）
+      </div>
       <v-row>
         <v-col cols="12">
           <DeathPerAgeGraph :series="deathSummaryDataFromReports.death_summary_from_reports.sum_by_age"></DeathPerAgeGraph>
@@ -169,7 +172,7 @@ import { onMounted, shallowRef } from 'vue'
 import axios from 'axios'
 import { AppBarTitle, AppBarColor, CarditisSummaryURL, DeathSummaryURL, DeathSummaryFromReportsURL, AppBarUseHelpPage, AppBarHelpPageLink } from '@/router/data'
 import router from '@/router/index'
-import { ConvertCarditisIssuesByAgesTo2dData, type ICarditisSummaryRoot } from '@/types/CarditisSummary'
+import { type ICarditisSummaryRoot } from '@/types/CarditisSummary'
 import type { IDeathSummaryRoot } from '@/types/DeathSummary'
 import type { IDeathSummaryFromReportsRoot } from '@/types/DeathSummaryFromReports'
 import EvaluationResultHelpDialog from '@/components/EvaluationResultHelpDialog.vue'
@@ -189,10 +192,12 @@ const myocarditisSeries = shallowRef<{x: string, y: number}[]>([])
 const pericarditisSeries = shallowRef<{x: string, y: number}[]>([])
 const carditisSummaryByAges = shallowRef<{x:string, y:number}[]>([])
 const carditisAgesCount = shallowRef<number>(0)
-const carditisUnkownAgesCount = shallowRef<number>(0)
+const carditisUnknownAgesCount = shallowRef<number>(0)
 const deathSummaryData = shallowRef<IDeathSummaryRoot>()
 const deathSummaryByManufacturer = shallowRef<{x:string, y:number}[]>([])
 const deathSummaryDataFromReports = shallowRef<IDeathSummaryFromReportsRoot>()
+const deathAgesCount = shallowRef<number>(0)
+const deathUnknownAgesCount = shallowRef<number>(0)
 onMounted(() => {
   axios
     .get<ICarditisSummaryRoot>(CarditisSummaryURL)
@@ -214,8 +219,8 @@ onMounted(() => {
       pericarditisSeries.value = pSeries
       
       carditisAgesCount.value = carditisSummaryData.value.carditis_issues.issues_by_ages.ages_count
-      carditisUnkownAgesCount.value = carditisSummaryData.value.carditis_issues.issues_by_ages.unknown_ages_count
-      carditisSummaryByAges.value = ConvertCarditisIssuesByAgesTo2dData(carditisSummaryData.value.carditis_issues.issues_by_ages.issues)
+      carditisUnknownAgesCount.value = carditisSummaryData.value.carditis_issues.issues_by_ages.unknown_ages_count
+      carditisSummaryByAges.value = carditisSummaryData.value.carditis_issues.issues_by_ages.issues
       
       // 2つ目以降のグラフが手動リフレッシュ無しにちゃんと表示されるようにするために必要な処理
       window.dispatchEvent(new Event('resize'))
@@ -251,6 +256,8 @@ onMounted(() => {
     .get<IDeathSummaryFromReportsRoot>(DeathSummaryFromReportsURL)
     .then((response) => {
       deathSummaryDataFromReports.value = response.data
+      deathAgesCount.value = response.data.death_summary_from_reports.ages_count
+      deathUnknownAgesCount.value = response.data.death_summary_from_reports.unknown_ages_count
 
       // 2つ目以降のグラフが手動リフレッシュ無しにちゃんと表示されるようにするために必要な処理
       window.dispatchEvent(new Event('resize'))
