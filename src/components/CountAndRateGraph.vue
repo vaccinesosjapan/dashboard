@@ -175,7 +175,7 @@ const CreateCountAndRateChartOption = (info: IJudgedDataGraphInfo, labels: strin
       offsetY: 20
     },
     tooltip: {
-    y: {
+      y: {
         formatter: function(value: any, { series, seriesIndex, dataPointIndex, w } :any) {
           if(w.config.series[seriesIndex].name == info.RateSeriesName){
             return (value as number).toFixed(1) + ' %'

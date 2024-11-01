@@ -48,19 +48,19 @@ shortChartOption.value = sChartOp
 </script>
 
 <script lang="ts">
-const downloadFileName = 'death-per-age-graph'
+const downloadFileName = 'carditis-per-age-graph'
 
 const numberFormatter = (value: any) => { return value.toLocaleString() }
 const issueFormatter = (value: any) => { return value.toLocaleString() + ' 人' }
 const createBaseChartOption = (): any =>{
   return {
     title: {
-      text: '亡くなられた方々の人数（年代別）',
+      text: '心筋炎/心膜炎の方々の人数（年代別）',
 	    floating: true
     },
     chart: {
       type: 'bar',
-      toolbar:{
+	    toolbar:{
         export: {
           csv: {
             filename: downloadFileName,
@@ -79,7 +79,7 @@ const createBaseChartOption = (): any =>{
       title: {
         text: '人数'
       },
-	    labels: {
+      labels: {
         formatter: numberFormatter
       },
     },
@@ -99,10 +99,10 @@ const createBaseChartOption = (): any =>{
       y: {
         formatter: issueFormatter,
         title: {
-          formatter: (): string => {
-            return `人数: `
-          }
-        }
+			    formatter: (): string => {
+				    return `人数: `
+			    }
+		    }
       },
     },
     plotOptions: {

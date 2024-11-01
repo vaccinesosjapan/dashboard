@@ -69,12 +69,23 @@ const createBaseChartOption = (title: string): any =>{
 }
 
 const mediumChartOption = shallowRef<any>()
-mediumChartOption.value = createBaseChartOption(props.title)
+const mChartOp = createBaseChartOption(props.title)
+mChartOp.dataLabels.style = {
+	fontSize: '1rem',
+	colors: ['#818181'],
+}
+mChartOp.dataLabels.background = {
+	enabled: true,
+	foreColor: '#fff',
+}
+mChartOp.dataLabels.offsetX = 35
+mChartOp.dataLabels.offsetY = 6
+mediumChartOption.value = mChartOp
 
 const shortChartOption = shallowRef<any>()
 const sChartOp = createBaseChartOption(props.title)
 sChartOp.dataLabels.style = {
-	fontSize: '0.7rem',
+	fontSize: '0.9rem',
 	colors: ['#818181'],
 }
 sChartOp.dataLabels.background = {
