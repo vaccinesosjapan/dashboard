@@ -5,7 +5,8 @@ export interface ICarditisSummaryRoot {
 	carditis_issues: {
 		date: string
 		issues_with_vaccine_name: ICarditisIssueWithVaccineName[]
-		issues_by_manufacturers: ICarditisIssueWithManufacturer[]
+		issues_m_by_manufacturers: ICarditisIssueWithManufacturer[]
+		issues_p_by_manufacturers: ICarditisIssueWithManufacturer[]
 		issues_by_ages: {
 			ages_count: number
 			unknown_ages_count: number
@@ -30,6 +31,5 @@ export interface ICarditisIssueWithVaccineName {
 
 export interface ICarditisIssueWithManufacturer {
 	manufacturer: string
-	myocarditis_count: number
-	pericarditis_count: number
+	count: number
 }
