@@ -18,7 +18,7 @@
     <v-container v-else>
       <CustomHeader1 title="心筋炎/心膜炎 報告"></CustomHeader1>
       <p class="text-body-1 mb-2">
-        「新型コロナワクチン接種後の心筋炎又は心膜炎疑い」として製造販売業者から報告された <span class="big-bold">{{ carditisSummaryData?.carditis_summary.total.toLocaleString() }}</span> [件] の集計結果を示します。
+        「新型コロナワクチン接種後の心筋炎又は心膜炎疑い」として製造販売業者から報告された <span class="big-bold">{{ carditisSummaryData?.carditis_summary.total.toLocaleString() }}</span> 件の集計結果を示します。
       </p>
 
       <div class="d-flex justify-end">
@@ -54,20 +54,20 @@
 
       <CustomHeader2 title="製造販売業者別の集計"></CustomHeader2>
       <div class="text-body-1">
-        心筋炎の報告 {{ carditisSummaryData.carditis_summary.myocarditis.toLocaleString() }} 件 を製造販売業者ごとに集計した結果です。
+        心筋炎の報告 <span class="big-bold">{{ carditisSummaryData.carditis_summary.myocarditis.toLocaleString() }}</span> 件を製造販売業者ごとに集計した結果です。
       </div>
       <HorizontalBarGraph :graph-title="['心筋炎の報告件数（製造販売業者別）']"
           x-axis-title="報告件数" download-file-name="myocarditis-count-by-manufacturer" :series="myocarditisSeries"></HorizontalBarGraph>
 
       <div class="text-body-1 mt-2">
-        心膜炎の報告 {{ carditisSummaryData.carditis_summary.pericarditis.toLocaleString() }} 件 を製造販売業者ごとに集計した結果です。
+        心膜炎の報告 <span class="big-bold">{{ carditisSummaryData.carditis_summary.pericarditis.toLocaleString() }}</span> 件を製造販売業者ごとに集計した結果です。
       </div>
       <HorizontalBarGraph :graph-title="['心膜炎の報告件数（製造販売業者別）']"
           x-axis-title="報告件数" download-file-name="pericarditis-count-by-manufacturer" :series="pericarditisSeries"></HorizontalBarGraph>
 
       <CustomHeader2 title="年代別の集計"></CustomHeader2>
       <div class="text-body-1 mb-5">
-        心筋炎/心膜炎の報告 {{ (carditisAgesCount + carditisUnknownAgesCount).toLocaleString() }} 件のうち、年代が判明している {{ carditisAgesCount.toLocaleString() }} 件を年代ごとに集計した結果です。（{{ carditisUnknownAgesCount.toLocaleString() }} 件は年代不明）
+        心筋炎/心膜炎の報告 {{ (carditisAgesCount + carditisUnknownAgesCount).toLocaleString() }} 件のうち、年代が判明している <span class="big-bold">{{ carditisAgesCount.toLocaleString() }}</span> 件を年代ごとに集計した結果です。（{{ carditisUnknownAgesCount.toLocaleString() }} 件は年代不明）
       </div>
       <CarditisPerAgeGraph :series="carditisSummaryByAges"></CarditisPerAgeGraph>
       <p class="text-caption text-right mt-1">※ 「 <a :href="carditisSummaryData?.carditis_summary.source.url">{{ carditisSummaryData?.carditis_summary.source.name }}</a> 」が発表した資料の <b>{{ carditisSummaryData?.carditis_summary.date }}</b> 時点の数値を用いています。</p>
@@ -85,7 +85,7 @@
 
     <v-container v-else>
       <CustomHeader1 title="亡くなられた方々に関する報告"></CustomHeader1>
-      <p class="text-body-1 mb-3">
+      <p class="text-body-1 mb-5">
         「新型コロナワクチン接種後の死亡例」として製造販売業者から報告された事例 <span class="big-bold">{{ deathSummaryData?.death_summary.sum_by_evaluation.total.toLocaleString() }}</span> [件] の集計結果を示します。
       </p>
 
@@ -133,7 +133,7 @@
 
       <CustomHeader2 title="製造販売業者別の集計"></CustomHeader2>
       <div class="text-body-1 mt-2">
-        専門家による因果関係評価がβとγの報告 <span class="big-bold">{{ (deathSummaryData?.death_summary.sum_by_evaluation.beta + deathSummaryData?.death_summary.sum_by_evaluation.gamma).toLocaleString() }}</span> [件] を製造販売業者ごとに集計した結果です。
+        専門家による因果関係評価がαとγの報告 <span class="big-bold">{{ (deathSummaryData?.death_summary.sum_by_evaluation.alpha + deathSummaryData?.death_summary.sum_by_evaluation.gamma).toLocaleString() }}</span> 件を製造販売業者ごとに集計した結果です。
       </div>
       <HorizontalBarGraph :graph-title="['死亡報告の件数（製造販売業者別）']"
           x-axis-title="報告件数" download-file-name="death-count-by-manufacturer" :series="deathSummaryByManufacturer"></HorizontalBarGraph>
@@ -152,7 +152,7 @@
     <v-container v-else>
       <CustomHeader2 title="年代別の集計"></CustomHeader2>
       <div class="text-body-1 mb-5">
-        亡くなられた方々に関する報告 {{ (deathAgesCount + deathUnknownAgesCount).toLocaleString() }} 件のうち、年代が判明している {{ deathAgesCount.toLocaleString() }} 件を年代ごとに集計した結果です。（{{ deathUnknownAgesCount.toLocaleString() }} 件は年代不明）
+        専門家による因果関係評価がαとγの報告 {{ (deathAgesCount + deathUnknownAgesCount).toLocaleString() }} 件のうち、年代が判明している <span class="big-bold">{{ deathAgesCount.toLocaleString() }}</span> 件を年代ごとに集計した結果です。（{{ deathUnknownAgesCount.toLocaleString() }} 件は年代不明）
       </div>
       <v-row>
         <v-col cols="12">
@@ -207,15 +207,20 @@ onMounted(() => {
       carditisSummarySeries.value.push(carditisSummaryData.value.carditis_summary.myocarditis)
       carditisSummarySeries.value.push(carditisSummaryData.value.carditis_summary.pericarditis)
 
-      const issuesByM = carditisSummaryData.value.carditis_issues.issues_by_manufacturers
+      const issuesMByM = carditisSummaryData.value.carditis_issues.issues_m_by_manufacturers
       const mSeries: {x: string, y: number}[] = []
-      const pSeries: {x: string, y: number}[] = []
-      for (let index = 0; index < issuesByM.length; index++) {
-        const issue = issuesByM[index];
-        mSeries.push({x: issue.manufacturer, y: issue.myocarditis_count})
-        pSeries.push({x: issue.manufacturer, y: issue.pericarditis_count})
+      for (let index = 0; index < issuesMByM.length; index++) {
+        const issueM = issuesMByM[index];
+        mSeries.push({x: issueM.manufacturer, y: issueM.count})
       }
       myocarditisSeries.value = mSeries
+
+      const issuesPByM = carditisSummaryData.value.carditis_issues.issues_p_by_manufacturers
+      const pSeries: {x: string, y: number}[] = []
+      for (let index = 0; index < issuesPByM.length; index++) {
+        const issueP = issuesMByM[index];
+        pSeries.push({x: issueP.manufacturer, y: issueP.count})
+      }
       pericarditisSeries.value = pSeries
       
       carditisAgesCount.value = carditisSummaryData.value.carditis_issues.issues_by_ages.ages_count
