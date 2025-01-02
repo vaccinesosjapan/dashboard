@@ -218,7 +218,7 @@ onMounted(() => {
       const issuesPByM = carditisSummaryData.value.carditis_issues.issues_p_by_manufacturers
       const pSeries: {x: string, y: number}[] = []
       for (let index = 0; index < issuesPByM.length; index++) {
-        const issueP = issuesMByM[index];
+        const issueP = issuesPByM[index];
         pSeries.push({x: issueP.manufacturer, y: issueP.count})
       }
       pericarditisSeries.value = pSeries
