@@ -1,7 +1,7 @@
 /*
   md（横幅 960 px）以上の画面サイズでは、apexchartsを使ったグラフ表示を行う。
-  上記よりも小さい画面サイズでは、傾向を示すグラフ画像の表示と、「過去の各種ワクチン」
-  「新型コロナワクチン」それぞれのデータを別々のグラフに描画する。
+  上記よりも小さい画面サイズでは「傾向を示すグラフ画像」を表示しつつ、請求内容
+  ごとのデータを別々のグラフに描画する。
 */
 <template>
 
@@ -54,11 +54,11 @@ const allBarColors = shallowRef<string[]>()
 
 const [categories, allSeries, headerNames, medicalValues, disabilityOfChildrenValues, disabilityValues, deathValues] = ExtractSomeCertifiedSummaryArray(props.summayData)
 const allChartOption = CreateAllCertifiedChartOption(['新型コロナワクチンと', '過去の各種ワクチンの認定件数まとめ'], categories, true)
-const medicalChartOption = CreateEachBillingDetailsChartOption([`${headerNames[0]} の認定件数まとめ`], '#3393FA', categories, false)
-const disabilityOfChildrenChartOption = CreateEachBillingDetailsChartOption([`${headerNames[1]} の認定件数まとめ`], '#54E496', categories, false)
-const disabilityChartOption = CreateEachBillingDetailsChartOption([`${headerNames[2]} の認定件数まとめ`], '#F6AD21', categories, false)
+const medicalChartOption = CreateEachBillingDetailsChartOption('medical', [`${headerNames[0]} の認定件数まとめ`], '#3393FA', categories, false)
+const disabilityOfChildrenChartOption = CreateEachBillingDetailsChartOption('children', [`${headerNames[1]} の認定件数まとめ`], '#54E496', categories, false)
+const disabilityChartOption = CreateEachBillingDetailsChartOption('disability', [`${headerNames[2]} の認定件数まとめ`], '#F6AD21', categories, false)
 const header4Array = headerNames[3].split('・')
-const deathChartOption = CreateEachBillingDetailsChartOption([`${header4Array.slice(0,2).join('、')}`,`${header4Array.slice(2,4).join('、')} の認定件数まとめ`], '#F23B61', categories, false)
+const deathChartOption = CreateEachBillingDetailsChartOption('death', [`${header4Array.slice(0,2).join('、')}`,`${header4Array.slice(2,4).join('、')} の認定件数まとめ`], '#F23B61', categories, false)
 
 const updateFuncAll = (chart: any) => {
   if(allChartInstance.value !== undefined) return ''
@@ -103,7 +103,10 @@ interface StackedBarSeries {
 }
 
 const noticeForImage = '※ グラフを画像で表示しています。詳しいデータを見る場合は、横幅 960 px以上のPC画面などでご覧ください。'
-const downloadFileName = 'certified-summary-with-other-vaccines'
+
+const CreateFileName = (id: string): string => {
+	return `certified-summary-with-other-vaccines-${id}`
+}
 
 // datasetから取得した「過去の各種ワクチン」と「新型コロナワクチン」の認定件数まとめデータから
 // apexchartsに渡す各種データを抽出する関数。
@@ -143,7 +146,7 @@ const ExtractSomeCertifiedSummaryArray = (summayData: ICertifiedSummaryWithOther
 
 const numberFormatter = (value: any) => { return value.toLocaleString() }
 const issueFormatter = (value: any) => { return value.toLocaleString() + ' 件' }
-const createBaseChartOption = (): any => {
+const createBaseChartOption = (id: string): any => {
 		return {
 			title: {
 			text: [''],
@@ -157,13 +160,13 @@ const createBaseChartOption = (): any => {
 				export: {
 					csv: {
 						headerCategory: 'ワクチン名',
-						filename: downloadFileName,
+						filename: CreateFileName(id),
 					},
 					svg: {
-						filename: downloadFileName,
+						filename: CreateFileName(id),
 					},
 					png: {
-						filename: downloadFileName,
+						filename: CreateFileName(id),
 					}
 				},
 			}
@@ -206,7 +209,7 @@ const createBaseChartOption = (): any => {
 }
 
 const CreateAllCertifiedChartOption = (title: string[], categories: string[], isStacked: boolean): any => {
-	const chartOption = createBaseChartOption()
+	const chartOption = createBaseChartOption('all')
 
 	chartOption.title.text = title
 	chartOption.xaxis.categories = categories
@@ -215,8 +218,8 @@ const CreateAllCertifiedChartOption = (title: string[], categories: string[], is
 	return chartOption
 }
 
-const CreateEachBillingDetailsChartOption = (title: string[], barColor: string, categories: string[], isStacked: boolean): any => {
-	const chartOption = createBaseChartOption()
+const CreateEachBillingDetailsChartOption = (id:string, title: string[], barColor: string, categories: string[], isStacked: boolean): any => {
+	const chartOption = createBaseChartOption(id)
 
 	chartOption.title.text = title
 	chartOption.colors = [barColor]
