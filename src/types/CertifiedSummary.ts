@@ -7,6 +7,13 @@ export interface ICertifiedSummary {
 	open_cases_count: number
 	certified_death_count: number
 	denied_death_count: number
+	certified_counts: IJudgedIssueCount[]
+	denied_counts: IJudgedIssueCount[]
+}
+
+export interface IJudgedIssueCount {
+	name: string
+	count: number
 }
 
 export interface ICertifiedSummaryWithOtherVaccines {
