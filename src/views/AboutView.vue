@@ -3,6 +3,7 @@ import { AppBarTitle, AppBarColor, AppBarUseHelpPage, AppBarHelpPageLink } from 
 import router from '@/router/index'
 import CustomHeader1 from '@/components/CustomHeader1.vue'
 import CustomHeader2 from '@/components/CustomHeader2.vue'
+import CustomWarningIcon from '@/components/CustomWarningIcon.vue'
 
 AppBarTitle.value = String(router.currentRoute.value.name)
 AppBarColor.value = 'blue-grey-lighten-4'
@@ -42,18 +43,18 @@ AppBarHelpPageLink.value = ''
         <v-card-text class="text-body-1">
           <v-row>
             <v-col cols="1">
-              <v-icon icon="mdi-alert-decagram-outline" size="70" color="warning"></v-icon>
+              <CustomWarningIcon size="large" />
             </v-col>
             <v-col cols="11">
               <ul class="pl-10 mt-2">
-                <li class="text-body-1 yuttari">
+                <li class="text-body-1">
                 本サイトのグラフや表など「データを可視化したコンテンツ」を、SNSで引用するなど多くの人に共有する使い方をする場合、本ダッシュボードのURLと共に
                 共有してください。
                 </li>
-                <li class="text-body-1 yuttari mt-2">
+                <li class="text-body-1 mt-2">
                 引用したコンテンツならびに加工したコンテンツを、「自分が作った」と偽る行為を禁じます。
                 </li>
-                <li class="text-body-1 yuttari mt-2">
+                <li class="text-body-1 mt-2">
                 講演会での利用や著作物への引用など<span class="big-bold">営利目的で利用する場合</span>の、<span class="big-bold">無断使用を禁じます。</span>
                 必ず事前に所有者に許可を得てください。
                 </li>
@@ -74,14 +75,11 @@ AppBarHelpPageLink.value = ''
 .big-bold {
   font-size: 1.4rem;
   font-weight: bolder;
+  line-height: 1.5;
 }
 
 .wave-under-bar{
   text-decoration: underline;
   text-underline-offset: 4px;
-}
-
-.yuttari {
-  line-height: 1.8rem;
 }
 </style>

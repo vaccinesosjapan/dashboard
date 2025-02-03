@@ -16,9 +16,9 @@
         <v-card-text class="text-body-1">
           <v-row>
             <v-col cols="1">
-              <v-icon icon="mdi-alert-decagram-outline" size="70" color="warning"></v-icon>
+              <CustomWarningIcon size="medium" />
             </v-col>
-            <v-col cols="11">
+            <v-col cols="11" class="pl-7">
               <p class="text-body-1">
                 このページの内容は、膨大な心筋炎/心膜炎報告や亡くなった方々の報告（いずれも製造販売業者からの副反応疑い報告が母集団）から考察・調査を行う糸口を掴んでいただく一助となることを意図しております。
               </p>
@@ -135,6 +135,7 @@ import type { IDeathSummaryFromReportsRoot } from '@/types/DeathSummaryFromRepor
 import CustomHeader1 from '@/components/CustomHeader1.vue'
 import CustomHeader2 from '@/components/CustomHeader2.vue'
 import HorizontalBarGraph from '@/components/HorizontalBarGraph.vue'
+import CustomWarningIcon from '@/components/CustomWarningIcon.vue'
 
 AppBarTitle.value = String(router.currentRoute.value.name)
 AppBarColor.value = 'blue-accent-1'
@@ -227,5 +228,6 @@ const createUrlForDeath = (value: string) => {
 .wave-under-bar{
   text-decoration: underline;
   text-underline-offset: 4px;
+  line-height: 1.5;
 }
 </style>
