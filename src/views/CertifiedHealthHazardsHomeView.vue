@@ -48,22 +48,20 @@
       <br>
       <br>
 
-      <CustomHeader1 title="申請内容"></CustomHeader1>
-      <p class="text-body-1 mb-2">認定・否認された申請の総数 <b>{{ certified_and_denied_count.toLocaleString() }}</b> [件] に対して、申請内容の内訳はそれぞれ以下の通りです。</p>
-
+      <CustomHeader1 title="請求内容"></CustomHeader1>
       <div class="d-flex justify-end">
         <v-btn size="small" @click="changeChartView" color="blue" v-if="isPersentView">件数を表示</v-btn>
         <v-btn size="small" @click="changeChartView" color="blue" v-else>割合を表示</v-btn>
       </div>
       
+      <p class="text-body-1 mb-2">認定された申請 <b>{{ certified_count.toLocaleString() }}</b> [件] に関して、請求内容の内訳は以下の通りです。</p>
       <v-row>
-        <v-col cols="12" sm="6">
-          <apexchart :options="certifiedClaimChartOptions" :series="certifiedClaimChartSeries"></apexchart>
-        </v-col>
+        <ClaimChart judged-result="認定" :judged-issue-count-series="certifiedClaimChartSeries" :is-persent-view="isPersentView"/>
+      </v-row>
 
-        <v-col cols="12" sm="6">
-          <apexchart :options="deniedClaimChartOptions" :series="deniedClaimChartSeries"></apexchart>
-        </v-col>
+      <p class="text-body-1 mt-7 mb-2">否認された申請 <b>{{ denied_count.toLocaleString() }}</b> [件] に関して、請求内容の内訳は以下の通りです。</p>
+      <v-row>
+        <ClaimChart judged-result="否認" :judged-issue-count-series="deniedClaimChartSeries" :is-persent-view="isPersentView"/>
       </v-row>
       <p class="text-caption text-right">※ <b>{{ items?.date }}</b> までの「疾病・障害認定審査会」累計データを用いて算出しています。</p>
     </v-container>
@@ -170,13 +168,14 @@ import { AppBarTitle, AppBarColor, CertifiedSummaryURL, CertifiedSummaryWithOthe
   CertifiedTrendsURL, JudgedDataURL, AppBarUseHelpPage, AppBarHelpPageLink,
   JudgedDataEachGraphSmallImageURL, JudgedDataAllGraphSmallImageURL, CertifiedSummaryWithOtherVaccinesThumbnailURL } from '@/router/data'
 import router from '@/router/index'
-import type { ICertifiedSummary, ICertifiedSummaryWithOtherVaccines } from '@/types/CertifiedSummary'
+import type { ICertifiedSummary, ICertifiedSummaryWithOtherVaccines, IJudgedIssueCount } from '@/types/CertifiedSummary'
 import type { ICertifiedTrends } from '@/types/CertifiedTrends'
 import type { IJudgedData, IJudgedDataGraphInfo } from '@/types/JudgedData'
 import CountAndRateGraph from '@/components/CountAndRateGraph.vue'
 import CustomHeader1 from '@/components/CustomHeader1.vue'
 import JudgedTrendsGraph from '@/components/JudgedTrendsGraph.vue'
 import OtherVaccinesGraph from '@/components/OtherVaccinesGraph.vue'
+import ClaimChart from '@/components/ClaimChart.vue'
 
 AppBarTitle.value = String(router.currentRoute.value.name)
 AppBarColor.value = 'green'
@@ -187,7 +186,8 @@ const isPersentView = shallowRef(true)
 
 const items = shallowRef<ICertifiedSummary>()
 const summaryWithOtherVaccines = shallowRef<ICertifiedSummaryWithOtherVaccines>() 
-const certified_and_denied_count = shallowRef<number>(0)
+const certified_count = shallowRef<number>(0)
+const denied_count = shallowRef<number>(0)
 const certifiedSummaryLoaded = shallowRef<boolean>(false)
 const trendsLoaded = shallowRef<boolean>(false)
 const judgedDataLoaded = shallowRef<boolean>(false)
@@ -231,13 +231,11 @@ onMounted(() => {
       judgementTableSeries.value.push({name: '保留', data: items.value.pending_count})
       judgementTableSeries.value.push({name: '合計', data: items.value.total_entries - items.value.open_cases_count})
 
-      certified_and_denied_count.value = items.value.certified_count + items.value.denied_count
+      certified_count.value = items.value.certified_count
+      certifiedClaimChartSeries.value = items.value.certified_counts
 
-      certifiedClaimChartSeries.value.push(items.value.certified_count - items.value.certified_death_count)
-      certifiedClaimChartSeries.value.push(items.value.certified_death_count)
-
-      deniedClaimChartSeries.value.push(items.value.denied_count - items.value.denied_death_count)
-      deniedClaimChartSeries.value.push(items.value.denied_death_count)
+      denied_count.value = items.value.denied_count
+      deniedClaimChartSeries.value = items.value.denied_counts
 
       certifiedSummaryLoaded.value = true
 
@@ -395,98 +393,8 @@ const judgementChartOptions = {
   }
 }
 
-const certifiedClaimChartSeries = shallowRef<any[]>([])
-const certifiedClaimChartOptions = {
-  title: {
-    text: '認定された案件の内訳',
-    align: 'center',
-  },
-  chart: { type: 'pie' },
-  legend: {
-    position: 'bottom',
-  },
-  labels: ['医療費・医療手当 又は 障害年金', '死亡一時金 又は 葬祭料'],
-  colors: ['#2962FF', '#FF4081'],
-  tooltip: {
-    y: {
-        formatter: (val: any) => {
-          return (val as number).toLocaleString() + ' 件'
-        },
-    },
-  },
-  responsive: [{
-    breakpoint: 800,
-    options: {
-      chart: {
-        width: 300
-      }
-    }
-  }],
-  dataLabels: {
-    formatter: function (val: any, { seriesIndex, dataPointIndex, w } :any ) {
-      if(isPersentView.value){
-        return val.toFixed(1) + ' %'
-      } else {
-        return w.config.series[seriesIndex].toLocaleString() + ' 件'
-      }
-    },
-    style: {
-      fontSize: '1.2rem',
-      colors: ['#212121'],
-    },
-    background: {
-      enabled: true,
-      foreColor: '#fff',
-    }
-  }
-}
-
-const deniedClaimChartSeries = shallowRef<any[]>([])
-const deniedClaimChartOptions = {
-  title: {
-    text: '否認された案件の内訳',
-    align: 'center',
-
-  },
-  chart: { type: 'pie' },
-  legend: {
-    position: 'bottom',
-  },
-  labels: ['医療費・医療手当 又は 障害年金', '死亡一時金 又は 葬祭料'],
-  colors: ['#2962FF', '#FF4081'],
-  tooltip: {
-    y: {
-        formatter: (val: any) => {
-          return (val as number).toLocaleString() + ' 件'
-        },
-    },
-  },
-  responsive: [{
-    breakpoint: 800,
-    options: {
-      chart: {
-        width: 300
-      }
-    }
-  }],
-  dataLabels: {
-    formatter: function (val: any, { seriesIndex, dataPointIndex, w } :any ) {
-      if(isPersentView.value){
-        return val.toFixed(1) + ' %'
-      } else {
-        return w.config.series[seriesIndex].toLocaleString() + ' 件'
-      }
-    },
-    style: {
-      fontSize: '1.2rem',
-      colors: ['#212121'],
-    },
-    background: {
-      enabled: true,
-      foreColor: '#fff',
-    }
-  }
-}
+const certifiedClaimChartSeries = shallowRef<IJudgedIssueCount[]>([])
+const deniedClaimChartSeries = shallowRef<IJudgedIssueCount[]>([])
 
 const changeChartView = () => {
   isPersentView.value = !isPersentView.value
