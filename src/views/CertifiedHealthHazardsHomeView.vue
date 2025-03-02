@@ -285,6 +285,7 @@ onMounted(() => {
       const numberOfRepudiationSum :number[] = []
       const numberOfCertifiedRateSum :number[] = []
 
+      let CountYAxisMaxSum: number = 0
       for (let index = 0; index < judgedData.length; index++) {
         const element = judgedData[index];
         judgedDataLabels.value.push(element.Date)
@@ -296,7 +297,13 @@ onMounted(() => {
         numberOfCertifiedSum.push(element.CertifiedCountSum)
         numberOfRepudiationSum.push(element.RepudiationCountSum)
         numberOfCertifiedRateSum.push(element.CertifiedRateSum)
+
+        if(CountYAxisMaxSum < element.CertifiedCountSum + element.RepudiationCountSum){
+          CountYAxisMaxSum = element.CertifiedCountSum + element.RepudiationCountSum
+        }
       }
+      const place = 1000 // 100の位を四捨五入する
+      CountYAxisMaxSum = Math.round( (CountYAxisMaxSum + 1000) / place ) * place;
 
       eachCountAndRateGraphInfo.value = {
         GraphTitle: '各審議会の審議件数と認定比率',
@@ -315,7 +322,7 @@ onMounted(() => {
         RepudiationSeriesName: '累計の否認件数',
         CertifiedSeriesName: '累計の認定件数',
         RateSeriesName: '累計の認定比率',
-        CountYAxisMax: 12000
+        CountYAxisMax: CountYAxisMaxSum
       }
 
       judgedDataLoaded.value = true
