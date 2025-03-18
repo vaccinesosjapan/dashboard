@@ -17,10 +17,13 @@
         </ul>
       </div>
     </v-col>
+
     <v-col cols="12">
       <p class="text-caption text-right">{{ noticeForImage }}</p>
     </v-col>
   </v-row>
+
+  <SelectDateToOpenIssues :dates="datesForSelection" />
 
   <v-row class="d-none d-md-flex mt-3">
     <v-col cols="12">
@@ -46,11 +49,14 @@
       <p class="text-caption text-right">{{ noticeForImage }}</p>
     </v-col>
   </v-row>
+
+  <SelectDateToOpenIssues :dates="datesForSelection" />
 </template>
 
 <script setup lang="ts">
 import type { IJudgedData, IJudgedDataGraphInfo } from '@/types/JudgedData';
 import { shallowRef } from 'vue';
+import SelectDateToOpenIssues from '@/components/SelectDateToOpenIssues.vue'
 
 const props = defineProps<{
   data: IJudgedData[]
@@ -80,6 +86,9 @@ for (let index = 0; index < props.data.length; index++) {
 	numberOfRepudiationSum.push(element.RepudiationCountSum)
 	numberOfCertifiedRateSum.push(element.CertifiedRateSum)
 }
+
+// 日付選択用に、日付が新しい方から古い方へと並び替える
+const datesForSelection = xAxisLabels.value.sort((one, two) => (one > two ? -1 : 1))
 
 // Seriesデータを作成
 const eachCountAndRateSeries = shallowRef<ISeriesValue[]>([])
