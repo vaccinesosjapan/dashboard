@@ -88,7 +88,7 @@ for (let index = 0; index < props.data.length; index++) {
 }
 
 // 日付選択用に、日付が新しい方から古い方へと並び替える
-const datesForSelection = xAxisLabels.value.sort((one, two) => (one > two ? -1 : 1))
+const datesForSelection = xAxisLabels.value.concat().sort((one, two) => (one > two ? -1 : 1))
 
 // Seriesデータを作成
 const eachCountAndRateSeries = shallowRef<ISeriesValue[]>([])
