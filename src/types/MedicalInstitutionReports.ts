@@ -2,6 +2,7 @@ import type { ISourceInfo } from "./General"
 import type { ILotNumberInformation } from "./LotNumberInfomation"
 
 export interface IMedicalInstitutionReport {
+	id: string
 	no: number
 	age: number
 	gender: string
@@ -17,6 +18,13 @@ export interface IMedicalInstitutionReport {
 	gross_result_dates: string
 	gross_results: string[]
 	source: ISourceInfo
+	concurrent_vaccination_flag: boolean
+	concurrent_vaccination: string
+	pre_existing_disease_names: string
+	pt_by_expert: string
+	causal_relationship_by_expert: string
+	brighton_classification_by_expert: string
+	comments_by_expert: string
 }
 
 export interface IMedicalInstitutionSummary {
