@@ -18,7 +18,7 @@
               label="製造販売業者"
             >
               <template v-slot:help>
-                <ManufacturerHelpDialog></ManufacturerHelpDialog>
+                <ConcurrentVaccinationHelp />
               </template>
             </SearchableSelectItems>
 
@@ -210,10 +210,10 @@ import SearchableSelectItems from '@/components/SearchableSelectItems.vue'
 import SelectItems from '@/components/SelectItems.vue'
 import NumberFilter from '@/components/NumberFilter.vue'
 import FlatpickrCalendar from '@/components/FlatpickrCalendar.vue'
-import ManufacturerHelpDialog from '@/components/ManufacturerHelpDialog.vue'
 import ConcurrentVaccinationRow from '@/components/ConcurrentVaccinationRow.vue'
 import MedicalInstitutionDetail from '@/components/MedicalInstitutionDetail.vue'
 import SourceCell from '@/components/SourceCell.vue'
+import ConcurrentVaccinationHelp from '@/components/ConcurrentVaccinationHelp.vue'
 
 AppBarTitle.value = String(router.currentRoute.value.name)
 AppBarColor.value = '#2962ff'
