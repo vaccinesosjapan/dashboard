@@ -18,7 +18,7 @@
               label="製造販売業者"
             >
               <template v-slot:help>
-                <ManufacturerHelpDialog></ManufacturerHelpDialog>
+                <ConcurrentVaccinationHelp />
               </template>
             </SearchableSelectItems>
 
@@ -134,6 +134,10 @@
       <span class="vaccine-name-text">{{ item.value }}</span>
     </template>
 
+    <template v-slot:[`item.concurrent_vaccination_flag`]="item">
+      <ConcurrentVaccinationRow :flag="item.value" />
+    </template>
+
     <template v-slot:[`item.vaccinated_dates`]="item">
       <DatesRow :dates="item.value"></DatesRow> 
     </template>
@@ -163,24 +167,21 @@
     </template>
 
     <template v-slot:[`item.source.url`]="item">
-      <a :href="item.item['source']['url']">{{ item.item['source']['name'] }}</a>
+      <SourceCell :url="item.item['source']['url']" :id="item.item['id']" />
     </template>
 
     <template v-slot:expanded-row="{ item }">
       <td :colspan="headers.length + 1">
-        <v-row>
-          <v-col cols="12" md="6">
-            <DatesAndPTnames
-            :no="item.no"
-            :vaccinated_dates="item.vaccinated_dates"
-            :onset_dates="item.onset_dates"
-            :PT_names="item.PT_names"
-            :gross_result_dates="item.gross_result_dates"
-            :gross_results="item.gross_results"
-            :clickClose="() => { expandedArray = expandedArray.filter( n => n !== item.no )}"
-            ></DatesAndPTnames>
-          </v-col>
-        </v-row>
+        <MedicalInstitutionDetail
+          :report="item"
+          :no="item.no"
+          :vaccinated_dates="item.vaccinated_dates"
+          :onset_dates="item.onset_dates"
+          :PT_names="item.PT_names"
+          :gross_result_dates="item.gross_result_dates"
+          :gross_results="item.gross_results"
+          :clickClose="() => { expandedArray = expandedArray.filter( n => n !== item.no )}"
+        ></MedicalInstitutionDetail>
       </td>
     </template>
 
@@ -203,14 +204,16 @@ import type { IMedicalInstitutionReport, IMedicalInstitutionSummary } from '@/ty
 import type { IMedicalInstitutionMetadata } from '@/types/MedicalInstitutionMetadata'
 import StringArrayRow from '@/components/StringArrayRow.vue'
 import DatesRow from '@/components/DatesRow.vue'
-import DatesAndPTnames from '@/components/DatesAndPTnames.vue'
 import CausualRelationshipRow from '@/components/CausualRelationshipRow.vue'
 import SearchRelatedToolBar from '@/components/SearchRelatedToolBar.vue'
 import SearchableSelectItems from '@/components/SearchableSelectItems.vue'
 import SelectItems from '@/components/SelectItems.vue'
 import NumberFilter from '@/components/NumberFilter.vue'
 import FlatpickrCalendar from '@/components/FlatpickrCalendar.vue'
-import ManufacturerHelpDialog from '@/components/ManufacturerHelpDialog.vue'
+import ConcurrentVaccinationRow from '@/components/ConcurrentVaccinationRow.vue'
+import MedicalInstitutionDetail from '@/components/MedicalInstitutionDetail.vue'
+import SourceCell from '@/components/SourceCell.vue'
+import ConcurrentVaccinationHelp from '@/components/ConcurrentVaccinationHelp.vue'
 
 AppBarTitle.value = String(router.currentRoute.value.name)
 AppBarColor.value = '#2962ff'
@@ -251,16 +254,16 @@ onMounted(() => {
 })
 
 const headers = [
-  { key: 'data-table-expand', width: 20 },
-  { title: 'No.', align: 'start', key: 'no' },
-  { title: '年齢', align: 'start', key: 'age' },
-  { title: '性別', align: 'start', key: 'gender' },
+  { key: 'data-table-expand', width: 10 },
+  { title: '年齢', align: 'start', key: 'age', width: 15 },
+  { title: '性別', align: 'start', key: 'gender', width: 15 },
   { title: '接種日', align: 'start', key: 'vaccinated_dates' },
   { title: '症状発生日', align: 'start', key: 'onset_dates' },
   { title: '発症までの日数', align: 'start', key: 'days_to_onset', width: 80 },
   { title: 'ワクチン名', align: 'start', key: 'vaccine_name', width: 200 },
   { title: '製造販売業者', align: 'start', key: 'manufacturer' },
   { title: 'ロット番号', align: 'start', key: 'lot_no' },
+  { title: '同時接種', align: 'start', key: 'concurrent_vaccination_flag'},
   { title: '症状名', align: 'start', key: 'PT_names' },
   { title: '因果関係', align: 'start', key: 'causal_relationship' },
   { title: '重篤度', align: 'start', key: 'severity' },
