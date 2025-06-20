@@ -136,7 +136,7 @@
     </template>
 
     <template v-slot:[`item.source.url`]="item">
-      <CarditisSourceCell :url="item.item['source']['url']" :issue_number="item.item['no']" :id="item.item['id']" />
+      <CarditisSourceCell :url="item.item['source']['url']" :issueNumber="item.item['no']" :id="item.item['id']" />
     </template>
 
     <template v-slot:expanded-row="{ item }">

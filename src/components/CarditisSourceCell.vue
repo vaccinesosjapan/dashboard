@@ -1,5 +1,5 @@
 <template>
-	<a :href="url">{{ ordinalNumber }}</a> {{ carditisType }}No.{{ issue_number }}
+	<a :href="url">{{ ordinalNumber }}</a> {{ carditisType }}No.{{ issueNumber }}
 </template>
 
 <script setup lang="ts">
@@ -10,7 +10,7 @@ const carditisType = shallowRef<string>()
 
 const props = defineProps<{
 	url: string
-	issue_number: number
+	issueNumber: number
 	id: string
 }>()
 

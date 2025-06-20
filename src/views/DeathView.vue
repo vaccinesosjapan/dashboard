@@ -143,6 +143,10 @@
       <StringRow :content="item.value"></StringRow>
     </template>
 
+    <template v-slot:[`item.source.url`]="item">
+      <DeathSourceCell :url="item.item['source']['url']" :id="item.item['id']" />
+    </template>
+
     <template v-slot:expanded-row="{ item }">
       <td :colspan="headers.length + 1">
         <v-row cols="12" md="6">
@@ -206,6 +210,7 @@ import SelectItems from '@/components/SelectItems.vue'
 import EvaluationResultHelpDialog from '@/components/EvaluationResultHelpDialog.vue'
 import NumberFilter from '@/components/NumberFilter.vue'
 import FlatpickrCalendar from '@/components/FlatpickrCalendar.vue'
+import DeathSourceCell from '@/components/DeathSourceCell.vue'
 
 AppBarTitle.value = String(router.currentRoute.value.name)
 AppBarColor.value = '#2962ff'
@@ -245,7 +250,6 @@ onMounted(() => {
 
 let headers = [
   { key: 'data-table-expand', width: 20 },
-  { title: 'No', align: 'start', key: 'no' },
   { title: '製造販売業者', align: 'start', key: 'manufacturer'},
   { title: 'ワクチン名', align: 'start', key: 'vaccine_name' },
   { title: '年齢', align: 'start', key: 'age' },
@@ -260,6 +264,7 @@ let headers = [
   { title: '報告医の因果関係評価', align: 'start', key: 'causal_relationship' },
   { title: '専門家の因果関係評価', align: 'start', key: 'causal_relationship_by_expert', width: 100 },
   { title: '専門家のコメント', align: 'end', key: 'comments_by_expert' },
+  { title: '元資料', align: 'start', key: 'source.url'}
 ]
 
 let expandedArray = shallowRef([])
