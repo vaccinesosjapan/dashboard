@@ -136,7 +136,7 @@
     </template>
 
     <template v-slot:[`item.source.url`]="item">
-      <a :href="item.item['source']['url']">{{ item.item['source']['name'] }}</a>
+      <CarditisSourceCell :url="item.item['source']['url']" :issue_number="item.item['no']" :id="item.item['id']" />
     </template>
 
     <template v-slot:expanded-row="{ item }">
@@ -188,6 +188,7 @@ import SelectItems from '@/components/SelectItems.vue'
 import SearchRelatedToolBar from '@/components/SearchRelatedToolBar.vue'
 import EvaluationResultHelpDialog from '@/components/EvaluationResultHelpDialog.vue'
 import FlatpickrCalendar from '@/components/FlatpickrCalendar.vue'
+import CarditisSourceCell from '@/components/CarditisSourceCell.vue'
 
 AppBarTitle.value = String(router.currentRoute.value.name)
 AppBarColor.value = '#2962ff'
@@ -225,7 +226,6 @@ onMounted(() => {
 
 const headers = [
   { key: 'data-table-expand', width: 10 },
-  { title: 'No', align: 'start', key: 'no'},
   { title: '年齢', align: 'start', key: 'age'},
   { title: '性別', align: 'start', key: 'gender'},
   { title: '接種日', align: 'start', key: 'vaccinated_date'},

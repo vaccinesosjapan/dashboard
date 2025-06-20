@@ -21,4 +21,5 @@ export interface IReportedMyocarditisIssue {
   expert_opinion: string
   remarks: string
   source: ISourceInfo
+  id: string
 }
