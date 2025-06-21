@@ -167,7 +167,7 @@
     </template>
 
     <template v-slot:[`item.source.url`]="item">
-      <SourceCell :url="item.item['source']['url']" :id="item.item['id']" />
+      <MedicalSourceCell :url="item.item['source']['url']" :id="item.item['id']" />
     </template>
 
     <template v-slot:expanded-row="{ item }">
@@ -212,7 +212,7 @@ import NumberFilter from '@/components/NumberFilter.vue'
 import FlatpickrCalendar from '@/components/FlatpickrCalendar.vue'
 import ConcurrentVaccinationRow from '@/components/ConcurrentVaccinationRow.vue'
 import MedicalInstitutionDetail from '@/components/MedicalInstitutionDetail.vue'
-import SourceCell from '@/components/SourceCell.vue'
+import MedicalSourceCell from '@/components/MedicalSourceCell.vue'
 import ConcurrentVaccinationHelp from '@/components/ConcurrentVaccinationHelp.vue'
 
 AppBarTitle.value = String(router.currentRoute.value.name)
