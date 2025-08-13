@@ -57,6 +57,7 @@
 import type { IJudgedData, IJudgedDataGraphInfo } from '@/types/JudgedData';
 import { shallowRef } from 'vue';
 import SelectDateToOpenIssues from '@/components/SelectDateToOpenIssues.vue'
+import { CertifiedColors } from '@/tools/BarColors';
 
 const props = defineProps<{
   data: IJudgedData[]
@@ -178,8 +179,8 @@ const CreateCountAndRateChartOption = (info: IJudgedDataGraphInfo, labels: strin
     title: {
       text: info.GraphTitle,
       style: {
-        fontSize: '1.2rem',
-        colors: ['#212121'],
+        fontSize: '1.4rem',
+        color: '#212121',
       },
       offsetY: 20
     },
@@ -202,7 +203,7 @@ const CreateCountAndRateChartOption = (info: IJudgedDataGraphInfo, labels: strin
         offsetY: -25,
         style: {
           fontSize: '1rem',
-          colors: ['#212121'],
+          color: '#212121',
         },
       }
     },
@@ -214,7 +215,7 @@ const CreateCountAndRateChartOption = (info: IJudgedDataGraphInfo, labels: strin
             return value.toLocaleString()
           },
           style: {
-            colors: ['#E83938'],
+            colors: [CertifiedColors.Denied],
           }
         },
         max: info.CountYAxisMax
@@ -225,7 +226,7 @@ const CreateCountAndRateChartOption = (info: IJudgedDataGraphInfo, labels: strin
           text: info.CountTitle,
           style: {
             fontSize: '1rem',
-            color: '#6CAF52',
+            color: CertifiedColors.Certified,
           },
         },
         labels: {
@@ -233,7 +234,7 @@ const CreateCountAndRateChartOption = (info: IJudgedDataGraphInfo, labels: strin
             return value.toLocaleString()
           },
           style: {
-            colors: ['#6CAF52'],
+            colors: [CertifiedColors.Certified],
           }
         },
         max: info.CountYAxisMax,
@@ -245,7 +246,7 @@ const CreateCountAndRateChartOption = (info: IJudgedDataGraphInfo, labels: strin
           text: info.RateTitle,
           style: {
             fontSize: '1rem',
-            color: '#7560CF',
+            color: CertifiedColors.CertifiedRate,
           },
         },
         min: 0,
@@ -255,12 +256,12 @@ const CreateCountAndRateChartOption = (info: IJudgedDataGraphInfo, labels: strin
             return value.toFixed(1)
           },
           style: {
-            colors: ['#7560CF'],
+            colors: [CertifiedColors.CertifiedRate],
           }
         },
       }
     ],
-    colors: ['#E83938', '#6CAF52', '#7560CF'],
+    colors: [CertifiedColors.Denied, CertifiedColors.Certified, CertifiedColors.CertifiedRate],
     legend: {
       fontSize: '14',
     }
