@@ -38,7 +38,7 @@ series.value = [
 </script>
 
 <script lang="ts">
-const xAxisTitle = '審議会の開催日'
+const xAxisTitle = '審査会の開催日'
 
 const SelectBarColor = (claimType: string): string => {
   if (claimType.startsWith('medical')) {
@@ -152,7 +152,7 @@ const CreateCountAndRateChartOption = (title: string, labels: string[], color: s
         seriesName: ['認定', '否認'],
         opposite: true,
         title: {
-          text: '件数 [件]',
+          text: '審査数 [件]',
           style: {
             fontSize: '1rem',
             color: CertifiedColors.Certified,

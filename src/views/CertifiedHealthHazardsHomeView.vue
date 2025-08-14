@@ -342,22 +342,22 @@ onMounted(() => {
       CountYAxisMaxSum = Math.round( (CountYAxisMaxSum + 1000) / place ) * place;
 
       eachCountAndRateGraphInfo.value = {
-        GraphTitle: '各審議会の審議件数と認定比率',
-        CountTitle: '件数 [件]',
+        GraphTitle: '各審議会における認定比率・審査数',
+        CountTitle: '審査数 [件]',
         RateTitle: '認定比率 [%]',
         RepudiationSeriesName: '否認件数',
         CertifiedSeriesName: '認定件数',
-        RateSeriesName: '認定の比率',
+        RateSeriesName: '認定比率',
         CountYAxisMax: 350
       }
 
       allCountAndRateGraphInfo.value = {
-        GraphTitle: '累計の審議件数と認定比率',
-        CountTitle: '累計の件数 [件]',
-        RateTitle: '累計の認定比率 [%]',
-        RepudiationSeriesName: '累計の否認件数',
-        CertifiedSeriesName: '累計の認定件数',
-        RateSeriesName: '累計の認定比率',
+        GraphTitle: '累計の認定比率・審査数',
+        CountTitle: '審査数 [件]',
+        RateTitle: '認定比率 [%]',
+        RepudiationSeriesName: '否認件数',
+        CertifiedSeriesName: '認定件数',
+        RateSeriesName: '認定比率',
         CountYAxisMax: CountYAxisMaxSum
       }
 
