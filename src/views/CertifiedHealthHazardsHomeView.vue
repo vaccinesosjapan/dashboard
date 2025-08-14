@@ -85,6 +85,36 @@
 
       <p class="text-caption text-right">※ <b>{{ items?.date }}</b> までの「疾病・障害認定審査会」累計データを用いて算出しています。</p>
     </v-container>
+
+    <v-container v-if="judgedSplitDataList == undefined">
+      <v-progress-circular
+        color="primary"
+        indeterminate
+        :size="100"
+        :width="10"
+      ></v-progress-circular>
+    </v-container>
+    <v-container v-else>
+      <CustomHeader1 title="請求内容ごとの傾向" />
+      <p class="text-body-1 mb-2">認定された症例を「請求内容」ごとに集計し、認定比率と累計の審査数とをグラフ化したものを以下に示します。</p>
+
+      <v-row class="d-none d-md-flex mt-3">
+        <v-col cols="12" v-for="data in judgedSplitDataList.data_list" :key="data.id">
+          <JudgedSplitDataBar :x_axis_data="judgedSplitDataList.x_axis_data" :data="data" />
+        </v-col>
+      </v-row>
+      
+      <v-row class="d-flex d-md-none">
+        <v-col cols="12">
+          <p class="text-caption text-right">※ グラフを画像で表示しています。詳しいデータを見る場合は、横幅 960 px以上のPC画面などでご覧ください。</p>
+        </v-col>
+
+        <v-col cols="12" v-for="data in judgedSplitDataList.data_list" :key="data.id">
+          <h3 class="small-h3">{{ `【${data.display_name}】認定比率・審査数 累計` }}</h3>
+          <v-img :src="JudgedSplitAltImageBaseURL + data.id + '.svg'"></v-img>
+        </v-col>
+      </v-row>
+    </v-container>
     
     <v-container v-if="!trendsLoaded">
       <v-progress-circular
@@ -166,7 +196,8 @@ import { onMounted, shallowRef } from 'vue'
 import axios from 'axios'
 import { AppBarTitle, AppBarColor, CertifiedSummaryURL, CertifiedSummaryWithOtherVaccinesURL, 
   CertifiedTrendsURL, JudgedDataURL, AppBarUseHelpPage, AppBarHelpPageLink,
-  JudgedDataEachGraphSmallImageURL, JudgedDataAllGraphSmallImageURL, CertifiedSummaryWithOtherVaccinesThumbnailURL } from '@/router/data'
+  JudgedDataEachGraphSmallImageURL, JudgedDataAllGraphSmallImageURL, CertifiedSummaryWithOtherVaccinesThumbnailURL, 
+  JudgedSplitDataURL, JudgedSplitAltImageBaseURL} from '@/router/data'
 import router from '@/router/index'
 import type { ICertifiedSummary, ICertifiedSummaryWithOtherVaccines, IJudgedIssueCount } from '@/types/CertifiedSummary'
 import type { ICertifiedTrends } from '@/types/CertifiedTrends'
@@ -176,6 +207,8 @@ import CustomHeader1 from '@/components/CustomHeader1.vue'
 import JudgedTrendsGraph from '@/components/JudgedTrendsGraph.vue'
 import OtherVaccinesGraph from '@/components/OtherVaccinesGraph.vue'
 import ClaimChart from '@/components/ClaimChart.vue'
+import type { IJudgedSplitDataList } from '@/types/JudgedSplitData'
+import JudgedSplitDataBar from '@/components/JudgedSplitDataBar.vue'
 
 AppBarTitle.value = String(router.currentRoute.value.name)
 AppBarColor.value = 'green'
@@ -205,6 +238,7 @@ const eachCountAndRateGraphInfo = shallowRef<IJudgedDataGraphInfo>(emptyJudgedDa
 const allCountAndRateGraphInfo = shallowRef<IJudgedDataGraphInfo>(emptyJudgedDataGraphInfo)
 const judgedDataLabels = shallowRef<string[]>([])
 const otherVaccinesLoaded = shallowRef<boolean>(false)
+const judgedSplitDataList = shallowRef<IJudgedSplitDataList>()
 onMounted(() => {
   axios.get<ICertifiedSummary>(CertifiedSummaryURL)
     .then((response) => {
@@ -329,6 +363,10 @@ onMounted(() => {
       window.dispatchEvent(new Event('resize'))
     })
     .catch((error) => console.log('failed to get judged data: ' + error))
+
+    axios.get<IJudgedSplitDataList>(JudgedSplitDataURL)
+      .then(response => judgedSplitDataList.value = response.data)
+      .catch(error => console.log('failed to get certified split data: ' + error))
 })
 
 const trendsFemaleSeries = shallowRef<{x: string, y: number}[]>([])
