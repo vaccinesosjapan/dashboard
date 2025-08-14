@@ -6,7 +6,7 @@
     </v-container>
 
     <v-container v-else>
-      <CustomHeader1 title="参考情報"></CustomHeader1>
+      <CustomHeader1 title="参考情報" :bg_color="headerColor" />
 
       <v-card class="mx-auto mb-10" elevation="6">
         <template v-slot:title>
@@ -99,6 +99,8 @@ AppBarTitle.value = String(router.currentRoute.value.name)
 AppBarColor.value = 'blue-accent-1'
 AppBarUseHelpPage.value = true
 AppBarHelpPageLink.value = 'how-to-use-summary-page'
+
+const headerColor = shallowRef<string>('#82B1FF') // blue-accent-1 color of vuetify
 
 const medicalInstitutionSummary = shallowRef<IMedicalInstitutionSummary>()
 onMounted(() => {

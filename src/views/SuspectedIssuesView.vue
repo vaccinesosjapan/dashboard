@@ -2,7 +2,7 @@
   <v-container fluid>
 
     <v-container>
-      <CustomHeader1 title="副反応疑い報告"></CustomHeader1>
+      <CustomHeader1 title="副反応疑い報告" :bg_color="headerColor" />
       <p class="text-body-1">（製造販売業者からの副反応疑い報告に関するまとめをここに掲載予定）</p>
     </v-container>
 
@@ -16,7 +16,7 @@
     </v-container>
 
     <v-container v-else>
-      <CustomHeader1 title="心筋炎/心膜炎 報告"></CustomHeader1>
+      <CustomHeader1 title="心筋炎/心膜炎 報告" :bg_color="headerColor" />
       <p class="text-body-1 mb-2">
         「新型コロナワクチン接種後の心筋炎又は心膜炎疑い」として製造販売業者から報告された <span class="big-bold">{{ carditisSummaryData?.carditis_summary.total.toLocaleString() }}</span> 件の集計結果を示します。
       </p>
@@ -84,7 +84,7 @@
     </v-container>
 
     <v-container v-else>
-      <CustomHeader1 title="亡くなられた方々に関する報告"></CustomHeader1>
+      <CustomHeader1 title="亡くなられた方々に関する報告" :bg_color="headerColor" />
       <p class="text-body-1 mb-5">
         「新型コロナワクチン接種後の死亡例」として製造販売業者から報告された事例 <span class="big-bold">{{ deathSummaryData?.death_summary.sum_by_evaluation.total.toLocaleString() }}</span> [件] の集計結果を示します。
       </p>
@@ -186,6 +186,8 @@ AppBarTitle.value = String(router.currentRoute.value.name)
 AppBarColor.value = '#2962ff'
 AppBarUseHelpPage.value = true
 AppBarHelpPageLink.value = 'how-to-use-summary-page'
+
+const headerColor = shallowRef<string>('#2962ff')
 
 const carditisSummaryData = shallowRef<ICarditisSummaryRoot>()
 const myocarditisSeries = shallowRef<{x: string, y: number}[]>([])

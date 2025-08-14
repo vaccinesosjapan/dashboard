@@ -11,7 +11,7 @@
     </v-container>
 
     <v-container v-else>
-      <CustomHeader1 title="副反応疑い報告"></CustomHeader1>
+      <CustomHeader1 title="副反応疑い報告" :bg_color="headerColor" />
       <p class="text-body-1 mb-5">
         予防接種法に基づいて医療機関から報告された副反応疑い報告 <span class="big-bold">{{ medicalInstitutionSummary?.medical_institution_summary_from_reports.total_count.toLocaleString() }}</span> [件] の集計結果を示します。
       </p>
@@ -56,6 +56,8 @@ AppBarTitle.value = String(router.currentRoute.value.name)
 AppBarColor.value = '#2962ff'
 AppBarUseHelpPage.value = true
 AppBarHelpPageLink.value = 'how-to-use-summary-page'
+
+const headerColor = shallowRef<string>('#2962ff')
 
 const medicalInstitutionSummary = shallowRef<IMedicalInstitutionSummary>()
 onMounted(() => {
