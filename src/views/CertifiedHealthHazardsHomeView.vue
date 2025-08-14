@@ -10,7 +10,7 @@
       ></v-progress-circular>
     </v-container>
     <v-container v-else>
-      <CustomHeader1 title="判定結果"></CustomHeader1>
+      <CustomHeader1 title="判定結果" :bg_color="headerColor" />
       <p class="text-body-1 mb-2">進達受理件数の総数 <b>{{ items.total_entries.toLocaleString() }}</b> [件] に対して、判定結果の割合は以下の通りです。</p>
 
       <div class="d-flex justify-end">
@@ -48,7 +48,7 @@
       <br>
       <br>
 
-      <CustomHeader1 title="請求内容"></CustomHeader1>
+      <CustomHeader1 title="請求内容" :bg_color="headerColor" />
       <div class="d-flex justify-end">
         <v-btn size="small" @click="changeChartView" color="blue" v-if="isPersentView">件数を表示</v-btn>
         <v-btn size="small" @click="changeChartView" color="blue" v-else>割合を表示</v-btn>
@@ -75,7 +75,7 @@
       ></v-progress-circular>
     </v-container>
     <v-container v-else>
-      <CustomHeader1 title="審議会の傾向"></CustomHeader1>
+      <CustomHeader1 title="審議会の傾向" :bg_color="headerColor" />
       <p class="text-body-1 mb-2">各審議会での件数および認定比率や、全審議会における累計の件数および認定比率は以下の通りです。</p>
 
       <CountAndRateGraph :data="judgedDataArray"
@@ -95,7 +95,7 @@
       ></v-progress-circular>
     </v-container>
     <v-container v-else>
-      <CustomHeader1 title="請求内容ごとの傾向" />
+      <CustomHeader1 title="請求内容ごとの傾向" :bg_color="headerColor" />
       <p class="text-body-1 mb-2">認定された症例を「請求内容」ごとに集計し、認定比率と累計の審査数とをグラフ化したものを以下に示します。</p>
 
       <v-row class="d-none d-md-flex mt-3">
@@ -125,7 +125,7 @@
       ></v-progress-circular>
     </v-container>
     <v-container v-else>
-      <CustomHeader1 title="性別ごとの症状傾向"></CustomHeader1>
+      <CustomHeader1 title="性別ごとの症状傾向" :bg_color="headerColor" />
       <p>女性・男性・両方の3つの区分で、どのような症状が多く認定されているのかを以下に示します。</p>
       <v-row>
         <v-col cols="12">
@@ -151,7 +151,7 @@
       ></v-progress-circular>
     </v-container>
     <v-container v-else>
-      <CustomHeader1 title="過去の各種ワクチンの認定件数との比較"></CustomHeader1>
+      <CustomHeader1 title="過去の各種ワクチンの認定件数との比較" :bg_color="headerColor" />
      
       <v-row>
         <v-col cols="12" class="d-flex justify-center">
@@ -214,6 +214,8 @@ AppBarTitle.value = String(router.currentRoute.value.name)
 AppBarColor.value = 'green'
 AppBarUseHelpPage.value = true
 AppBarHelpPageLink.value = 'how-to-use-summary-page'
+
+const headerColor = shallowRef<string>('#4CAF50') // green color of vuetify
 
 const isPersentView = shallowRef(true)
 
@@ -340,22 +342,22 @@ onMounted(() => {
       CountYAxisMaxSum = Math.round( (CountYAxisMaxSum + 1000) / place ) * place;
 
       eachCountAndRateGraphInfo.value = {
-        GraphTitle: '各審議会の審議件数と認定比率',
-        CountTitle: '件数 [件]',
+        GraphTitle: '各審議会における認定比率・審査数',
+        CountTitle: '審査数 [件]',
         RateTitle: '認定比率 [%]',
         RepudiationSeriesName: '否認件数',
         CertifiedSeriesName: '認定件数',
-        RateSeriesName: '認定の比率',
+        RateSeriesName: '認定比率',
         CountYAxisMax: 350
       }
 
       allCountAndRateGraphInfo.value = {
-        GraphTitle: '累計の審議件数と認定比率',
-        CountTitle: '累計の件数 [件]',
-        RateTitle: '累計の認定比率 [%]',
-        RepudiationSeriesName: '累計の否認件数',
-        CertifiedSeriesName: '累計の認定件数',
-        RateSeriesName: '累計の認定比率',
+        GraphTitle: '累計の認定比率・審査数',
+        CountTitle: '審査数 [件]',
+        RateTitle: '認定比率 [%]',
+        RepudiationSeriesName: '否認件数',
+        CertifiedSeriesName: '認定件数',
+        RateSeriesName: '認定比率',
         CountYAxisMax: CountYAxisMaxSum
       }
 

@@ -97,6 +97,11 @@ const allCountAndRateSeries = shallowRef<ISeriesValue[]>([])
 
 eachCountAndRateSeries.value = [
 	{
+		name: props.eachInfo.RateSeriesName,
+		type: 'line',
+		data: numberOfCertifiedRate
+	},
+	{
 		name: props.eachInfo.RepudiationSeriesName,
 		type: 'bar',
 		data: numberOfRepudiation
@@ -106,14 +111,14 @@ eachCountAndRateSeries.value = [
 		type: 'bar',
 		data: numberOfCertified
 	},
-	{
-		name: props.eachInfo.RateSeriesName,
-		type: 'line',
-		data: numberOfCertifiedRate
-	},
 ]
 
 allCountAndRateSeries.value = [
+	{
+		name: props.allInfo.RateSeriesName,
+		type: 'line',
+		data: numberOfCertifiedRateSum
+	},
 	{
 		name: props.allInfo.RepudiationSeriesName,
 		type: 'bar',
@@ -123,11 +128,6 @@ allCountAndRateSeries.value = [
 		name: props.allInfo.CertifiedSeriesName,
 		type: 'bar',
 		data: numberOfCertifiedSum
-	},
-	{
-		name: props.allInfo.RateSeriesName,
-		type: 'line',
-		data: numberOfCertifiedRateSum
 	},
 ]
 
@@ -147,7 +147,7 @@ interface ISeriesValue {
 }
 
 const noticeForImage = '※ グラフを画像で表示しています。詳しいデータを見る場合は、横幅 960 px以上のPC画面などでご覧ください。'
-const xAxisTitle = '審議会の開催日'
+const xAxisTitle = '審査会の開催日'
 
 const CreateCountAndRateChartOption = (info: IJudgedDataGraphInfo, labels: string[], downloadFileName: string): any =>{
   return {
@@ -209,39 +209,8 @@ const CreateCountAndRateChartOption = (info: IJudgedDataGraphInfo, labels: strin
     },
     yaxis: [
       {
-        seriesName: [info.RepudiationSeriesName, info.CertifiedSeriesName],
-        labels: {
-          formatter: function (value: any) {
-            return value.toLocaleString()
-          },
-          style: {
-            colors: [CertifiedColors.Denied],
-          }
-        },
-        max: info.CountYAxisMax
-      },
-      {
-        seriesName: [info.RepudiationSeriesName, info.CertifiedSeriesName],
-        title: {
-          text: info.CountTitle,
-          style: {
-            fontSize: '1rem',
-            color: CertifiedColors.Certified,
-          },
-        },
-        labels: {
-          formatter: function (value: any) {
-            return value.toLocaleString()
-          },
-          style: {
-            colors: [CertifiedColors.Certified],
-          }
-        },
-        max: info.CountYAxisMax,
-      },
-      {
         seriesName: info.RateSeriesName,
-        opposite: true,
+        opposite: false,
         title: {
           text: info.RateTitle,
           style: {
@@ -259,9 +228,42 @@ const CreateCountAndRateChartOption = (info: IJudgedDataGraphInfo, labels: strin
             colors: [CertifiedColors.CertifiedRate],
           }
         },
-      }
+      },
+      {
+        seriesName: [info.RepudiationSeriesName, info.CertifiedSeriesName],
+        opposite: true,
+        labels: {
+          formatter: function (value: any) {
+            return value.toLocaleString()
+          },
+          style: {
+            colors: [CertifiedColors.Denied],
+          }
+        },
+        max: info.CountYAxisMax
+      },
+      {
+        seriesName: [info.RepudiationSeriesName, info.CertifiedSeriesName],
+        opposite: true,
+        title: {
+          text: info.CountTitle,
+          style: {
+            fontSize: '1rem',
+            color: CertifiedColors.Certified,
+          },
+        },
+        labels: {
+          formatter: function (value: any) {
+            return value.toLocaleString()
+          },
+          style: {
+            colors: [CertifiedColors.Certified],
+          }
+        },
+        max: info.CountYAxisMax,
+      },
     ],
-    colors: [CertifiedColors.Denied, CertifiedColors.Certified, CertifiedColors.CertifiedRate],
+    colors: [CertifiedColors.CertifiedRate, CertifiedColors.Denied, CertifiedColors.Certified],
     legend: {
       fontSize: '14',
     }
