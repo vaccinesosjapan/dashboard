@@ -75,8 +75,8 @@
       ></v-progress-circular>
     </v-container>
     <v-container v-else>
-      <CustomHeader1 title="審議会の傾向" :bg_color="headerColor" />
-      <p class="text-body-1 mb-2">各審議会での件数および認定比率や、全審議会における累計の件数および認定比率は以下の通りです。</p>
+      <CustomHeader1 title="審査会の傾向" :bg_color="headerColor" />
+      <p class="text-body-1 mb-2">各審査会での認定比率・審査数や、全審査会における累計の認定比率・審査数をグラフ化したものを以下に示します。</p>
 
       <CountAndRateGraph :data="judgedDataArray"
       :each-info="eachCountAndRateGraphInfo" :each-alt-image-path="JudgedDataEachGraphSmallImageURL"
@@ -96,7 +96,7 @@
     </v-container>
     <v-container v-else>
       <CustomHeader1 title="請求内容ごとの傾向" :bg_color="headerColor" />
-      <p class="text-body-1 mb-2">認定された症例を「請求内容」ごとに集計し、認定比率と累計の審査数とをグラフ化したものを以下に示します。</p>
+      <p class="text-body-1 mb-2">「請求内容」ごとに集計し、各審査会での認定比率・審査数や、全審査会における累計の認定比率・審査数をグラフ化したものを以下に示します。</p>
 
       <v-row class="d-none d-md-flex mt-3">
         <v-col cols="12" v-for="data in judgedSplitDataList.data_list" :key="data.id">
@@ -342,7 +342,7 @@ onMounted(() => {
       CountYAxisMaxSum = Math.round( (CountYAxisMaxSum + 1000) / place ) * place;
 
       eachCountAndRateGraphInfo.value = {
-        GraphTitle: '各審議会における認定比率・審査数',
+        GraphTitle: '各審査会における認定比率・審査数',
         CountTitle: '審査数 [件]',
         RateTitle: '認定比率 [%]',
         RepudiationSeriesName: '否認件数',

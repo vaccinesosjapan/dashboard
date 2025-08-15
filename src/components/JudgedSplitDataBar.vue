@@ -13,7 +13,7 @@ const props = defineProps<{
 }>()
 
 const chartOption = shallowRef<any>()
-//const graphTitle = props.data.cumulative ? `累計の認定件数の推移 - ${props.data.display_name}` : `審議会ごとの認定件数の推移 - ${props.data.display_name}`
+//const graphTitle = props.data.cumulative ? `累計の認定件数の推移 - ${props.data.display_name}` : `審査会ごとの認定件数の推移 - ${props.data.display_name}`
 const graphTitle = `【${props.data.display_name}】認定比率・審査数 累計`
 const barColor = SelectBarColor(props.data.id)
 chartOption.value = CreateCountAndRateChartOption(graphTitle, props.x_axis_data, barColor, props.data.sum_y_axis_max, props.data.id)

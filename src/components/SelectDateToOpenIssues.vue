@@ -16,7 +16,7 @@
 			</v-select>
 		</v-col>
 		<v-col cols="12" md="4" sm="5">
-			<v-btn @click="openIssues">審議会データを確認する</v-btn>
+			<v-btn @click="openIssues">審査会データを確認する</v-btn>
 		</v-col>
 	</v-row>
 
@@ -35,12 +35,12 @@
 					></v-text-field>
 				</template>
 			</v-select>
-			<v-btn @click="openIssues" class="mt-1">審議会データを確認する</v-btn>
+			<v-btn @click="openIssues" class="mt-1">審査会データを確認する</v-btn>
 		</v-col>
 	</v-row>
 
 	<v-snackbar v-model="snackbarActivator" :timeout="timeout" color="warning">
-      データを表示したい審議会の日付を選択してください。
+      データを表示したい審査会の日付を選択してください。
     </v-snackbar>
 </template>
 
