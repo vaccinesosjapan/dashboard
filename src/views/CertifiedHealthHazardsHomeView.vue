@@ -100,7 +100,8 @@
 
       <v-row class="d-none d-md-flex mt-3">
         <v-col cols="12" v-for="data in judgedSplitDataList.data_list" :key="data.id">
-          <JudgedSplitDataBar :x_axis_data="judgedSplitDataList.x_axis_data" :data="data" />
+          <JudgedSplitDataBar :x_axis_data="judgedSplitDataList.x_axis_data" :data="data" :cumulative="false" />
+          <JudgedSplitDataBar :x_axis_data="judgedSplitDataList.x_axis_data" :data="data" :cumulative="true" />
         </v-col>
       </v-row>
       
@@ -110,8 +111,10 @@
         </v-col>
 
         <v-col cols="12" v-for="data in judgedSplitDataList.data_list" :key="data.id">
-          <h3 class="small-h3">{{ `【${data.display_name}】認定比率・審査数 累計` }}</h3>
+          <h3 class="small-h3" :style="{color: SelectBarColorById(data.id)}">{{ `【${data.display_name}】認定比率・審査数 審査会ごと` }}</h3>
           <v-img :src="JudgedSplitAltImageBaseURL + data.id + '.svg'"></v-img>
+          <h3 class="small-h3" :style="{color: SelectBarColorById(data.id)}">{{ `【${data.display_name}】認定比率・審査数 累計` }}</h3>
+          <v-img :src="JudgedSplitAltImageBaseURL + data.id + '_cumulative.svg'"></v-img>
         </v-col>
       </v-row>
     </v-container>
@@ -209,6 +212,7 @@ import OtherVaccinesGraph from '@/components/OtherVaccinesGraph.vue'
 import ClaimChart from '@/components/ClaimChart.vue'
 import type { IJudgedSplitDataList } from '@/types/JudgedSplitData'
 import JudgedSplitDataBar from '@/components/JudgedSplitDataBar.vue'
+import { SelectBarColorById } from '@/tools/BarColors';
 
 AppBarTitle.value = String(router.currentRoute.value.name)
 AppBarColor.value = 'green'

@@ -10,3 +10,17 @@ export const CertifiedColors = {
 	Denied: '#E83938',
 	CertifiedRate: '#7560CF',
 } as const
+
+export const SelectBarColorById = (id: string): string => {
+  if (id.startsWith('medical')) {
+    return CertifiedColorsByClaimType.Medical
+  } else if (id.startsWith('disability_of_children')) {
+    return CertifiedColorsByClaimType.DisabilityOfChildren
+  } else if (id.startsWith('disability')) {
+    return CertifiedColorsByClaimType.Disability
+  } else if (id.startsWith('death')) {
+    return CertifiedColorsByClaimType.Death
+  } else {
+    return CertifiedColorsByClaimType.Medical
+  }
+}

@@ -3,22 +3,24 @@
 </template>
 
 <script setup lang="ts">
-import { CertifiedColors, CertifiedColorsByClaimType } from '@/tools/BarColors';
+import { CertifiedColors, SelectBarColorById } from '@/tools/BarColors';
 import { type IJudgedSplitData } from '@/types/JudgedSplitData';
 import { shallowRef } from 'vue';
 
 const props = defineProps<{
   x_axis_data: string[]
   data: IJudgedSplitData
+  cumulative: boolean
 }>()
 
 const chartOption = shallowRef<any>()
-//const graphTitle = props.data.cumulative ? `累計の認定件数の推移 - ${props.data.display_name}` : `審査会ごとの認定件数の推移 - ${props.data.display_name}`
-const graphTitle = `【${props.data.display_name}】認定比率・審査数 累計`
-const barColor = SelectBarColor(props.data.id)
-chartOption.value = CreateCountAndRateChartOption(graphTitle, props.x_axis_data, barColor, props.data.sum_y_axis_max, props.data.id)
+const graphTitle = props.cumulative ? `【${props.data.display_name}】認定比率・審査数 累計` : `【${props.data.display_name}】認定比率・審査数 審査会ごと`
+const barColor = SelectBarColorById(props.data.id)
+const y_axis_max = props.cumulative ? props.data.sum_y_axis_max : props.data.normal_y_axis_max
+const downloadFileName = props.cumulative ? `${props.data.id}_cumulative` : props.data.id
+chartOption.value = CreateCountAndRateChartOption(graphTitle, props.x_axis_data, barColor, y_axis_max, downloadFileName)
 const series = shallowRef<any>()
-series.value = [
+series.value = props.cumulative ? [
 	{
 		name: '認定比率',
 		type: 'line',
@@ -34,25 +36,27 @@ series.value = [
 		type: 'bar',
 		data: props.data.certified_sum_data
 	},
+] : [
+	{
+		name: '認定比率',
+		type: 'line',
+		data: props.data.certified_rate
+	},
+	{
+		name: '否認',
+		type: 'bar',
+		data: props.data.denied_data
+	},
+	{
+		name: '認定',
+		type: 'bar',
+		data: props.data.certified_data
+	},
 ]
 </script>
 
 <script lang="ts">
 const xAxisTitle = '審査会の開催日'
-
-const SelectBarColor = (claimType: string): string => {
-  if (claimType.startsWith('medical')) {
-    return CertifiedColorsByClaimType.Medical
-  } else if (claimType.startsWith('disability_of_children')) {
-    return CertifiedColorsByClaimType.DisabilityOfChildren
-  } else if (claimType.startsWith('disability')) {
-    return CertifiedColorsByClaimType.Disability
-  } else if (claimType.startsWith('death')) {
-    return CertifiedColorsByClaimType.Death
-  } else {
-    return CertifiedColorsByClaimType.Medical
-  }
-}
 
 const CreateCountAndRateChartOption = (title: string, labels: string[], color: string, yMax: number, downloadFileName: string): any =>{
   return {
