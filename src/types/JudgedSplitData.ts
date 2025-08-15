@@ -1,5 +1,5 @@
-// 審議会のデータを請求内容ごとに集計したデータ。
-// 審議会の日付データ（x_axis_data）は全てのデータで共通のため、1つだけ保持する。
+// 審査会のデータを請求内容ごとに集計したデータ。
+// 審査会の日付データ（x_axis_data）は全てのデータで共通のため、1つだけ保持する。
 export interface IJudgedSplitDataList {
 	x_axis_data: string[]
 	data_list: IJudgedSplitData[]
