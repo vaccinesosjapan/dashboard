@@ -24,8 +24,8 @@
         <CopyLinkSnackBar :id="sectionFilterByClaim.id" :position="sectionFilterByClaim.position"></CopyLinkSnackBar>
       </h3>
       <p class="text-body-1">
-        検索画面の「請求内容」欄に「医療」や「年金」などのキーワードを入力すると、該当する請求内容の判定結果だけを一覧表示できます。
-        <v-img src="images/how-to-use/set-claim-keyword.png"></v-img><br>
+        検索画面の「請求内容」で「医療費・医療手当」など選択肢を選ぶと、その請求内容を含む判定結果だけを一覧表示できます。
+        <v-img src="images/how-to-use/select-claim-item.png"></v-img><br>
       </p>
     </v-sheet>
 
