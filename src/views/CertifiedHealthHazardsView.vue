@@ -42,6 +42,12 @@
             label="判定日（選択した日付のみ）"
             ></SelectItems>
 
+            <SelectItems v-else-if="sItem.type == 'description_of_claim'"
+            v-model:values="descriptionOfClaimFilterValues" v-model:items="descriptionOfClaimFilterItems"
+            :search-triger-func="searchTrigerFunc" :clear-trigger-func="clearTriggerFunc"
+            label="請求内容"
+            ></SelectItems>
+            
             <v-text-field v-else
               :label="sItem.label"
               v-model="sItem.model.value"
@@ -198,6 +204,7 @@ onMounted(() => {
       judgedDatesFilterItems.value = response.data.judged_dates
       judgedResultFilterItems.value = response.data.judged_result_list
       genderFilterItems.value = response.data.gender_list
+      descriptionOfClaimFilterItems.value = response.data.claim_elements_list
       loading.value = false
     })
     .catch((error) => console.log('failed to get certified metadata: ' + error))
@@ -229,9 +236,15 @@ const symptomsFilterFunc = (values: any): boolean => {
   return StringArrayFilterFunc(values, symptomsFilterVal)
 }
 
-const descriptionOfClaimFilterVal = shallowRef('')
-const descriptionOfClaimFilterFunc = (value: string): boolean => {
-  return StringFilterFunc(value, descriptionOfClaimFilterVal)
+const descriptionOfClaimFilterValues = shallowRef<string[]>([])
+const descriptionOfClaimFilterItems = shallowRef<string[]>([])
+const descriptionOfClaimFilterFunc = (value: any): boolean => {
+  if (descriptionOfClaimFilterValues.value.length == 0) return true
+  if(value.length == 0) return false // 検索しようとしているが対象列の内容が空っぽの場合なので非表示
+
+  // 選択された文字列配列の項目のうちいずれかが、value（検索対象・各行の対象列の文字列）
+  // に含まれていれば表示する（trueを返す）
+  return descriptionOfClaimFilterValues.value.some(item => value.includes(item))
 }
 
 const judgedResultFilterValues = shallowRef<string[]>([])
@@ -298,7 +311,7 @@ const clearTriggerFunc = () => {
 // 検索の入力欄を作るための設定たち
 const _blank = shallowRef()
 const issueSearchItems = [
-  { md: 6, label: "請求内容", model: descriptionOfClaimFilterVal, type: "text"},
+  { md: 6, label: "請求内容", model: _blank, type: "description_of_claim"},
   { md: 6, label: "症状", model: symptomsFilterVal, type: "text"},
   { md: 3, label: "判定", model: _blank, type: "judged_result"},
   { md: 3, label: "判定日（選択した日付のみ）", model: _blank, type: "judged-date"},
@@ -319,7 +332,7 @@ const queryParamMap: IQueryParam[] = [
   {name: "adf", val: ageFromFilterVal},
   {name: "adt", val: ageToFilterVal},
   {name: "vn", val: vaccineNameFilterVal},
-  {name: "tp", val: descriptionOfClaimFilterVal},
+  {name: "tp", val: descriptionOfClaimFilterValues},
   {name: "sym", val: symptomsFilterVal},
   {name: "re", val: judgedResultFilterValues},
   {name: "pre", val: preExistingConditionFilterVal},
