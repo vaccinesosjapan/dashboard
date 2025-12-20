@@ -149,35 +149,11 @@
 
     <template v-slot:expanded-row="{ item }">
       <td :colspan="headers.length + 1">
-        <v-row cols="12" md="6">
-          <v-col>
-            <DeathDetail
-            :no="item.no"
-            :vaccinated_dates="item.vaccinated_dates"
-            :onset_dates="item.onset_dates"
-            :PT_names="item.PT_names"
-            :clickClose="() => { expandedArray = expandedArray.filter( n => n !== item.id )}"
-            ></DeathDetail>
-          </v-col>
-
-          <v-col cols="12" md="6">
-            <PreExistingDiseaseCard title="基礎疾患等" :pre_existing_disease_names="item.pre_existing_conditions.split('\n')"></PreExistingDiseaseCard>
-          </v-col>
-
-          <v-col cols="12">
-            <v-card variant="elevated" color="blue-grey-darken-1">
-              <v-card-title>報告医が死因等の判断に至った検査</v-card-title>
-              <v-card-text>{{ item.tests_used_for_determination }}</v-card-text>
-            </v-card>
-          </v-col>
-
-          <v-col cols="12">
-            <v-card variant="elevated" color="blue-grey-darken-1">
-              <v-card-title>専門家のコメント</v-card-title>
-              <v-card-text>{{ item.comments_by_expert }}</v-card-text>
-            </v-card>
-          </v-col>
-        </v-row>
+        <DeathIssueDetailCard :no="item.no" :vaccinated_dates="item.vaccinated_dates" :onset_dates="item.onset_dates"
+          :PT_names="item.PT_names" :pre_existing_conditions="item.pre_existing_conditions"
+          :tests_used_for_determination="item.tests_used_for_determination"
+          :comments_by_expert="item.comments_by_expert"
+          :clickClose="() => { expandedArray = expandedArray.filter(n => n !== item.id) }" />
       </td>
     </template>
 
@@ -202,8 +178,7 @@ import { NumberFilterFunc, DateFilterFunc, StringFilterFunc, DateArrayFilterFunc
 import StringRow from '@/components/StringRow.vue'
 import StringArrayRow from '@/components/StringArrayRow.vue'
 import DatesRow from '@/components/DatesRow.vue'
-import DeathDetail from '@/components/DeathDetail.vue'
-import PreExistingDiseaseCard from '@/components/PreExistingDiseaseCard.vue'
+import DeathIssueDetailCard from '@/components/DeathIssueDetailCard.vue'
 import CausualRelationshipRow from '@/components/CausualRelationshipRow.vue'
 import SearchRelatedToolBar from '@/components/SearchRelatedToolBar.vue'
 import SelectItems from '@/components/SelectItems.vue'

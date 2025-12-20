@@ -6,7 +6,7 @@
     <v-row>
       <v-col cols="12" md="4">
         <v-card variant="flat" color="blue-grey-darken-1">
-          <v-card-title>症状と経過の詳細</v-card-title>
+          <v-card-title class="card-title">症状と経過の詳細</v-card-title>
           <v-card-text>
             <v-timeline density="compact" align="start">
               <v-timeline-item dot-color="yellow-darken-1" size="x-small">
@@ -41,7 +41,7 @@
 
       <v-col cols="12" md="4">
         <v-card variant="flat" color="blue-grey-darken-1">
-          <v-card-title>基礎疾患等</v-card-title>
+          <v-card-title class="card-title">基礎疾患等</v-card-title>
           <v-card-text>
             <ul class="pl-4" v-for="dName, j in report.pre_existing_disease_names" :key="j">
               <li>{{ dName }}</li>
@@ -50,7 +50,7 @@
         </v-card>
 
         <v-card v-if="report.concurrent_vaccination_flag" variant="flat" color="blue-grey-darken-1">
-          <v-card-title>同時接種したワクチン</v-card-title>
+          <v-card-title class="card-title">同時接種したワクチン</v-card-title>
           <v-card-text>
             <ul class="pl-4">
               <li>ワクチン名&emsp; : {{ vaccine_name }}</li>
@@ -63,7 +63,7 @@
 
       <v-col cols="12" md="4">
         <v-card variant="flat" color="blue-grey-darken-1">
-          <v-card-title>専門家による評価</v-card-title>
+          <v-card-title class="card-title">専門家による評価</v-card-title>
           <v-card-text>
             <ul class="pl-4">
               <li class="mb-2">評価PT:
@@ -194,4 +194,8 @@ const getTimeLineColor = (r: string): string => {
 </script>
 
 <style scoped>
+.card-title {
+  text-decoration: underline;
+  text-underline-offset: 0.15em;
+}
 </style>

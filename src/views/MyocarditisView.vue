@@ -141,22 +141,10 @@
 
     <template v-slot:expanded-row="{ item }">
       <td :colspan="headers.length + 1">
-        <v-row>
-          <v-col cols="12" md="6">
-            <DateAndPTnames
-            :no="item.no"
-            :vaccinated_date="item.vaccinated_date"
-            :onset_dates="item.onset_dates"
-            :PT_names="item.PT_names"
-            :gross_result_dates="item.gross_result_dates"
-            :gross_results="item.gross_results"
-            :clickClose="() => { expandedArray = expandedArray.filter( n => n !== item.no )}"
-            ></DateAndPTnames>
-          </v-col>
-          <v-col cols="12" md="6">
-            <PreExistingDiseaseCard title="基礎疾患一覧" :pre_existing_disease_names="item.pre_existing_disease_names"></PreExistingDiseaseCard>
-          </v-col>
-        </v-row>
+        <CarditisIssueDetailCard :no="item.no" :vaccinated_date="item.vaccinated_date" :onset_dates="item.onset_dates"
+          :PT_names="item.PT_names" :gross_result_dates="item.gross_result_dates" :gross_results="item.gross_results"
+          :pre_existing_disease_names="item.pre_existing_disease_names" :expert_opinion="item.expert_opinion"
+          :clickClose="() => { expandedArray = expandedArray.filter(n => n !== item.no) }" />
       </td>
     </template>
 
@@ -181,8 +169,7 @@ import { DateArrayFilterFunc, DateFilterFunc, NumberFilterFunc, StringArrayFilte
 import { SearchTrigger, SearchTriggerFunc } from '@/tools/SearchTriggerFunc'
 import StringArrayRow from '@/components/StringArrayRow.vue'
 import DatesRow from '@/components/DatesRow.vue'
-import PreExistingDiseaseCard from '@/components/PreExistingDiseaseCard.vue'
-import DateAndPTnames from '@/components/DateAndPTnames.vue'
+import CarditisIssueDetailCard from '@/components/CarditisIssueDetailCard.vue'
 import NumberFilter from '@/components/NumberFilter.vue'
 import SelectItems from '@/components/SelectItems.vue'
 import SearchRelatedToolBar from '@/components/SearchRelatedToolBar.vue'
