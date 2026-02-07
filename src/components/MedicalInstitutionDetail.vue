@@ -66,17 +66,17 @@
           <v-card-title class="card-title">専門家による評価</v-card-title>
           <v-card-text>
             <ul class="pl-4">
-              <li class="mb-2">評価PT:
-                <div v-if="report.pt_by_expert != ''">
+              <li class="mb-2">評価PT: <span v-if="report.pt_by_expert == ''">なし</span>
+                <div v-else>
                   <ul class="pl-4" v-for="ptName, j in report.pt_by_expert.split('、')" :key="j">
                     <li>{{ ptName }}</li>
                   </ul>
                 </div>
               </li>
-              <li class="mb-2">因果関係評価: {{ report.causal_relationship_by_expert }}</li>
-              <li class="mb-2">ブライトン分類レベル: {{ report.brighton_classification_by_expert }}</li>
-              <li>意見:
-                <div v-if="report.comments_by_expert != ''">
+              <li class="mb-2">因果関係評価: {{ report.causal_relationship_by_expert == "" ? "なし" : report.causal_relationship_by_expert }}</li>
+              <li class="mb-2">ブライトン分類レベル: {{ report.brighton_classification_by_expert == "" ? "なし": report.brighton_classification_by_expert }}</li>
+              <li>意見: <span v-if="report.comments_by_expert == ''">なし</span>
+                <div v-else>
                   <span class="pl-3">{{ report.comments_by_expert }}</span>
                 </div>
               </li>

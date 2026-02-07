@@ -121,7 +121,7 @@
     class="data-table-suspect-issues"
     show-expand
     expand-on-click
-    item-value="no"
+    item-value="id"
     v-model:expanded="expandedArray"
     :custom-key-filter="customKeyFilter"
     items-per-page-text="ページに表示する項目数"
@@ -180,7 +180,7 @@
           :PT_names="item.PT_names"
           :gross_result_dates="item.gross_result_dates"
           :gross_results="item.gross_results"
-          :clickClose="() => { expandedArray = expandedArray.filter( n => n !== item.no )}"
+          :clickClose="() => { expandedArray = expandedArray.filter( n => n !== item.id )}"
         ></MedicalInstitutionDetail>
       </td>
     </template>
