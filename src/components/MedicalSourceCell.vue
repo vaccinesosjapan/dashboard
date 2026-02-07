@@ -24,9 +24,9 @@ issueNumber.value = infoTuple[2]
 const extractInfoFromId = (id: string) : [string, string, string] =>{
 	const split = id.split('-')
 
-	const ordinalNumber = '第' + split[0].replace('th', '回')
-	const severity = extractSeverity(split[1])
-	const number = 'No.' + split[2]
+	const ordinalNumber = '第' + split[0].slice(0, -2) + '回' // st, nd, rd, th など序数の文字を削除
+	const severity = split.length < 4 ? extractSeverity(split[1]) : extractSeverity(split[2])
+	const number = split.length < 4 ? 'No.' + split[2] : 'No.' + split[3]
 
 	return [ordinalNumber, severity, number]
 }
