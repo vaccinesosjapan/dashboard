@@ -34,22 +34,27 @@
       <v-col cols="12" md="6">
         <v-card variant="flat" color="blue-grey-darken-1">
           <v-card-title class="card-title">基礎疾患等</v-card-title>
-          <v-card-text class="test">{{ pre_existing_conditions }}</v-card-text>
-
+          <v-card-text class="card-text"><span v-if="pre_existing_conditions_list.length < 2">{{ pre_existing_conditions }}</span>
+            <div v-else>
+              <ul class="pl-4" v-for="pec_item, j in pre_existing_conditions_list" :key="j">
+                <li>{{ pec_item }}</li>
+              </ul>
+            </div>
+          </v-card-text>
         </v-card>
       </v-col>
 
       <v-col cols="12" md="6">
         <v-card variant="flat" color="blue-grey-darken-1">
           <v-card-title class="card-title">報告医が死因等の判断に至った検査</v-card-title>
-          <v-card-text class="test">{{ tests_used_for_determination }}</v-card-text>
+          <v-card-text class="card-text">{{ tests_used_for_determination == "" ? "なし" : tests_used_for_determination }}</v-card-text>
         </v-card>
       </v-col>
 
       <v-col cols="12" md="6">
         <v-card variant="flat" color="blue-grey-darken-1">
           <v-card-title class="card-title">専門家による評価コメント</v-card-title>
-          <v-card-text class="test">{{ comments_by_expert }}</v-card-text>
+          <v-card-text class="card-text">{{ comments_by_expert == "" ? "なし" : comments_by_expert }}</v-card-text>
         </v-card>
       </v-col>
 
@@ -63,7 +68,7 @@
 <script setup lang="ts">
 import { ElapsedDays } from '@/tools/ElapsedDays';
 
-defineProps<{
+const props = defineProps<{
   no: number
   vaccinated_dates: string
   onset_dates: string[]
@@ -73,6 +78,8 @@ defineProps<{
   comments_by_expert: string
   clickClose: () => void
 }>()
+
+const pre_existing_conditions_list = props.pre_existing_conditions.split('\n')
 </script>
 
 <style scoped>
@@ -81,7 +88,7 @@ defineProps<{
   padding-top: 5px;
 }
 
-.test {
+.card-text {
   width: 100%;
 }
 
