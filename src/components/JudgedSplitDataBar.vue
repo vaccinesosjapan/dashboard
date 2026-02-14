@@ -97,10 +97,16 @@ const CreateCountAndRateChartOption = (title: string, labels: string[], color: s
     tooltip: {
       y: {
         formatter: function(value: any, { series, seriesIndex, dataPointIndex, w } :any) {
+          const numValue = value as number
+          if( numValue == null ){
+            // 件数がゼロの時の「認定比率」など、nullになる可能性があるため。
+            return
+          }
+
           if(w.config.series[seriesIndex].name == '認定比率'){
-            return (value as number).toFixed(1) + ' %'
+            return numValue.toFixed(1) + ' %'
           } else {
-            return (value as number).toLocaleString() + ' 件'
+            return numValue.toLocaleString() + ' 件'
           }
         }
       },
