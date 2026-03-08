@@ -19,7 +19,7 @@ const headerColor = shallowRef<string>('#CFD8DC') // blue-grey-lighten-4 color o
     <v-sheet>
       <CustomHeader1 title="本サイトについて" :bg_color="headerColor" />
       <p class="text-body-1 mt-3 mb-8">
-        厚生労働省のサイトには、新型コロナワクチンの「<a href="https://www.mhlw.go.jp/stf/shingi/shingi-kousei_284075.html">副反応疑い報告</a>」や「<a href="https://www.mhlw.go.jp/stf/shingi/shingi-shippei_127696_00001.html">予防接種健康被害</a>」に関する情報が
+        厚生労働省のサイトには、新型コロナワクチンの「<a href="https://www.mhlw.go.jp/stf/shingi/shingi-kousei_284075.html">副反応疑い報告</a>」や「<a href="https://www.mhlw.go.jp/stf/shingi/shingi-shippei_127696_00006.html">予防接種健康被害</a>」に関する情報が
         PDF形式で多数掲載されています。本サイトは、ダッシュボードを中心にそれらのデータを見やすく整理して検索可能にし、多くの人にとって、より見やすく、知見を得やすい情報源にするためのサイトです。
       </p>
 
