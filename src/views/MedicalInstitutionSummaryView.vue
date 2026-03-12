@@ -2,14 +2,8 @@
   <v-container fluid>
 
     <v-container v-if="medicalInstitutionSummary == undefined">
-      <v-progress-circular
-        color="primary"
-        indeterminate
-        :size="100"
-        :width="10"
-      ></v-progress-circular>
+      <v-progress-circular color="primary" indeterminate :size="100" :width="10" />
     </v-container>
-
     <v-container v-else>
       <CustomHeader1 title="副反応疑い報告" :bg_color="headerColor" />
       <p class="text-body-1 mb-5">
@@ -22,7 +16,7 @@
       </p>
 
       <div class="d-flex justify-end">
-        <v-btn size="small" @click="changeChartView" color="blue" v-if="isPersentView">件数を表示</v-btn>
+        <v-btn size="small" @click="changeChartView" color="blue" v-if="isPercentView">件数を表示</v-btn>
         <v-btn size="small" @click="changeChartView" color="blue" v-else>割合を表示</v-btn>
       </div>
 
@@ -39,18 +33,36 @@
       <p class="text-caption text-right">※ このページは <b>{{ medicalInstitutionSummary?.medical_institution_summary_from_reports.date }}</b> 時点までの報告内容に基づいた集計結果を表示しています。</p>
     </v-container>
 
+    <v-container v-if="medicalInstitutionCumulative.length == 0">
+      <v-progress-circular color="primary" indeterminate :size="100" :width="10" />
+    </v-container>
+    <v-container v-else>
+      <CustomHeader2 title="報告件数の推移"></CustomHeader2>
+      <p class="text-body-1 mb-1">
+        検討部会で発表された副反応疑いの、各回での報告件数と累計件数のグラフです。
+      </p>
+
+      <v-row class="mb-5">
+        <v-col cols="12">
+          <CumulativeGraph :data="medicalInstitutionCumulative" />
+        </v-col>
+      </v-row>
+    </v-container>
+
   </v-container>
 </template>
 
 <script setup lang="ts">
 import { onMounted, shallowRef } from 'vue'
 import axios from 'axios'
-import { AppBarTitle, AppBarColor, MedicalInstitutionSummaryURL, AppBarUseHelpPage, AppBarHelpPageLink } from '@/router/data'
+import { AppBarTitle, AppBarColor, MedicalInstitutionSummaryURL, AppBarUseHelpPage, AppBarHelpPageLink, MedicalInstitutionCumulativeURL } from '@/router/data'
 import router from '@/router/index'
 import { type IMedicalInstitutionSummary } from '@/types/MedicalInstitutionReports'
 import { CreatePieChartOption } from '@/tools/ChartOptions'
 import CustomHeader1 from '@/components/CustomHeader1.vue'
 import CustomHeader2 from '@/components/CustomHeader2.vue'
+import type { ICumulativeData } from '@/types/CumulativeData'
+import CumulativeGraph from '@/components/CumulativeGraph.vue'
 
 AppBarTitle.value = String(router.currentRoute.value.name)
 AppBarColor.value = '#2962ff'
@@ -60,6 +72,7 @@ AppBarHelpPageLink.value = 'how-to-use-summary-page'
 const headerColor = shallowRef<string>('#2962ff')
 
 const medicalInstitutionSummary = shallowRef<IMedicalInstitutionSummary>()
+const medicalInstitutionCumulative = shallowRef<ICumulativeData[]>([])
 onMounted(() => {
   axios
     .get<IMedicalInstitutionSummary>(MedicalInstitutionSummaryURL)
@@ -81,21 +94,31 @@ onMounted(() => {
       // 2つ目以降のグラフが手動リフレッシュ無しにちゃんと表示されるようにするために必要な処理
       window.dispatchEvent(new Event('resize'))
     })
-    .catch((error) => console.log('failed to get medical insutitution summary data: ' + error))
+    .catch((error) => console.log('failed to get medical institution summary data: ' + error))
+  
+  axios
+    .get<ICumulativeData[]>(MedicalInstitutionCumulativeURL)
+    .then((response) => {
+      medicalInstitutionCumulative.value = response.data
+
+      // 2つ目以降のグラフが手動リフレッシュ無しにちゃんと表示されるようにするために必要な処理
+      window.dispatchEvent(new Event('resize'))
+    })
+    .catch((error) => console.log('failed to get medical institution cumulative data: ' + error))
 })
 
-const isPersentView = shallowRef(true)
+const isPercentView = shallowRef(true)
 
 const causalRelationshipLabels = shallowRef<string[]>([])
 const causalRelationshipSeries = shallowRef<any[]>([])
-const causalRelationshipOptions = CreatePieChartOption('報告医の因果関係評価による内訳', causalRelationshipLabels, isPersentView)
+const causalRelationshipOptions = CreatePieChartOption('報告医の因果関係評価による内訳', causalRelationshipLabels, isPercentView)
 
 const severityLabels = shallowRef<string[]>([])
 const severitySeries = shallowRef<any[]>([])
-const severityOptions = CreatePieChartOption('「関連あり」案件の重篤度による内訳', severityLabels, isPersentView)
+const severityOptions = CreatePieChartOption('「関連あり」案件の重篤度による内訳', severityLabels, isPercentView)
 
 const changeChartView = () => {
-  isPersentView.value = !isPersentView.value
+  isPercentView.value = !isPercentView.value
   window.dispatchEvent(new Event('resize'))
 }
 </script>
