@@ -32,6 +32,8 @@
 				<v-btn
 					text="閉じる"
 					@click="isActive.value = false"
+					variant="outlined"
+					color="blue-darken-2"
 				>閉じる</v-btn>
 			</v-card-actions>
 		</v-card>

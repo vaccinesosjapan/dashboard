@@ -70,6 +70,8 @@
             :label="item.label"
             ></SelectItems>
 
+            <EvaluationCausalRelationshipHelpDialog v-else-if="item.type == 'evaluation_CR'" />
+
             <SelectItems v-else-if="item.type == 'severity'"
             v-model:values="severityFilterValues" v-model:items="severityFilterItems"
             :search-triger-func="searchTrigerFunc" :clear-trigger-func="clearTriggerFunc"
@@ -126,6 +128,14 @@
     :custom-key-filter="customKeyFilter"
     items-per-page-text="ページに表示する項目数"
   >
+    <template v-slot:[`column.causal_relationship`]="column">
+      <span>{{ column.column.title }}<br>(報告医評価)</span>
+    </template>
+
+    <template v-slot:[`column.severity`]="column">
+      <span>{{ column.column.title }}<br>(報告医評価)</span>
+    </template>
+
     <template v-slot:[`item.manufacturer`]="item">
       <span class="manufacturer-text">{{ item.value }}</span>
     </template>
@@ -152,6 +162,10 @@
 
     <template v-slot:[`item.causal_relationship`]="item">
       <CausualRelationshipRow :CR="item.value"></CausualRelationshipRow>
+    </template>
+    
+    <template v-slot:[`item.pre_existing_disease_names`]="item">
+      <StringArrayRow :s-array="item.value"></StringArrayRow>
     </template>
 
     <template v-slot:[`item.PT_names`]="item">
@@ -214,6 +228,7 @@ import ConcurrentVaccinationRow from '@/components/ConcurrentVaccinationRow.vue'
 import MedicalInstitutionDetail from '@/components/MedicalInstitutionDetail.vue'
 import MedicalSourceCell from '@/components/MedicalSourceCell.vue'
 import ConcurrentVaccinationHelp from '@/components/ConcurrentVaccinationHelp.vue'
+import EvaluationCausalRelationshipHelpDialog from '@/components/EvaluationCausalRelationshipHelpDialog.vue'
 
 AppBarTitle.value = String(router.currentRoute.value.name)
 AppBarColor.value = '#2962ff'
@@ -264,6 +279,7 @@ const headers = [
   { title: '製造販売業者', align: 'start', key: 'manufacturer' },
   { title: 'ロット番号', align: 'start', key: 'lot_no' },
   { title: '同時接種', align: 'start', key: 'concurrent_vaccination_flag'},
+  { title: '基礎疾患等', align: 'start', key: 'pre_existing_disease_names' },
   { title: '症状名', align: 'start', key: 'PT_names' },
   { title: '因果関係', align: 'start', key: 'causal_relationship' },
   { title: '重篤度', align: 'start', key: 'severity' },
@@ -321,6 +337,11 @@ const daysToOnsetFilterFunc = (value: any): boolean => {
   return NumberFilterFunc(value, daysToOnsetFromFilterVal, daysToOnsetToFilterVal)
 }
 
+const preExistingDiseaseFilterVal = shallowRef('')
+const preExistingDiseaseFilterFunc = (value: any): boolean => {
+  return StringArrayFilterFunc(value, preExistingDiseaseFilterVal)
+}
+
 const ptNameFilterVal = shallowRef('')
 const ptNameFilterFunc = (value: any): boolean => {
   return StringArrayFilterFunc(value, ptNameFilterVal)
@@ -368,6 +389,7 @@ const customKeyFilter = {
   vaccine_name: vaccineNameFilterFunc,
   manufacturer: manufacturerFilterFunc,
   lot_no: lotNoFilterFunc,
+  pre_existing_disease_names: preExistingDiseaseFilterFunc,
   PT_names: ptNameFilterFunc,
   causal_relationship: causualFilterFunc,
   severity: severityFilterFunc,
@@ -396,6 +418,7 @@ const queryParamMap: IQueryParam[] = [
   {name: "vdt", val: vaccinatedDateToFilterVal},
   {name: "dtof", val: daysToOnsetFromFilterVal},
   {name: "dtot", val: daysToOnsetToFilterVal},
+  {name: "pre", val: preExistingDiseaseFilterVal},
   {name: "pt", val: ptNameFilterVal},
   {name: "cr", val: causualFilterValues},
   {name: "sv", val: severityFilterValues},
@@ -423,9 +446,11 @@ const individualSearchItems = [
   { md: 4, label: "性別", model: _blank, type: "gender"},
   { md: 4, label: "接種日", model: _blank, type: "vaccinated_date"},
   { md: 4, label: "発症までの日数", model: _blank, type: "days_to_onset"},
+  { md: 4, label: "基礎疾患等", model: preExistingDiseaseFilterVal, type: "text" },
   { md: 4, label: "症状名(PT名)", model: ptNameFilterVal, type: "text"},
-  { md: 4, label: "因果関係", model: _blank, type: "causal_relationship"},
-  { md: 4, label: "重篤度", model: _blank, type: "severity"},
+  { md: 4, label: "因果関係（報告医評価）", model: _blank, type: "causal_relationship"},
+  { md: 4, label: "因果関係評価などについて", model: _blank, type: "evaluation_CR"},
+  { md: 4, label: "重篤度（報告医評価）", model: _blank, type: "severity"},
   { md: 4, label: "転帰日", model: _blank, type: "result_date"},
   { md: 4, label: "転帰内容", model: _blank, type: "result",},
 ]
@@ -446,6 +471,7 @@ const downloadFilterdDataAsCsv = () => {
     if(!vaccineNameFilterFunc(rowItem.vaccine_name)) showThisRow=false
     if(!manufacturerFilterFunc(rowItem.manufacturer)) showThisRow=false
     if(!lotNoFilterFunc(rowItem.lot_no)) showThisRow=false
+    if(!preExistingDiseaseFilterFunc(rowItem.pre_existing_disease_names)) showThisRow=false
     if(!ptNameFilterFunc(rowItem.PT_names)) showThisRow=false
     if(!causualFilterFunc(rowItem.causal_relationship)) showThisRow=false
     if(!severityFilterFunc(rowItem.severity)) showThisRow=false
