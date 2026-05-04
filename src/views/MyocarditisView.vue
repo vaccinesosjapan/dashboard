@@ -102,7 +102,7 @@
     class="data-table-suspect-issues"
     show-expand
     expand-on-click
-    item-value="no"
+    item-value="id"
     v-model:expanded="expandedArray"
     :custom-key-filter="customKeyFilter"
     items-per-page-text="ページに表示する項目数"

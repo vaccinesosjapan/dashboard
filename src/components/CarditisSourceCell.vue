@@ -10,7 +10,7 @@ const carditisType = shallowRef<string>()
 
 const props = defineProps<{
 	url: string
-	issueNumber: number
+	issueNumber: number | string
 	id: string
 }>()
 
