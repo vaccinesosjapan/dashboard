@@ -86,7 +86,7 @@
 import { ElapsedDays } from '@/tools/ElapsedDays';
 
 defineProps<{
-  no: number
+  no: number | string
   vaccinated_date: string
   onset_dates: string[]
   PT_names: string[]
