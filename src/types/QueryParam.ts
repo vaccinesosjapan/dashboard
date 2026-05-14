@@ -5,6 +5,8 @@ import type { LocationQuery } from "vue-router"
 export interface IQueryParam {
 	name: string
 	val: ShallowRef<any>
+	// Queryパラメータをパースしたデータを引数にもらって、valに適用すべきデータ型へと復元する関数を指定する。
+	restore_func?: (arg: any) => any
 }
 
 export const CreateUrlWithQueryParams = (queryParamMap: IQueryParam[]): string => {
@@ -23,21 +25,24 @@ export const CreateUrlWithQueryParams = (queryParamMap: IQueryParam[]): string =
 	return retUrl
 }
 
-// Parseしたパラメータがあれば、「検索条件の変更あり」としてtrueを返す。
-// なければfalseを返す。
+// Parseしたパラメータがあれば、「検索条件の変更あり」としてtrueを返す。なければfalseを返す。
 export const ParseQueryParams = (queryParamMap: IQueryParam[], pageQueryParams: LocationQuery ): boolean => {
 	let isSearchConditionChanged = false
 
 	queryParamMap.forEach(item => {
-	const param = pageQueryParams[item.name]
+		const param = pageQueryParams[item.name]
 		if(param != undefined) {
 			if(Array.isArray(item.val.value)){
-			const paramArray = param.toString().split(',')
-			for (let index = 0; index < paramArray.length; index++) {
-				item.val.value.push(paramArray[index])
-			}
+				const paramArray = param.toString().split(',')
+				for (let index = 0; index < paramArray.length; index++) {
+					if( item.restore_func == undefined ){
+						item.val.value.push(paramArray[index])
+					} else {
+						item.val.value.push(item.restore_func(paramArray[index]))
+					}
+				}
 			} else {
-			item.val.value = param.toString()
+				item.val.value = param.toString()
 			}
 			isSearchConditionChanged = true
 		}

@@ -15,13 +15,13 @@
 
             <SelectItems v-if="sItem.type == 'judged_result'"
             v-model:values="judgedResultFilterValues" v-model:items="judgedResultFilterItems"
-            :search-triger-func="searchTrigerFunc" :clear-trigger-func="clearTriggerFunc"
+            :search-trigger-func="searchTriggerFunc" :clear-trigger-func="clearTriggerFunc"
             label="判定"
             ></SelectItems>
 
             <SelectItems v-else-if="sItem.type == 'reasons'"
             v-model:values="reasonsForRepudiationValues" v-model:items="reasonsForRepudiationItems"
-            :search-triger-func="searchTrigerFunc" :clear-trigger-func="clearTriggerFunc"
+            :search-trigger-func="searchTriggerFunc" :clear-trigger-func="clearTriggerFunc"
             label="否認理由"
             ></SelectItems>
 
@@ -32,27 +32,48 @@
               </template>
 
               <template v-slot:default="{ isActive }">
-                <ReasonsForRepudiationCard :close-func="()=>{isActive.value = false}"></ReasonsForRepudiationCard>
+                <ReasonsForRepudiationCard :close-func="()=>{isActive.value = false}" />
               </template>
             </v-dialog>
 
             <SelectItems v-else-if="sItem.type == 'judged-date'"
             v-model:values="judgedDatesFilterValues" v-model:items="judgedDatesFilterItems"
-            :search-triger-func="searchTrigerFunc" :clear-trigger-func="clearTriggerFunc"
+            :search-trigger-func="searchTriggerFunc" :clear-trigger-func="clearTriggerFunc"
             label="判定日（選択した日付のみ）"
             ></SelectItems>
 
             <SelectItems v-else-if="sItem.type == 'description_of_claim'"
             v-model:values="descriptionOfClaimFilterValues" v-model:items="descriptionOfClaimFilterItems"
-            :search-triger-func="searchTrigerFunc" :clear-trigger-func="clearTriggerFunc"
+            :search-trigger-func="searchTriggerFunc" :clear-trigger-func="clearTriggerFunc"
             label="請求内容"
             ></SelectItems>
-            
+
+            <SelectItemsWithNumber v-else-if="sItem.type == 'inoculation_type'"
+              v-model:values="inoculationTypeValues"
+              v-model:items="inoculationTypeItems"
+              :search-trigger-func="searchTriggerFunc" :clear-trigger-func="clearTriggerFunc"
+              label="接種種類"
+            >
+              <template v-slot:help>
+                <v-dialog transition="dialog-bottom-transition"
+                  width="auto">
+                  <template v-slot:activator="{ props }">
+                    <v-btn class="text-body-2 ml-2" prepend-icon="mdi-help-circle-outline" color="blue-grey-lighten-4"
+                      v-bind="props">注釈...</v-btn>
+                  </template>
+
+                  <template v-slot:default="{ isActive }">
+                    <ReasonsForInoculationCard :close-func="() => { isActive.value = false }" />
+                  </template>
+                </v-dialog>
+              </template>
+            </SelectItemsWithNumber>
+
             <v-text-field v-else
               :label="sItem.label"
               v-model="sItem.model.value"
               :type="sItem.type"
-              @input="searchTrigerFunc"
+              @input="searchTriggerFunc"
               @click:clear="clearTriggerFunc"
               clearable
               hide-details
@@ -68,13 +89,13 @@
             :title="item.label"
             v-model:min="ageFromFilterVal"
             v-model:max="ageToFilterVal"
-            :search-triger-func="searchTrigerFunc"
+            :search-trigger-func="searchTriggerFunc"
             :clear-trigger-func="clearTriggerFunc"
             ></NumberFilter>
 
             <SelectItems v-else-if="item.type == 'gender'"
             v-model:values="genderFilterValues" v-model:items="genderFilterItems"
-            :search-triger-func="searchTrigerFunc" :clear-trigger-func="clearTriggerFunc"
+            :search-trigger-func="searchTriggerFunc" :clear-trigger-func="clearTriggerFunc"
             :label="item.label"
             ></SelectItems>
 
@@ -82,7 +103,7 @@
               :label="item.label"
               v-model="item.model.value"
               :type="item.type"
-              @input="searchTrigerFunc"
+              @input="searchTriggerFunc"
               @click:clear="clearTriggerFunc"
               clearable
               hide-details
@@ -145,6 +166,10 @@
       <a :href="item.value">リンク</a>
     </template>
 
+    <template v-slot:[`item.inoculation_type`]="item">
+      <span class="small-text">{{ InoculationTypeText(item.value) }}</span>
+    </template>
+
     <template v-slot:expanded-row="{ item }">
       <td :colspan="headers.length + 1">
         <JudgedIssueDetailCard
@@ -175,8 +200,12 @@ import ReasonsForRepudiationCard from '@/components/ReasonsForRepudiationCard.vu
 import NumberFilter from '@/components/NumberFilter.vue'
 import JudgedIssueDetailCard from '@/components/JudgedIssueDetailCard.vue'
 import SelectItems from '@/components/SelectItems.vue'
+import SelectItemsWithNumber from '@/components/SelectItemsWithNumber.vue'
 import BillingDetailsChip from '@/components/BillingDetailsChip.vue'
 import SearchRelatedToolBar from '@/components/SearchRelatedToolBar.vue'
+import { SelectItem } from '@/types/SelectItem'
+import { InoculationTypeText } from '@/tools/InoculationTypeText'
+import ReasonsForInoculationCard from '@/components/ReasonsForInoculationCard.vue'
 
 AppBarTitle.value = String(router.currentRoute.value.name)
 AppBarColor.value = 'green'
@@ -216,7 +245,8 @@ const headers = [
   { title: '症状', align: 'start', key: 'symptoms' },
   { title: '基礎疾患', align: 'start', key: 'pre_existing_conditions' },
   { title: '判定', align: 'start', key: 'judgment_result', width: 25 },
-  { title: '否認理由', align: 'start', key: 'reasons_for_repudiation', width: 110 },
+  { title: '否認理由', align: 'start', key: 'reasons_for_repudiation', width: 100 },
+  { title: '接種種類', align: 'start', key: 'inoculation_type', width: 120 },
   { title: '元資料', align: 'start', key: 'source_url', width: 100},
 ]
 
@@ -295,8 +325,20 @@ const reasonsForRepudiationFilterFunc = (value: any): boolean => {
   return false
 }
 
+const inoculationTypeValues = shallowRef<number[]>([])
+// TODO: InoculationType の数字をメタデータから取得して使うようにしたい。
+const inoculationTypeItems = shallowRef<SelectItem[]>([
+  new SelectItem(0, InoculationTypeText(0)),
+  new SelectItem(1, InoculationTypeText(1))
+])
+const inoculationTypeFilterFunc = (value: any): boolean => {
+  if (inoculationTypeValues.value.length == 0) return true
+  if (inoculationTypeValues.value.indexOf(value) > -1) return true
+  return false
+}
+
 const searchConditionChanged = shallowRef<boolean>(false)
-const searchTrigerFunc = () => {
+const searchTriggerFunc = () => {
   SearchTriggerFunc()
   searchConditionChanged.value = IsConditionChanged(queryParamMap)
 }
@@ -313,6 +355,7 @@ const issueSearchItems = [
   { md: 3, label: "判定日（選択した日付のみ）", model: _blank, type: "judged-date"},
   { md: 3, label: "否認理由", model: _blank , type: "reasons"},
   { md: 3, label: "", model: _blank , type: "reasons-help"},
+  { md: 3, label: "接種種類", model: _blank , type: "inoculation_type"},
 ]
 const individualSearchItems = [
   { md: 4, label: "年齢", model: _blank, type: "age-range"},
@@ -332,7 +375,8 @@ const queryParamMap: IQueryParam[] = [
   {name: "sym", val: symptomsFilterVal},
   {name: "re", val: judgedResultFilterValues},
   {name: "pre", val: preExistingConditionFilterVal},
-  {name: "rea", val: reasonsForRepudiationValues}
+  {name: "rea", val: reasonsForRepudiationValues},
+  {name: "ino", val: inoculationTypeValues, restore_func: (param: string) => { return Number(param) }}
 ]
 searchConditionChanged.value = ParseQueryParams(queryParamMap, pageQueryParams)
 
@@ -353,7 +397,8 @@ const customKeyFilter = {
   symptoms: symptomsFilterFunc,
   judgment_result: judgmentResultFilterFunc,
   pre_existing_conditions: preExistingConditionFilterFunc,
-  reasons_for_repudiation: reasonsForRepudiationFilterFunc
+  reasons_for_repudiation: reasonsForRepudiationFilterFunc,
+  inoculation_type: inoculationTypeFilterFunc
 }
 
 const downloadFilteredDataAsCsv = () => {
@@ -374,6 +419,7 @@ const downloadFilteredDataAsCsv = () => {
     if(!judgmentResultFilterFunc(rowItem.judgment_result)) showThisRow=false
     if(!preExistingConditionFilterFunc(rowItem.pre_existing_conditions)) showThisRow=false
     if(!reasonsForRepudiationFilterFunc(rowItem.reasons_for_repudiation)) showThisRow=false
+    if(!inoculationTypeFilterFunc(rowItem.inoculation_type)) showThisRow=false
 
     if(showThisRow) filteredData.push(rowItem)
   }
@@ -408,5 +454,9 @@ const clearFilter = () => {
   text-decoration-line: underline;
   text-decoration-color: rgba(var(--v-theme-on-surface), var(--v-high-emphasis-opacity));
   text-decoration-thickness: 1.2px;
+}
+
+.small-text {
+  font-size: 0.95rem;
 }
 </style>

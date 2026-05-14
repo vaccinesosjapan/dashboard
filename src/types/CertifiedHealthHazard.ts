@@ -8,6 +8,7 @@ export interface ICertifiedHealthHazardIssue {
   judgment_result: string
   pre_existing_conditions: string[]
   reasons_for_repudiation: string[]
+  inoculation_type: number
   remarks: string
   source_url: string
 }
