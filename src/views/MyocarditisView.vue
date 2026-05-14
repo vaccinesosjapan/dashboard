@@ -16,7 +16,7 @@
               :label="item.label"
               v-model="item.model.value"
               :type="item.type"
-              @input="searchTrigerFunc"
+              @input="searchTriggerFunc"
               @click:clear="clearTriggerFunc"
               clearable
               hide-details
@@ -31,12 +31,12 @@
 
             <NumberFilter v-if="item.type == 'age'"
             v-model:min="ageFromFilterVal" v-model:max="ageToFilterVal"
-            :title="item.label" :search-triger-func="searchTrigerFunc" :clear-trigger-func="clearTriggerFunc"
+            :title="item.label" :search-trigger-func="searchTriggerFunc" :clear-trigger-func="clearTriggerFunc"
             ></NumberFilter>
 
             <SelectItems v-else-if="item.type == 'gender'"
             v-model:values="genderFilterValues" v-model:items="genderFilterItems"
-            :search-triger-func="searchTrigerFunc" :clear-trigger-func="clearTriggerFunc"
+            :search-trigger-func="searchTriggerFunc" :clear-trigger-func="clearTriggerFunc"
             :label="item.label"
             ></SelectItems>
 
@@ -45,12 +45,12 @@
 
             <NumberFilter v-else-if="item.type == 'days_to_onset'"
             v-model:min="daysToOnsetFromFilterVal" v-model:max="daysToOnsetToFilterVal"
-            :title="item.label" :search-triger-func="searchTrigerFunc" :clear-trigger-func="clearTriggerFunc"
+            :title="item.label" :search-trigger-func="searchTriggerFunc" :clear-trigger-func="clearTriggerFunc"
             ></NumberFilter>
 
             <NumberFilter v-else-if="item.type == 'vaccinated_times'"
             v-model:min="vaccinatedTimesFromFilterVal" v-model:max="vaccinatedTimesToFilterVal"
-            :title="item.label" :search-triger-func="searchTrigerFunc" :clear-trigger-func="clearTriggerFunc"
+            :title="item.label" :search-trigger-func="searchTriggerFunc" :clear-trigger-func="clearTriggerFunc"
             ></NumberFilter>
 
             <FlatpickrCalendar v-else-if="item.type == 'gross_result_date'"
@@ -60,7 +60,7 @@
               :label="item.label"
               v-model="item.model.value"
               :type="item.type"
-              @input="searchTrigerFunc"
+              @input="searchTriggerFunc"
               @click:clear="clearTriggerFunc"
               clearable
               hide-details
@@ -72,7 +72,7 @@
           <v-col cols="12" md="4" class="group">
             <SelectItems
             v-model:values="causalRelFilterValues" v-model:items="causalRelFilterItems"
-            :search-triger-func="searchTrigerFunc" :clear-trigger-func="clearTriggerFunc"
+            :search-trigger-func="searchTriggerFunc" :clear-trigger-func="clearTriggerFunc"
             label="専門家の因果関係評価"
             ></SelectItems>
           </v-col>
@@ -327,7 +327,7 @@ const customKeyFilter = {
 }
 
 const searchConditionChanged = shallowRef<boolean>(false)
-const searchTrigerFunc = () => {
+const searchTriggerFunc = () => {
   SearchTriggerFunc()
   searchConditionChanged.value = IsConditionChanged(queryParamMap)
 }

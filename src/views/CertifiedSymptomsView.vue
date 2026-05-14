@@ -13,14 +13,14 @@
           <v-col cols="12" md="6" class="group">
             <SearchableSelectItems
               v-model:values="symptomsFilterValues" v-model:items="symptomsFilterItems"
-              :search-triger-func="searchTrigerFunc" :clear-trigger-func="clearTriggerFunc"
+              :search-trigger-func="searchTriggerFunc" :clear-trigger-func="clearTriggerFunc"
               label="症状"
             ></SearchableSelectItems>
           </v-col>
 
           <v-col cols="12" md="6" class="group">
             <NumberFilter
-            v-model:min="sumFromFilterVal" v-model:max="sumToFilterVal" :search-triger-func="searchTrigerFunc" :clear-trigger-func="clearTriggerFunc"
+            v-model:min="sumFromFilterVal" v-model:max="sumToFilterVal" :search-trigger-func="searchTriggerFunc" :clear-trigger-func="clearTriggerFunc"
             title="合計件数"
             ></NumberFilter>
           </v-col>
@@ -130,7 +130,7 @@ const sumFilterFunc = (value: any): boolean => {
 }
 
 const searchConditionChanged = shallowRef<boolean>(false)
-const searchTrigerFunc = () => {
+const searchTriggerFunc = () => {
   SearchTriggerFunc()
   searchConditionChanged.value = IsConditionChanged(queryParamMap)
 }

@@ -16,7 +16,7 @@
               :label="item.label"
               v-model="item.model.value"
               :type="item.type"
-              @input="searchTrigerFunc"
+              @input="searchTriggerFunc"
               @click:clear="clearTriggerFunc"
               clearable
               hide-details
@@ -30,12 +30,12 @@
           <v-col v-for="item, i in individualSearchItems" :key="i" cols="12" :md="item.md" class="group mb-1">
             <NumberFilter v-if="item.type == 'age'"
             v-model:min="ageFromFilterVal" v-model:max="ageToFilterVal"
-            :title="item.label" :search-triger-func="searchTrigerFunc" :clear-trigger-func="clearTriggerFunc"
+            :title="item.label" :search-trigger-func="searchTriggerFunc" :clear-trigger-func="clearTriggerFunc"
             ></NumberFilter>
 
             <SelectItems v-else-if="item.type == 'gender'"
             v-model:values="genderFilterValues" v-model:items="genderFilterItems"
-            :search-triger-func="searchTrigerFunc" :clear-trigger-func="clearTriggerFunc"
+            :search-trigger-func="searchTriggerFunc" :clear-trigger-func="clearTriggerFunc"
             :label="item.label"
             ></SelectItems>
 
@@ -47,18 +47,18 @@
 
             <NumberFilter v-else-if="item.type == 'vaccinated_times'"
             v-model:min="vaccinatedTimesFromFilterVal" v-model:max="vaccinatedTimesToFilterVal"
-            :title="item.label" :search-triger-func="searchTrigerFunc" :clear-trigger-func="clearTriggerFunc"
+            :title="item.label" :search-trigger-func="searchTriggerFunc" :clear-trigger-func="clearTriggerFunc"
             ></NumberFilter>
             
             <SelectItems v-else-if="item.type == 'causal_rel'"
             v-model:values="causalRelFilterValues" v-model:items="causalRelFilterItems"
-            :search-triger-func="searchTrigerFunc" :clear-trigger-func="clearTriggerFunc"
+            :search-trigger-func="searchTriggerFunc" :clear-trigger-func="clearTriggerFunc"
             :label="item.label"
             ></SelectItems>
 
             <SelectItems v-else-if="item.type == 'causal_rel_expert'"
             v-model:values="causalRelExpertFilterValues" v-model:items="causalRelExpertFilterItems"
-            :search-triger-func="searchTrigerFunc" :clear-trigger-func="clearTriggerFunc"
+            :search-trigger-func="searchTriggerFunc" :clear-trigger-func="clearTriggerFunc"
             :label="item.label"
             ></SelectItems>
 
@@ -69,7 +69,7 @@
               :label="item.label"
               v-model="item.model.value"
               :type="item.type"
-              @input="searchTrigerFunc"
+              @input="searchTriggerFunc"
               @click:clear="clearTriggerFunc"
               clearable
               hide-details
@@ -344,7 +344,7 @@ const customKeyFilter = {
 }
 
 const searchConditionChanged = shallowRef<boolean>(false)
-const searchTrigerFunc = () => {
+const searchTriggerFunc = () => {
   SearchTriggerFunc()
   searchConditionChanged.value = IsConditionChanged(queryParamMap)
 }

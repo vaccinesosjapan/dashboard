@@ -4,7 +4,7 @@
 		:items="items"
 		:label="label"
 		multiple
-		@update:model-value="searchTrigerFunc"
+		@update:model-value="searchTriggerFunc"
 		:item-props="itemProps"
 		hide-details="auto"
 		>
@@ -57,7 +57,7 @@ import { onMounted, shallowRef } from 'vue';
 
 defineProps<{
   label: string
-  searchTrigerFunc: () => void
+  searchTriggerFunc: () => void
   clearTriggerFunc: () => void
 }>()
 

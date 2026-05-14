@@ -14,7 +14,7 @@
           <v-col v-for="item, i in vaccineSearchItems" :key="i" cols="12" :md="item.md">
             <SearchableSelectItems v-if="item.type == 'manufacturer'"
               v-model:values="manufacturerFilterValues" v-model:items="manufacturerFilterItems"
-              :search-triger-func="searchTrigerFunc" :clear-trigger-func="clearTriggerFunc"
+              :search-trigger-func="searchTriggerFunc" :clear-trigger-func="clearTriggerFunc"
               label="製造販売業者"
             >
               <template v-slot:help>
@@ -24,7 +24,7 @@
 
             <SearchableSelectItems v-else-if="item.type == 'vaccine_name'"
               v-model:values="vaccineNameFilterValues" v-model:items="vaccineNameFilterItems"
-              :search-triger-func="searchTrigerFunc" :clear-trigger-func="clearTriggerFunc"
+              :search-trigger-func="searchTriggerFunc" :clear-trigger-func="clearTriggerFunc"
               label="ワクチン名"
             ></SearchableSelectItems>
 
@@ -32,7 +32,7 @@
               :label="item.label"
               v-model="item.model.value"
               :type="item.type"
-              @input="searchTrigerFunc"
+              @input="searchTriggerFunc"
               @click:clear="clearTriggerFunc"
               clearable
               hide-details
@@ -46,13 +46,13 @@
           <v-col v-for="item, i in individualSearchItems" :key="i" cols="12" :md="item.md" class="group mb-1">
             <NumberFilter v-if="item.type == 'age-range'"
             v-model:min="ageFromFilterVal" v-model:max="ageToFilterVal"
-            :search-triger-func="searchTrigerFunc" :clear-trigger-func="clearTriggerFunc"
+            :search-trigger-func="searchTriggerFunc" :clear-trigger-func="clearTriggerFunc"
             :title="item.label"
             ></NumberFilter>
 
             <SelectItems v-else-if="item.type == 'gender'"
             v-model:values="genderFilterValues" v-model:items="genderFilterItems"
-            :search-triger-func="searchTrigerFunc" :clear-trigger-func="clearTriggerFunc"
+            :search-trigger-func="searchTriggerFunc" :clear-trigger-func="clearTriggerFunc"
             :label="item.label"
             ></SelectItems>
 
@@ -61,12 +61,12 @@
 
             <NumberFilter v-else-if="item.type == 'days_to_onset'"
             v-model:min="daysToOnsetFromFilterVal" v-model:max="daysToOnsetToFilterVal"
-            :title="item.label" :search-triger-func="searchTrigerFunc" :clear-trigger-func="clearTriggerFunc"
+            :title="item.label" :search-trigger-func="searchTriggerFunc" :clear-trigger-func="clearTriggerFunc"
             ></NumberFilter>
 
             <SelectItems v-else-if="item.type == 'causal_relationship'"
             v-model:values="causualFilterValues" v-model:items="causualFilterItems"
-            :search-triger-func="searchTrigerFunc" :clear-trigger-func="clearTriggerFunc"
+            :search-trigger-func="searchTriggerFunc" :clear-trigger-func="clearTriggerFunc"
             :label="item.label"
             ></SelectItems>
 
@@ -74,7 +74,7 @@
 
             <SelectItems v-else-if="item.type == 'severity'"
             v-model:values="severityFilterValues" v-model:items="severityFilterItems"
-            :search-triger-func="searchTrigerFunc" :clear-trigger-func="clearTriggerFunc"
+            :search-trigger-func="searchTriggerFunc" :clear-trigger-func="clearTriggerFunc"
             :label="item.label"
             ></SelectItems>
 
@@ -83,7 +83,7 @@
 
             <SelectItems v-else-if="item.type == 'result'"
             v-model:values="resultFilterValues" v-model:items="resultFilterItems"
-            :search-triger-func="searchTrigerFunc" :clear-trigger-func="clearTriggerFunc"
+            :search-trigger-func="searchTriggerFunc" :clear-trigger-func="clearTriggerFunc"
             :label="item.label"
             ></SelectItems>
 
@@ -91,7 +91,7 @@
               :label="item.label"
               v-model="item.model.value"
               :type="item.type"
-              @input="searchTrigerFunc"
+              @input="searchTriggerFunc"
               @click:clear="clearTriggerFunc"
               clearable
               hide-details
@@ -398,7 +398,7 @@ const customKeyFilter = {
 }
 
 const searchConditionChanged = shallowRef<boolean>(false)
-const searchTrigerFunc = () => {
+const searchTriggerFunc = () => {
   SearchTriggerFunc()
   searchConditionChanged.value = IsConditionChanged(queryParamMap)
 }

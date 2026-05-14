@@ -2,10 +2,11 @@
 	<v-select
 		v-model="values"
 		:items="items"
-		:label="label" multiple
-		@update:model-value="searchTrigerFunc"
+		:label="label"
+		@update:model-value="searchTriggerFunc"
 		:item-props="itemProps"
 		hide-details="auto"
+		multiple
 		>
 		<template v-slot:prepend-item>
 			<v-list-item>
@@ -39,7 +40,7 @@
 <script setup lang="ts">
 defineProps<{
   label: string
-  searchTrigerFunc: () => void
+  searchTriggerFunc: () => void
   clearTriggerFunc: () => void
 }>()
 

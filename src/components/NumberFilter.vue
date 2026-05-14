@@ -6,14 +6,14 @@
 	<v-sheet class="d-flex flex-wrap">
 		<v-responsive max-width="110">
 			<v-text-field label="最小" v-model="minVal" type="number"
-				@input="searchTrigerFunc" @click:clear="clearTriggerFunc" hide-details></v-text-field>
+				@input="searchTriggerFunc" @click:clear="clearTriggerFunc" hide-details></v-text-field>
 		</v-responsive>
 
 		<v-label class="ml-1 mr-2 mt-2 text-body-2">から</v-label>
 
 		<v-responsive max-width="110">
 			<v-text-field label="最大" v-model="maxVal" type="number"
-				@input="searchTrigerFunc" @click:clear="clearTriggerFunc" hide-details></v-text-field>
+				@input="searchTriggerFunc" @click:clear="clearTriggerFunc" hide-details></v-text-field>
 		</v-responsive>
 
 		<v-label class="ml-1 mt-2 text-body-2">まで</v-label>
@@ -23,7 +23,7 @@
 <script setup lang="ts">
 defineProps<{
   title: string
-  searchTrigerFunc: () => void
+  searchTriggerFunc: () => void
   clearTriggerFunc: () => void
 }>()
 
