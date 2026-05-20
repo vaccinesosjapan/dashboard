@@ -22,6 +22,16 @@
   font-weight: bold;
 }
 
+@media (max-width: 800px) {
+  .data-table-health-hazard th {
+    font-size: 0.7rem !important;
+  }
+
+  .data-table-health-hazard td {
+    font-size: 0.9rem !important;
+  }
+}
+
 .data-table-suspect-issues th {
   background-color: #ffffff00 !important;
   font-weight: bold !important;
@@ -44,4 +54,14 @@
 .data-table-suspect-issues .v-data-table-footer {
   background-color: #ffffff;
   font-weight: bold;
+}
+
+@media (max-width: 800px) {
+  .data-table-suspect-issues th {
+    font-size: 0.7rem !important;
+  }
+
+  .data-table-suspect-issues td {
+    font-size: 0.9rem !important;
+  }
 }

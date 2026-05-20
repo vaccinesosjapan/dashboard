@@ -269,16 +269,16 @@ onMounted(() => {
 })
 
 const headers = [
-  { key: 'data-table-expand', width: 10 },
-  { title: '年齢', align: 'start', key: 'age', width: 15 },
-  { title: '性別', align: 'start', key: 'gender', width: 15 },
+  { key: 'data-table-expand'},
+  { title: '年齢', align: 'start', key: 'age' },
+  { title: '性別', align: 'start', key: 'gender' },
   { title: '接種日', align: 'start', key: 'vaccinated_dates' },
   { title: '症状発生日', align: 'start', key: 'onset_dates' },
-  { title: '発症までの日数', align: 'start', key: 'days_to_onset', width: 80 },
-  { title: 'ワクチン名', align: 'start', key: 'vaccine_name', width: 200 },
+  { title: '発症までの日数', align: 'start', key: 'days_to_onset' },
+  { title: 'ワクチン名', align: 'start', key: 'vaccine_name' },
   { title: '製造販売業者', align: 'start', key: 'manufacturer' },
   { title: 'ロット番号', align: 'start', key: 'lot_no' },
-  { title: '同時接種', align: 'start', key: 'concurrent_vaccination_flag'},
+  { title: '同時接種', align: 'start', key: 'concurrent_vaccination_flag' },
   { title: '基礎疾患等', align: 'start', key: 'pre_existing_disease_names' },
   { title: '症状名', align: 'start', key: 'PT_names' },
   { title: '因果関係', align: 'start', key: 'causal_relationship' },

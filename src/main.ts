@@ -12,6 +12,7 @@ import '@mdi/font/css/materialdesignicons.css'
 import { VDataTable } from 'vuetify/labs/VDataTable'
 import VueApexCharts from 'vue3-apexcharts'
 import '@/assets/data-table.css'
+import '@/assets/main.css'
 
 const vuetify = createVuetify({
   components: {

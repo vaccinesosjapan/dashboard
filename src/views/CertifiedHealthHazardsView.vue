@@ -236,18 +236,18 @@ onMounted(() => {
 })
 
 const headers = [
-  { key: 'data-table-expand', width: 20 },
-  { title: '判定日', align: 'start', key: 'certified_date', width: 120 },
-  { title: '性別', align: 'start', key: 'gender', width: 25},
-  { title: '年齢', align: 'start', key: 'age', width: 25 },
-  { title: 'ワクチン名', align: 'start', key: 'vaccine_name', width: 110 },
-  { title: '請求内容', align: 'start', key: 'description_of_claim', width: 170 },
+  { key: 'data-table-expand'},
+  { title: '判定日', align: 'start', key: 'certified_date'},
+  { title: '性別', align: 'start', key: 'gender'},
+  { title: '年齢', align: 'start', key: 'age'},
+  { title: 'ワクチン名', align: 'start', key: 'vaccine_name'},
+  { title: '請求内容', align: 'start', key: 'description_of_claim'},
   { title: '症状', align: 'start', key: 'symptoms' },
   { title: '基礎疾患', align: 'start', key: 'pre_existing_conditions' },
-  { title: '判定', align: 'start', key: 'judgment_result', width: 25 },
-  { title: '否認理由', align: 'start', key: 'reasons_for_repudiation', width: 100 },
-  { title: '接種種類', align: 'start', key: 'inoculation_type', width: 120 },
-  { title: '元資料', align: 'start', key: 'source_url', width: 100},
+  { title: '判定', align: 'start', key: 'judgment_result'},
+  { title: '否認理由', align: 'start', key: 'reasons_for_repudiation'},
+  { title: '接種種類', align: 'start', key: 'inoculation_type'},
+  { title: '元資料', align: 'start', key: 'source_url'},
 ]
 
 const expandedArray = shallowRef<string[]>([])
@@ -458,5 +458,11 @@ const clearFilter = () => {
 
 .small-text {
   font-size: 0.95rem;
+}
+
+@media (max-width: 800px) {
+  .small-text {
+    font-size: 0.9rem;
+  }
 }
 </style>
