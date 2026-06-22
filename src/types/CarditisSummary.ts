@@ -4,6 +4,7 @@ export interface ICarditisSummaryRoot {
 	carditis_summary: ICarditisSummary
 	carditis_issues: {
 		date: string
+		issues_by_evaluated_result: ICarditisIssueByEvaluatedResult
 		issues_with_vaccine_name: ICarditisIssueWithVaccineName[]
 		issues_m_by_manufacturers: ICarditisIssueWithManufacturer[]
 		issues_p_by_manufacturers: ICarditisIssueWithManufacturer[]
@@ -13,6 +14,17 @@ export interface ICarditisSummaryRoot {
 			issues: {x:string, y:number}[]
 		}
 	}
+}
+
+export interface ICarditisIssueByEvaluatedResult {
+	myocarditis: IEvaluationResultSet
+	pericarditis: IEvaluationResultSet
+}
+
+export interface IEvaluationResultSet {
+	alpha: number
+	beta: number
+	gamma: number
 }
 
 export interface ICarditisSummary {
