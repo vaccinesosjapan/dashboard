@@ -51,6 +51,103 @@
           </v-table>
         </v-col>
       </v-row>
+      
+      <CustomHeader2 title="因果関係評価の内訳"></CustomHeader2>
+      <CustomHeader3 title="心筋炎の内訳"></CustomHeader3>
+      <div class="d-flex justify-end">
+        <v-btn size="small" @click="changeChartView" color="blue" v-if="isPersentView">件数を表示</v-btn>
+        <v-btn size="small" @click="changeChartView" color="blue" v-else>割合を表示</v-btn>
+      </div>
+
+      <v-row class="mb-3">
+        <v-col cols="12" sm="8">
+          <apexchart :options="carditisWithEvaluatedResultOptions" :series="myocarditisSeriesWithEvaluatedResult"></apexchart>
+        </v-col>
+
+        <v-col cols="12" sm="4">
+          <v-table density="comfortable">
+            <thead>
+              <tr>
+                <th class="text-left">評価結果</th>
+                <th class="text-right">件数</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><v-chip variant="flat" color="#3393FA">α</v-chip></td>
+                <td class="text-right">{{ carditisSummaryData?.carditis_issues.issues_by_evaluated_result.myocarditis.alpha.toLocaleString() }}
+                </td>
+              </tr>
+              <tr>
+                <td><v-chip variant="flat" color="#54E497">β</v-chip></td>
+                <td class="text-right">{{ carditisSummaryData?.carditis_issues.issues_by_evaluated_result.myocarditis.beta.toLocaleString() }}
+                </td>
+              </tr>
+              <tr>
+                <td><v-chip variant="flat" color="#F6AD21">γ</v-chip></td>
+                <td class="text-right">{{ carditisSummaryData?.carditis_issues.issues_by_evaluated_result.myocarditis.gamma.toLocaleString() }}
+                </td>
+              </tr>
+              <tr>
+                <td><b>合計</b></td>
+                <td class="text-right"><b>{{ myocarditisCountWithEvaluationResult.toLocaleString()
+                    }}</b></td>
+              </tr>
+            </tbody>
+          </v-table>
+          <EvaluationResultHelpDialog></EvaluationResultHelpDialog>
+        </v-col>
+      </v-row>
+
+      <CustomHeader3 title="心膜炎の内訳"></CustomHeader3>
+      <div class="d-flex justify-end">
+        <v-btn size="small" @click="changeChartView" color="blue" v-if="isPersentView">件数を表示</v-btn>
+        <v-btn size="small" @click="changeChartView" color="blue" v-else>割合を表示</v-btn>
+      </div>
+
+      <v-row class="mb-3">
+        <v-col cols="12" sm="8">
+          <apexchart :options="carditisWithEvaluatedResultOptions" :series="pericarditisSeriesWithEvaluatedResult">
+          </apexchart>
+        </v-col>
+
+        <v-col cols="12" sm="4">
+          <v-table density="comfortable">
+            <thead>
+              <tr>
+                <th class="text-left">評価結果</th>
+                <th class="text-right">件数</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><v-chip variant="flat" color="#3393FA">α</v-chip></td>
+                <td class="text-right">{{
+                  carditisSummaryData?.carditis_issues.issues_by_evaluated_result.pericarditis.alpha.toLocaleString() }}
+                </td>
+              </tr>
+              <tr>
+                <td><v-chip variant="flat" color="#54E497">β</v-chip></td>
+                <td class="text-right">{{
+                  carditisSummaryData?.carditis_issues.issues_by_evaluated_result.pericarditis.beta.toLocaleString() }}
+                </td>
+              </tr>
+              <tr>
+                <td><v-chip variant="flat" color="#F6AD21">γ</v-chip></td>
+                <td class="text-right">{{
+                  carditisSummaryData?.carditis_issues.issues_by_evaluated_result.pericarditis.gamma.toLocaleString() }}
+                </td>
+              </tr>
+              <tr>
+                <td><b>合計</b></td>
+                <td class="text-right"><b>{{ pericarditisCountWithEvaluationResult.toLocaleString()
+                }}</b></td>
+              </tr>
+            </tbody>
+          </v-table>
+          <EvaluationResultHelpDialog></EvaluationResultHelpDialog>
+        </v-col>
+      </v-row>
 
       <CustomHeader2 title="製造販売業者別の集計"></CustomHeader2>
       <div class="text-body-1">
@@ -178,6 +275,7 @@ import type { IDeathSummaryFromReportsRoot } from '@/types/DeathSummaryFromRepor
 import EvaluationResultHelpDialog from '@/components/EvaluationResultHelpDialog.vue'
 import CustomHeader1 from '@/components/CustomHeader1.vue'
 import CustomHeader2 from '@/components/CustomHeader2.vue'
+import CustomHeader3 from '@/components/CustomHeader3.vue'
 import HorizontalBarGraph from '@/components/HorizontalBarGraph.vue'
 import CarditisPerAgeGraph from '@/components/CarditisPerAgeGraph.vue'
 import DeathPerAgeGraph from '@/components/DeathPerAgeGraph.vue'
@@ -191,6 +289,10 @@ const headerColor = shallowRef<string>('#2962ff')
 
 const carditisSummaryData = shallowRef<ICarditisSummaryRoot>()
 const myocarditisSeries = shallowRef<{x: string, y: number}[]>([])
+const myocarditisSeriesWithEvaluatedResult = shallowRef<number[]>([])
+const myocarditisCountWithEvaluationResult = shallowRef<number>(0)
+const pericarditisSeriesWithEvaluatedResult = shallowRef<number[]>([])
+const pericarditisCountWithEvaluationResult = shallowRef<number>(0)
 const pericarditisSeries = shallowRef<{x: string, y: number}[]>([])
 const carditisSummaryByAges = shallowRef<{x:string, y:number}[]>([])
 const carditisAgesCount = shallowRef<number>(0)
@@ -216,6 +318,34 @@ onMounted(() => {
         mSeries.push({x: issueM.manufacturer, y: issueM.count})
       }
       myocarditisSeries.value = mSeries
+
+      myocarditisSeriesWithEvaluatedResult.value.push(
+        response.data.carditis_issues.issues_by_evaluated_result.myocarditis.alpha
+      )
+      myocarditisSeriesWithEvaluatedResult.value.push(
+        response.data.carditis_issues.issues_by_evaluated_result.myocarditis.beta
+      )
+      myocarditisSeriesWithEvaluatedResult.value.push(
+        response.data.carditis_issues.issues_by_evaluated_result.myocarditis.gamma
+      )
+      myocarditisCountWithEvaluationResult.value =
+        response.data.carditis_issues.issues_by_evaluated_result.myocarditis.alpha
+        + response.data.carditis_issues.issues_by_evaluated_result.myocarditis.beta
+        + response.data.carditis_issues.issues_by_evaluated_result.myocarditis.gamma
+
+      pericarditisSeriesWithEvaluatedResult.value.push(
+        response.data.carditis_issues.issues_by_evaluated_result.pericarditis.alpha
+      )
+      pericarditisSeriesWithEvaluatedResult.value.push(
+        response.data.carditis_issues.issues_by_evaluated_result.pericarditis.beta
+      )
+      pericarditisSeriesWithEvaluatedResult.value.push(
+        response.data.carditis_issues.issues_by_evaluated_result.pericarditis.gamma
+      )
+      pericarditisCountWithEvaluationResult.value = 
+        response.data.carditis_issues.issues_by_evaluated_result.pericarditis.alpha
+        + response.data.carditis_issues.issues_by_evaluated_result.pericarditis.beta
+        + response.data.carditis_issues.issues_by_evaluated_result.pericarditis.gamma
 
       const issuesPByM = carditisSummaryData.value.carditis_issues.issues_p_by_manufacturers
       const pSeries: {x: string, y: number}[] = []
@@ -363,6 +493,61 @@ const deathSummaryOptions = {
   dataLabels: {
     formatter: function (val: any, { seriesIndex, dataPointIndex, w } :any ) {
       if(isPersentView.value){
+        return val.toFixed(1) + ' %'
+      } else {
+        return w.config.series[seriesIndex].toLocaleString() + ' 件'
+      }
+    },
+    style: {
+      fontSize: '1.2rem',
+      colors: ['#212121'],
+    },
+    background: {
+      enabled: true,
+      foreColor: '#fff',
+    }
+  }
+}
+
+const carditisWithEvaluatedResultOptions = {
+  title: {
+    text: '専門家の因果関係評価の内訳',
+    align: 'center',
+    offsetX: 10,
+    offsetY: 10,
+  },
+  chart: {
+    type: 'pie',
+  },
+  legend: {
+    position: 'right',
+  },
+  labels: ['α', 'β', 'γ'],
+  plotOptions: {
+    pie: {
+      dataLabels: {
+        minAngleToShowLabel: 0.1
+      },
+    }
+  },
+  tooltip: {
+    y: {
+      formatter: (val: any) => {
+        return (val as number).toLocaleString() + ' 件'
+      },
+    },
+  },
+  responsive: [{
+    breakpoint: 800,
+    options: {
+      chart: {
+        width: 300
+      }
+    }
+  }],
+  dataLabels: {
+    formatter: function (val: any, { seriesIndex, dataPointIndex, w }: any) {
+      if (isPersentView.value) {
         return val.toFixed(1) + ' %'
       } else {
         return w.config.series[seriesIndex].toLocaleString() + ' 件'
